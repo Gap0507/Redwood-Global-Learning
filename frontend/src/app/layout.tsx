@@ -43,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${inter.variable} ${spaceGrotesk.variable} antialiased font-sans bg-gradient-to-br from-white via-bg-soft to-bg-light-gray min-h-screen`}
+        className={`${inter.variable} ${spaceGrotesk.variable} antialiased font-sans bg-gradient-space min-h-screen`}
       >
         {children}
       </body>

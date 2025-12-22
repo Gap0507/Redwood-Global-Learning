@@ -1,134 +1,186 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import Image from "next/image"
+import { Menu, Globe, GraduationCap, Users, Mail, BookOpen, MapPin } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuList,
+} from "@/components/ui/navigation-menu"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { cn } from "@/lib/utils"
+
+const navigationItems = [
+  {
+    title: "Program",
+    href: "/programs",
+    description: "Explore our global exchange programs",
+    icon: BookOpen,
+  },
+  {
+    title: "About",
+    href: "/about",
+    description: "Learn about our mission and vision",
+    icon: GraduationCap,
+  },
+  {
+    title: "Contact",
+    href: "/contact",
+    description: "Get in touch with us",
+    icon: Mail,
+  },
+  {
+    title: "Advisory Board",
+    href: "/advisory-board",
+    description: "Meet our distinguished advisory board",
+    icon: Users,
+  },
+]
 
 export function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
+  const router = useRouter()
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    function handleScroll() {
+      setIsScrolled(window.scrollY > 20)
+    }
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   return (
-    <>
-      {/* DESKTOP NAVBAR */}
-      <header className="fixed top-4 left-0 right-0 z-50">
-        <nav
+    <header className="fixed top-0 left-0 right-0 z-50">
+      <nav className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <div
           className={cn(
-            "max-w-7xl mx-auto rounded-2xl transition-all duration-300 border border-black/5",
-            scrolled
-              ? "bg-[#f6f7f9]/95 backdrop-blur-xl shadow-sm"
-              : "bg-[#f6f7f9]/80 backdrop-blur-lg"
+            "relative flex h-20 sm:h-24 lg:h-28 items-center justify-between transition-all duration-300",
+            "bg-white/95 backdrop-blur-xl rounded-b-3xl sm:rounded-b-[2rem]",
+            "border-l-2 border-r-2 border-b-2 border-brand-blue/20 shadow-lg",
+            "px-4 sm:px-6 lg:px-8",
+            isScrolled && "shadow-2xl shadow-brand-blue/10 bg-white/98"
           )}
         >
-          <div className="px-8">
-            <div className="h-[76px] flex items-center justify-between relative">
-              {/* LEFT NAV */}
-              <div className="hidden lg:flex gap-10">
-                <NavLink href="/about">About</NavLink>
-                <NavLink href="/programs">Programs</NavLink>
-                <NavLink href="/experience">Experience</NavLink>
-              </div>
-
-              {/* CENTER LOGO */}
-              <Link
-                href="/"
-                className="absolute left-1/2 -translate-x-1/2 flex items-center"
-              >
-                <Image
-                  src="/logo.svg"
-                  alt="Redwood Learning Global"
-                  width={200}
-                  height={60}
-                  priority
-                  className="object-contain select-none"
-                />
-              </Link>
-
-              {/* RIGHT NAV */}
-              <div className="hidden lg:flex gap-6 items-center">
-                <NavLink href="/contact">Contact</NavLink>
-
-                <Button
-                  asChild
-                  className="apply-button rounded-full px-6 py-2.5 text-xs tracking-widest uppercase"
-                >
-                  <Link href="/apply">Apply Now</Link>
-                </Button>
-              </div>
-
-              {/* MOBILE TOGGLE */}
-              <button
-                onClick={() => setOpen(!open)}
-                className="lg:hidden z-50 p-2"
-              >
-                {open ? <X size={26} /> : <Menu size={26} />}
-              </button>
-            </div>
+          {/* Left Navigation Links - 2 items */}
+          <div className="hidden lg:flex items-center gap-6 flex-1">
+            <NavigationMenu>
+              <NavigationMenuList className="gap-2">
+                {navigationItems.slice(0, 2).map((item) => (
+                  <NavigationMenuItem key={item.title}>
+                    <Link
+                      href={item.href}
+                      className="group inline-flex h-auto w-max items-center justify-center rounded-md px-4 py-2 text-base font-medium text-brand-gray transition-all hover:text-brand-blue focus:text-brand-blue focus:outline-none hover:border-b-[1.5px] hover:border-brand-blue"
+                    >
+                      {item.title}
+                    </Link>
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
-        </nav>
-      </header>
 
-      {/* MOBILE MENU */}
-      <div
-        className={`
-          fixed inset-0 z-40 lg:hidden
-          transition-all duration-300
-          ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
-        `}
-      >
-        <div
-          className="absolute inset-0 bg-black/95"
-          onClick={() => setOpen(false)}
-        />
-
-        <div className="relative h-full flex flex-col items-center justify-center gap-10 text-white">
-          {["About", "Programs", "Experience", "Contact"].map((item) => (
-            <Link
-              key={item}
-              href={`/${item.toLowerCase()}`}
-              onClick={() => setOpen(false)}
-              className="text-3xl font-semibold tracking-widest uppercase hover:text-accent-red transition"
-            >
-              {item}
-            </Link>
-          ))}
-
-          <Button
-            asChild
-            className="mt-6 bg-accent-red px-10 py-6 rounded-full text-sm tracking-widest uppercase"
+          {/* Centered Logo */}
+          <Link
+            href="/"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center transition-all duration-200 hover:opacity-90 hover:scale-105 z-10"
           >
-            <Link href="/apply">Apply Now</Link>
-          </Button>
-        </div>
-      </div>
-    </>
-  );
-}
+            <div className="relative h-[150px] w-[260px] sm:h-[170px] sm:w-[300px] md:h-[190px] md:w-[340px] lg:h-[210px] lg:w-[380px]">
+              <Image
+                src="/logo.svg"
+                alt="Redwood Global Learning"
+                fill
+                className="object-contain"
+                priority
+                quality={100}
+                unoptimized
+              />
+            </div>
+          </Link>
 
-function NavLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      className={cn(
-        "nav-link text-[13px] font-medium tracking-wide uppercase text-foreground/80 hover:text-foreground transition"
-      )}
-    >
-      {children}
-    </Link>
-  );
+          {/* Right Navigation Links - 2 items + CTA Button */}
+          <div className="hidden lg:flex items-center gap-6 flex-1 justify-end">
+            <NavigationMenu>
+              <NavigationMenuList className="gap-2">
+                {navigationItems.slice(2).map((item) => (
+                  <NavigationMenuItem key={item.title}>
+                    <Link
+                      href={item.href}
+                      className="group inline-flex h-auto w-max items-center justify-center rounded-md px-4 py-2 text-base font-medium text-brand-gray transition-all hover:text-brand-blue focus:text-brand-blue focus:outline-none hover:border-b-[1.5px] hover:border-brand-blue"
+                    >
+                      {item.title}
+                    </Link>
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
+            <Button
+              className="bg-brand-red hover:bg-brand-red/90 text-white font-medium text-sm px-6 py-2 h-auto shadow-sm hover:shadow-md transition-all duration-200 rounded-full ml-2"
+            >
+              Apply Now
+            </Button>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="lg:hidden flex items-center gap-4">
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-brand-blue hover:bg-brand-blue/10 h-10 w-10"
+                >
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Toggle menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent
+                side="top"
+                className="w-full h-screen max-w-none rounded-none px-6 py-6 flex flex-col bg-gradient-space"
+              >
+                <SheetHeader className="flex items-center justify-between mb-4">
+                  <SheetTitle className="font-heading text-brand-blue text-left text-xl">
+                    Menu
+                  </SheetTitle>
+                </SheetHeader>
+                <nav className="flex-1 flex flex-col items-center justify-center gap-10 text-brand-blue">
+                  {navigationItems.map((item) => {
+                    const Icon = item.icon
+                    return (
+                      <Link
+                        key={item.title}
+                        href={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex flex-col items-center gap-2 rounded-full px-6 py-2 text-2xl font-semibold tracking-widest uppercase transition-colors hover:text-brand-red"
+                      >
+                        <Icon className="h-6 w-6 text-brand-gray" />
+                        <span>{item.title}</span>
+                      </Link>
+                    )
+                  })}
+                  <div className="pt-8 mt-4 w-full max-w-xs">
+                    <Button
+                      className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-semibold py-4 rounded-full text-sm tracking-widest uppercase"
+                    >
+                      Apply Now
+                    </Button>
+                  </div>
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+      </nav>
+    </header>
+  )
 }

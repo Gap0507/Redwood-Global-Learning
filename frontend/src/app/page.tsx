@@ -1,11 +1,8 @@
-import { Navbar } from "@/components/layout/Navbar";
-import { Hero } from "@/components/sections/Hero";
-
+import { Navbar } from "@/components/layout/navbar"
 export default function Home() {
   return (
-    <main className="min-h-screen bg-background font-sans antialiased selection:bg-brand-blue/20 selection:text-brand-blue-dark">
+    <main className="min-h-screen">
       <Navbar />
-      <Hero />
     </main>
   );
 }
