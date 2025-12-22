@@ -1,0 +1,274 @@
+Perfect — this hero is **now stable**, so here is the **exact, final color system** extracted from:
+
+• Hero section UI
+• Wireframe look
+• Logo colors
+• NASA-inspired minimalism
+• Our entire discussion
+
+Below are **production-ready Figma color tokens** (you can paste these directly into Figma / Tailwind / design system).
+
+---
+
+# 🎨 REDWOOD LEARNING GLOBAL
+
+## Final Color Palette (Figma Tokens)
+
+---
+
+## 🔵 PRIMARY BRAND COLORS
+
+### `Brand / Blue / Primary`
+
+Used for:
+• Main CTAs
+• Headings
+• Active states
+• Links
+
+```
+#1F5FBF
+```
+
+Feeling:
+Trust • Global • Education • Stability
+
+---
+
+### `Brand / Blue / Dark`
+
+Used for:
+• Hero headline
+• Section titles
+• Strong emphasis text
+
+```
+#243A5E
+```
+
+(This is **not black** — slightly blue-tinted for premium feel)
+
+---
+
+### `Brand / Blue / Soft`
+
+Used for:
+• Button hover
+• Secondary highlights
+• Soft borders
+
+```
+#4F7FD6
+```
+
+---
+
+## 🔴 ACCENT / ACTION COLORS
+
+### `Accent / Red / Primary`
+
+Used ONLY for:
+• “Apply Now” button
+• Location pins
+• High-intent actions
+
+```
+#E65A5A
+```
+
+Rule:
+🚨 Never use red for body text
+🚨 Never use red as background blocks
+
+Red = Decision moment only.
+
+---
+
+### `Accent / Red / Soft`
+
+Used for:
+• Subtle hovers
+• Light highlights
+
+```
+#F08A8A
+```
+
+---
+
+## ⚪ BACKGROUND COLORS (MOST IMPORTANT)
+
+### `Background / Primary`
+
+Main hero background gradient base
+
+```
+#FFFFFF
+```
+
+---
+
+### `Background / Soft`
+
+Used across hero + sections to avoid flat white
+
+```
+#F4F6FA
+```
+
+---
+
+### `Background / Light Gray`
+
+Used for:
+• Section separation
+• Cards background
+• Footer top
+
+```
+#ECEFF4
+```
+
+---
+
+## 🌫 OVERLAY / EFFECT COLORS (NASA FEEL)
+
+### `Overlay / Blue Mist`
+
+Used for:
+• Orbital lines
+• Particle effects
+• Hero texture
+
+```
+#DCE6F2
+```
+
+Opacity in Figma: **10–20%**
+
+---
+
+### `Overlay / White Glow`
+
+Used for:
+• Glow effects
+• Soft highlights
+
+```
+#FFFFFF
+```
+
+Opacity: **6–12%**
+
+---
+
+## ⚫ TEXT COLORS
+
+### `Text / Heading`
+
+Hero & section headings
+
+```
+#243A5E
+```
+
+---
+
+### `Text / Body`
+
+Paragraph text
+
+```
+#5B677A
+```
+
+---
+
+### `Text / Muted`
+
+Captions, secondary info
+
+```
+#8A94A6
+```
+
+---
+
+## 🔘 BUTTON COLORS
+
+### Primary Button
+
+```
+Background: #1F5FBF
+Text: #FFFFFF
+Hover: #4F7FD6
+```
+
+---
+
+### Secondary Button
+
+```
+Background: #FFFFFF
+Border: #1F5FBF
+Text: #1F5FBF
+Hover BG: #F4F6FA
+```
+
+---
+
+## 🧭 ICON & MAP COLORS
+
+### Map Pins
+
+```
+#E65A5A
+```
+
+### Neutral Icons
+
+```
+#8A94A6
+```
+
+---
+
+## 📐 GRADIENT (Hero Only)
+
+### `Hero / Background Gradient`
+
+```
+Linear (top → bottom)
+
+#FFFFFF 0%
+#F4F6FA 45%
+#ECEFF4 100%
+```
+
+This is what creates the **airy NASA look** without emptiness.
+
+---
+
+## 🧠 WHY THIS PALETTE WORKS
+
+• Matches logo exactly
+• Avoids harsh contrast
+• Feels global, premium, calm
+• Keeps red intentional
+• Scales well for future pages
+
+This palette is **locked**.
+Do not introduce random blues or grays.
+
+---
+
+## 🛠 READY-TO-USE FORMATS (If You Want)
+
+I can now:
+• Convert this to **Figma Styles JSON**
+• Give **Tailwind config**
+• Create **CSS variables**
+• Build a **full design system page**
+• Lock typography tokens with this palette
+
+Just tell me what you want next.
