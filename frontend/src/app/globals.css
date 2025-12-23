@@ -147,6 +147,25 @@
   .border-brand-red {
     border-color: hsl(var(--brand-red));
   }
+
+  /* Premium Animations */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  /* Custom Shadows */
+  .shadow-premium {
+    box-shadow: 0 10px 30px -10px rgba(23, 67, 123, 0.15);
+  }
+
+  .shadow-premium-hover {
+    box-shadow: 0 20px 40px -15px rgba(23, 67, 123, 0.25);
+  }
 }
 
 

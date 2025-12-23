@@ -4,6 +4,9 @@ import { motion, Variants } from "framer-motion"
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
+import { Globe, ArrowRight } from "lucide-react"
+import Image from "next/image"
+import { Globe as InteractiveGlobe } from "@/components/ui/globe"
 
 const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -82,7 +85,7 @@ export function HeroSection() {
     }, [subIndex, index, isDeleting, pause])
 
     return (
-        <section className="relative min-h-screen flex items-center overflow-hidden pt-28 lg:pt-32">
+        <section className="relative min-h-screen flex items-start lg:items-center overflow-hidden pt-32 lg:pt-32">
             {/* Background Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-hero -z-10" />
 
@@ -90,7 +93,7 @@ export function HeroSection() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     {/* Left Content */}
                     <motion.div
-                        className="flex flex-col gap-6 lg:gap-8"
+                        className="flex flex-col gap-4 lg:gap-6"
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
@@ -107,12 +110,13 @@ export function HeroSection() {
 
                         {/* Subheading */}
                         <motion.p
-                            className="text-lg sm:text-xl md:text-2xl text-brand-gray max-w-xl leading-relaxed min-h-[4em] sm:min-h-[3em]"
+                            className="text-xl sm:text-2xl md:text-3xl text-brand-gray max-w-xl leading-relaxed min-h-[4em] sm:min-h-[3em]"
                             variants={itemVariants}
                             style={{ fontFamily: 'var(--font-cursive)' }}
                         >
-                            Redwood Learning creates immersive global exchange programs where
-                            students grow through{" "}
+                            Redwood Learning creates immersive global exchange programs
+                            <br />
+                            where students grow through{" "}
                             <span className="font-semibold text-brand-red">
                                 {typewriterWords[index].substring(0, subIndex)}
                             </span>
@@ -125,23 +129,70 @@ export function HeroSection() {
                             variants={itemVariants}
                         >
                             <Button
-                                className="bg-brand-red hover:bg-brand-red/90 text-white font-semibold text-sm px-5 py-2.5 h-10 shadow-md hover:shadow-lg transition-all duration-300 rounded-md"
+                                className="bg-brand-red hover:bg-brand-red/90 text-white font-bold text-base px-8 py-3 h-12 shadow-lg hover:shadow-brand-red/20 transition-all duration-300 rounded-full group"
                             >
                                 Explore Programs
                             </Button>
                             <Link
                                 href="/about"
-                                className="group relative text-brand-blue font-semibold text-sm transition-colors hover:text-brand-red"
+                                className="group flex items-center gap-2 text-brand-blue font-bold text-base transition-colors hover:text-brand-red hover:underline hover:decoration-brand-red hover:underline-offset-4 cursor-pointer"
                             >
                                 Learn More
-                                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-brand-red transition-all duration-300 group-hover:w-full" />
                             </Link>
+                        </motion.div>
+
+                        {/* Decorative Keyline */}
+                        <motion.div
+                            className="w-full max-w-md h-px bg-gradient-to-r from-brand-blue/20 via-brand-blue/5 to-transparent"
+                            variants={itemVariants}
+                        />
+
+                        {/* Trusted By Section */}
+                        <motion.div
+                            className="flex flex-col gap-6"
+                            variants={itemVariants}
+                        >
+                            <div className="flex items-center gap-3 text-brand-blue/80 font-medium" style={{ fontFamily: 'var(--font-cursive)' }}>
+                                <div className="p-2 bg-brand-blue/5 rounded-full">
+                                    <Globe className="h-5 w-5 text-brand-blue" />
+                                </div>
+                                <span className="text-xl tracking-wide">Trusted by students across 15+ countries</span>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                {[
+                                    { code: "ca", label: "Canada" },
+                                    { code: "fr", label: "France" },
+                                    { code: "jp", label: "Japan" },
+                                    { code: "gr", label: "Greece" },
+                                    { code: "gb", label: "UK" },
+                                    { code: "us", label: "USA" },
+                                ].map((flag, i) => (
+                                    <motion.div
+                                        key={flag.code}
+                                        className="relative w-14 h-9 bg-white rounded-xl shadow-premium border border-brand-blue/5 overflow-hidden group cursor-pointer"
+                                        whileHover={{ y: -2, scale: 1.02 }}
+                                        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                    >
+                                        <Image
+                                            src={`https://flagcdn.com/${flag.code}.svg`}
+                                            alt={flag.label}
+                                            fill
+                                            className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                        />
+                                        <div className="absolute inset-0 bg-brand-blue/0 group-hover:bg-brand-blue/5 transition-colors duration-300" />
+                                    </motion.div>
+                                ))}
+                            </div>
                         </motion.div>
                     </motion.div>
 
-                    {/* Right Side - Placeholder for future content (globe, image, etc.) */}
-                    <div className="hidden lg:flex items-center justify-center">
-                        {/* This space is reserved for future visual elements like a globe or hero image */}
+                    {/* Right Side - Visual Flair */}
+                    <div className="hidden lg:flex items-center justify-center relative h-full min-h-[600px]">
+                        <div className="absolute inset-0 flex items-center justify-center translate-y-12">
+                            <InteractiveGlobe className="" />
+                        </div>
                     </div>
                 </div>
             </div>
