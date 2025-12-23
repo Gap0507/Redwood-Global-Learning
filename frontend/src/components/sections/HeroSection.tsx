@@ -4,7 +4,7 @@ import { motion, Variants } from "framer-motion"
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Globe, ArrowRight } from "lucide-react"
+import { Globe, ArrowRight, MapPin } from "lucide-react"
 import Image from "next/image"
 import { Globe as InteractiveGlobe } from "@/components/ui/globe"
 
@@ -188,12 +188,165 @@ export function HeroSection() {
                         </motion.div>
                     </motion.div>
 
-                    {/* Right Side - Visual Flair */}
-                    <div className="hidden lg:flex items-center justify-center relative h-full min-h-[600px]">
-                        <div className="absolute inset-0 flex items-center justify-center translate-y-12">
-                            <InteractiveGlobe className="" />
+                    {/* Right Side - Enhanced Globe Section */}
+                    <motion.div
+                        className="hidden lg:flex flex-col items-center justify-center relative h-full min-h-[600px]"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.8, delay: 0.5 }}
+                    >
+                        {/* Shiny Background Layer */}
+                        <div className="absolute inset-0 globe-section-bg" />
+
+                        {/* Sparkle Effects */}
+                        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                            <div className="sparkle sparkle-1" />
+                            <div className="sparkle sparkle-2" />
+                            <div className="sparkle sparkle-3" />
+                            <div className="sparkle sparkle-4" />
+                            <div className="sparkle sparkle-5" />
+                            <div className="sparkle sparkle-6" />
+                            <div className="sparkle sparkle-7" />
+                            <div className="sparkle sparkle-8" />
                         </div>
-                    </div>
+
+
+                        {/* Globe with Glow Effects */}
+                        <div className="relative flex items-center justify-center translate-y-6" style={{ width: '600px', height: '600px' }}>
+                            {/* SVG Connection Arcs - Diagonal from top-left to bottom-right */}
+                            <svg
+                                className="absolute pointer-events-none"
+                                style={{ width: '750px', height: '750px', zIndex: 5 }}
+                                viewBox="0 0 750 750"
+                            >
+                                <defs>
+                                    {/* Bright shiny gradient for arcs */}
+                                    <linearGradient id="arcGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stopColor="rgba(255, 255, 255, 1)" />
+                                        <stop offset="25%" stopColor="rgba(220, 240, 255, 0.95)" />
+                                        <stop offset="50%" stopColor="rgba(255, 255, 255, 1)" />
+                                        <stop offset="75%" stopColor="rgba(200, 230, 255, 0.9)" />
+                                        <stop offset="100%" stopColor="rgba(255, 255, 255, 0.95)" />
+                                    </linearGradient>
+
+                                    <linearGradient id="arcGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stopColor="rgba(255, 255, 255, 0.95)" />
+                                        <stop offset="35%" stopColor="rgba(180, 210, 255, 0.85)" />
+                                        <stop offset="65%" stopColor="rgba(255, 255, 255, 0.9)" />
+                                        <stop offset="100%" stopColor="rgba(220, 240, 255, 0.85)" />
+                                    </linearGradient>
+
+                                    <linearGradient id="arcGradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stopColor="rgba(255, 255, 255, 0.9)" />
+                                        <stop offset="50%" stopColor="rgba(200, 220, 255, 0.8)" />
+                                        <stop offset="100%" stopColor="rgba(255, 255, 255, 0.85)" />
+                                    </linearGradient>
+
+                                    {/* Strong glow filter for bright shiny effect */}
+                                    <filter id="arcGlow" x="-100%" y="-100%" width="300%" height="300%">
+                                        <feGaussianBlur stdDeviation="6" result="blur1" />
+                                        <feGaussianBlur stdDeviation="2" result="blur2" />
+                                        <feMerge>
+                                            <feMergeNode in="blur1" />
+                                            <feMergeNode in="blur2" />
+                                            <feMergeNode in="SourceGraphic" />
+                                        </feMerge>
+                                    </filter>
+                                </defs>
+
+                                {/* Outer arc - bright shiny ring */}
+                                <ellipse
+                                    cx="375"
+                                    cy="375"
+                                    rx="340"
+                                    ry="130"
+                                    fill="none"
+                                    stroke="url(#arcGradient1)"
+                                    strokeWidth="2.5"
+                                    filter="url(#arcGlow)"
+                                    style={{ transform: 'rotate(-25deg)', transformOrigin: '375px 375px' }}
+                                />
+
+                                {/* Middle arc - bright shiny ring */}
+                                <ellipse
+                                    cx="375"
+                                    cy="375"
+                                    rx="360"
+                                    ry="150"
+                                    fill="none"
+                                    stroke="url(#arcGradient2)"
+                                    strokeWidth="2"
+                                    filter="url(#arcGlow)"
+                                    style={{ transform: 'rotate(-15deg)', transformOrigin: '375px 375px' }}
+                                />
+
+                                {/* Inner arc - bright shiny ring */}
+                                <ellipse
+                                    cx="375"
+                                    cy="375"
+                                    rx="320"
+                                    ry="110"
+                                    fill="none"
+                                    stroke="url(#arcGradient3)"
+                                    strokeWidth="2"
+                                    filter="url(#arcGlow)"
+                                    style={{ transform: 'rotate(-35deg)', transformOrigin: '375px 375px' }}
+                                />
+
+                                {/* Animated connection path 1 */}
+                                <path
+                                    d="M 100 300 Q 375 100 650 350"
+                                    fill="none"
+                                    stroke="url(#arcGradient1)"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    filter="url(#arcGlow)"
+                                    className="connection-arc"
+                                />
+
+                                {/* Animated connection path 2 */}
+                                <path
+                                    d="M 120 450 Q 375 280 630 480"
+                                    fill="none"
+                                    stroke="url(#arcGradient2)"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    filter="url(#arcGlow)"
+                                    className="connection-arc"
+                                    style={{ animationDelay: '0.6s' }}
+                                />
+                            </svg>
+
+                            {/* Outer glow - positioned behind */}
+                            <div
+                                className="absolute rounded-full pointer-events-none"
+                                style={{
+                                    width: '700px',
+                                    height: '700px',
+                                    background: 'radial-gradient(circle, rgba(23, 67, 123, 0.08) 0%, rgba(23, 67, 123, 0.04) 40%, transparent 70%)',
+                                    filter: 'blur(40px)',
+                                    zIndex: 0
+                                }}
+                            />
+
+                            {/* Inner glow - positioned behind */}
+                            <div
+                                className="absolute rounded-full pointer-events-none"
+                                style={{
+                                    width: '650px',
+                                    height: '650px',
+                                    background: 'radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, rgba(220, 235, 255, 0.4) 30%, rgba(180, 210, 250, 0.2) 50%, transparent 70%)',
+                                    filter: 'blur(30px)',
+                                    zIndex: 1
+                                }}
+                            />
+
+                            {/* The Interactive Globe */}
+                            <div className="relative" style={{ zIndex: 10, width: '100%', height: '100%' }}>
+                                <InteractiveGlobe className="" />
+                            </div>
+                        </div>
+                    </motion.div>
                 </div>
             </div>
         </section>

@@ -7,34 +7,50 @@
     /* Accent Red #ED1C24 - From logo accent */
     /* Neutral Gray #6D6E71 - From logo elements */
     /* Light backgrounds: White + Light Gray + Light Blue mixture */
-    
-    --background: 210 100% 96%; /* Light sky blue, clearly visible */
-    --foreground: 210 40% 15%; /* Dark blue-gray for text */
-    --card: 0 0% 100%; /* Pure white */
+
+    --background: 210 100% 96%;
+    /* Light sky blue, clearly visible */
+    --foreground: 210 40% 15%;
+    /* Dark blue-gray for text */
+    --card: 0 0% 100%;
+    /* Pure white */
     --card-foreground: 210 40% 15%;
     --popover: 0 0% 100%;
     --popover-foreground: 210 40% 15%;
-    --primary: 210 65% 28%; /* Primary Blue #17437B */
-    --primary-foreground: 0 0% 100%; /* White text on blue */
-    --secondary: 210 25% 96%; /* Light gray-blue */
+    --primary: 210 65% 28%;
+    /* Primary Blue #17437B */
+    --primary-foreground: 0 0% 100%;
+    /* White text on blue */
+    --secondary: 210 25% 96%;
+    /* Light gray-blue */
     --secondary-foreground: 210 40% 15%;
-    --muted: 210 15% 94%; /* Muted light gray */
+    --muted: 210 15% 94%;
+    /* Muted light gray */
     --muted-foreground: 210 20% 40%;
-    --accent: 4 85% 53%; /* Accent Red #ED1C24 */
+    --accent: 4 85% 53%;
+    /* Accent Red #ED1C24 */
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
-    --border: 210 20% 90%; /* Light border */
-    --input: 210 20% 96%; /* Light input background */
-    --ring: 210 65% 28%; /* Blue focus ring */
+    --border: 210 20% 90%;
+    /* Light border */
+    --input: 210 20% 96%;
+    /* Light input background */
+    --ring: 210 65% 28%;
+    /* Blue focus ring */
     --radius: 0.5rem;
-    
+
     /* Custom brand colors */
-    --brand-blue: 210 65% 28%; /* #17437B */
-    --brand-red: 4 85% 53%; /* #ED1C24 */
-    --brand-gray: 210 5% 43%; /* #6D6E71 */
-    --bg-soft: 210 70% 94%; /* Stronger light sky blue */
-    --bg-light-gray: 210 8% 90%; /* Noticeable light gray */
+    --brand-blue: 210 65% 28%;
+    /* #17437B */
+    --brand-red: 4 85% 53%;
+    /* #ED1C24 */
+    --brand-gray: 210 5% 43%;
+    /* #6D6E71 */
+    --bg-soft: 210 70% 94%;
+    /* Stronger light sky blue */
+    --bg-light-gray: 210 8% 90%;
+    /* Noticeable light gray */
   }
 
   .dark {
@@ -65,35 +81,40 @@
   * {
     border-color: hsl(var(--border));
   }
-  
+
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-family: var(--font-inter), system-ui, sans-serif;
     letter-spacing: 0.01em;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-space-grotesk), system-ui, sans-serif;
     letter-spacing: 0.02em;
     font-weight: 600;
   }
-  
+
   /* Ensure images with transparent backgrounds stay transparent */
   img {
     background-color: transparent !important;
   }
-  
+
   /* Next.js Image component and its wrappers */
   [data-next-image],
   span[style*="position: relative"],
   span[style*="position:relative"],
-  span[style*="position:relative"] > img,
-  span[style*="position: relative"] > img {
+  span[style*="position:relative"]>img,
+  span[style*="position: relative"]>img {
     background-color: transparent !important;
     background-image: none !important;
   }
-  
+
   /* Target Next.js Image wrapper spans specifically */
   span[style*="display: block"],
   span[style*="display:block"] {
@@ -103,55 +124,63 @@
 }
 
 @layer components {
+
   /* Custom gradient backgrounds for engaging NASA-like feel */
   .bg-gradient-space {
     background: radial-gradient(circle at top left,
-      hsl(var(--bg-soft)) 0%,
-      hsl(var(--background)) 40%,
-      hsl(var(--bg-light-gray)) 85%);
+        hsl(var(--bg-soft)) 0%,
+        hsl(var(--background)) 40%,
+        hsl(var(--bg-light-gray)) 85%);
   }
-  
+
   .bg-gradient-hero {
-    background: linear-gradient(180deg, 
-      hsl(var(--background)) 0%, 
-      hsl(var(--bg-soft)) 40%, 
-      hsl(var(--bg-light-gray)) 70%, 
-      hsl(var(--background)) 100%);
+    background: linear-gradient(180deg,
+        hsl(var(--background)) 0%,
+        hsl(var(--bg-soft)) 40%,
+        hsl(var(--bg-light-gray)) 70%,
+        hsl(var(--background)) 100%);
   }
-  
+
   /* Brand color utilities */
   .text-brand-blue {
     color: hsl(var(--brand-blue));
   }
-  
+
   .text-brand-red {
     color: hsl(var(--brand-red));
   }
-  
+
   .text-brand-gray {
     color: hsl(var(--brand-gray));
   }
-  
+
   .bg-brand-blue {
     background-color: hsl(var(--brand-blue));
   }
-  
+
   .bg-brand-red {
     background-color: hsl(var(--brand-red));
   }
-  
+
   .border-brand-blue {
     border-color: hsl(var(--brand-blue));
   }
-  
+
   .border-brand-red {
     border-color: hsl(var(--brand-red));
   }
 
   /* Premium Animations */
   @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
+
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
   }
 
   .animate-float {
@@ -166,6 +195,221 @@
   .shadow-premium-hover {
     box-shadow: 0 20px 40px -15px rgba(23, 67, 123, 0.25);
   }
+
+  /* Globe Enhanced Background */
+  .globe-section-bg {
+    background:
+      radial-gradient(ellipse 80% 80% at 50% 50%,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(220, 235, 255, 0.3) 30%,
+        rgba(200, 220, 250, 0.2) 60%,
+        transparent 100%);
+  }
+
+  /* Globe Glow Effect */
+  .globe-glow {
+    position: absolute;
+    inset: -20px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+        rgba(255, 255, 255, 0.6) 0%,
+        rgba(220, 235, 255, 0.4) 30%,
+        rgba(180, 210, 250, 0.2) 50%,
+        transparent 70%);
+    filter: blur(30px);
+    pointer-events: none;
+  }
+
+  .globe-glow-outer {
+    position: absolute;
+    inset: -60px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+        rgba(23, 67, 123, 0.08) 0%,
+        rgba(23, 67, 123, 0.04) 40%,
+        transparent 70%);
+    filter: blur(40px);
+    pointer-events: none;
+  }
+
+  /* Orbital Rings */
+  .orbital-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    pointer-events: none;
+  }
+
+  .orbital-ring-1 {
+    width: 130%;
+    height: 50%;
+    top: 25%;
+    left: -15%;
+    border-color: rgba(23, 67, 123, 0.15);
+    animation: orbit-rotate-1 25s linear infinite;
+    transform: rotateX(75deg) rotateZ(-15deg);
+  }
+
+  .orbital-ring-2 {
+    width: 140%;
+    height: 55%;
+    top: 22.5%;
+    left: -20%;
+    border-color: rgba(237, 28, 36, 0.08);
+    animation: orbit-rotate-2 30s linear infinite reverse;
+    transform: rotateX(70deg) rotateZ(20deg);
+  }
+
+  .orbital-ring-3 {
+    width: 120%;
+    height: 45%;
+    top: 27.5%;
+    left: -10%;
+    border-color: rgba(23, 67, 123, 0.1);
+    animation: orbit-rotate-3 20s linear infinite;
+    transform: rotateX(80deg) rotateZ(-30deg);
+  }
+
+  @keyframes orbit-rotate-1 {
+    from {
+      transform: rotateX(75deg) rotateZ(-15deg) rotateY(0deg);
+    }
+
+    to {
+      transform: rotateX(75deg) rotateZ(-15deg) rotateY(360deg);
+    }
+  }
+
+  @keyframes orbit-rotate-2 {
+    from {
+      transform: rotateX(70deg) rotateZ(20deg) rotateY(0deg);
+    }
+
+    to {
+      transform: rotateX(70deg) rotateZ(20deg) rotateY(360deg);
+    }
+  }
+
+  @keyframes orbit-rotate-3 {
+    from {
+      transform: rotateX(80deg) rotateZ(-30deg) rotateY(0deg);
+    }
+
+    to {
+      transform: rotateX(80deg) rotateZ(-30deg) rotateY(360deg);
+    }
+  }
+
+  /* Shiny Ring Glow */
+  .ring-glow {
+    stroke: url(#ringGradient);
+    stroke-width: 2;
+    fill: none;
+    filter: drop-shadow(0 0 8px rgba(23, 67, 123, 0.3));
+  }
+
+  /* Sparkle Effects */
+  .sparkle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, white 0%, transparent 70%);
+    border-radius: 50%;
+    animation: sparkle-twinkle 3s ease-in-out infinite;
+    opacity: 0;
+  }
+
+  @keyframes sparkle-twinkle {
+
+    0%,
+    100% {
+      opacity: 0;
+      transform: scale(0.5);
+    }
+
+    50% {
+      opacity: 0.8;
+      transform: scale(1.2);
+    }
+  }
+
+  .sparkle-1 {
+    top: 15%;
+    left: 20%;
+    animation-delay: 0s;
+  }
+
+  .sparkle-2 {
+    top: 25%;
+    right: 15%;
+    animation-delay: 0.5s;
+  }
+
+  .sparkle-3 {
+    bottom: 30%;
+    left: 10%;
+    animation-delay: 1s;
+  }
+
+  .sparkle-4 {
+    top: 40%;
+    right: 25%;
+    animation-delay: 1.5s;
+  }
+
+  .sparkle-5 {
+    bottom: 20%;
+    right: 20%;
+    animation-delay: 2s;
+  }
+
+  .sparkle-6 {
+    top: 10%;
+    left: 40%;
+    animation-delay: 2.5s;
+  }
+
+  .sparkle-7 {
+    bottom: 40%;
+    left: 30%;
+    animation-delay: 0.8s;
+  }
+
+  .sparkle-8 {
+    top: 60%;
+    right: 10%;
+    animation-delay: 1.3s;
+  }
+
+  /* Arc Connections */
+  .connection-arc {
+    stroke: rgba(237, 28, 36, 0.3);
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 8 4;
+    animation: arc-flow 2s linear infinite;
+  }
+
+  @keyframes arc-flow {
+    from {
+      stroke-dashoffset: 0;
+    }
+
+    to {
+      stroke-dashoffset: -24;
+    }
+  }
+
+  /* Location Text Styling */
+  .location-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 9999px;
+    border: 1px solid rgba(23, 67, 123, 0.1);
+    box-shadow: 0 4px 20px -5px rgba(23, 67, 123, 0.15);
+  }
 }
-
-
