@@ -72,15 +72,16 @@ export function Navbar() {
             isScrolled && "shadow-2xl shadow-brand-blue/10 bg-white/98"
           )}
         >
-          {/* Left Navigation Links - 2 items */}
+          {/* Left Navigation Links - 3 items (Program, About, Contact) */}
           <div className="hidden lg:flex items-center gap-6 flex-1">
             <NavigationMenu>
               <NavigationMenuList className="gap-2">
-                {navigationItems.slice(0, 2).map((item) => (
+                {navigationItems.slice(0, 3).map((item) => (
                   <NavigationMenuItem key={item.title}>
                     <Link
                       href={item.href}
-                      className="group inline-flex h-auto w-max items-center justify-center rounded-md px-4 py-2 text-base font-medium text-brand-gray transition-all hover:text-brand-blue focus:text-brand-blue focus:outline-none hover:border-b-[1.5px] hover:border-brand-blue"
+                      className="group inline-flex h-auto w-max items-center justify-center rounded-md px-4 py-2 text-xl font-medium text-brand-gray transition-all hover:text-brand-blue focus:text-brand-blue focus:outline-none hover:border-b-[1.5px] hover:border-brand-blue"
+                      style={{ fontFamily: 'var(--font-cursive)' }}
                     >
                       {item.title}
                     </Link>
@@ -108,15 +109,16 @@ export function Navbar() {
             </div>
           </Link>
 
-          {/* Right Navigation Links - 2 items + CTA Button */}
+          {/* Right Navigation Links - 1 item (Advisory Board) + CTA Button */}
           <div className="hidden lg:flex items-center gap-6 flex-1 justify-end">
             <NavigationMenu>
               <NavigationMenuList className="gap-2">
-                {navigationItems.slice(2).map((item) => (
+                {navigationItems.slice(3).map((item) => (
                   <NavigationMenuItem key={item.title}>
                     <Link
                       href={item.href}
-                      className="group inline-flex h-auto w-max items-center justify-center rounded-md px-4 py-2 text-base font-medium text-brand-gray transition-all hover:text-brand-blue focus:text-brand-blue focus:outline-none hover:border-b-[1.5px] hover:border-brand-blue"
+                      className="group inline-flex h-auto w-max items-center justify-center rounded-md px-4 py-2 text-xl font-medium text-brand-gray transition-all hover:text-brand-blue focus:text-brand-blue focus:outline-none hover:border-b-[1.5px] hover:border-brand-blue"
+                      style={{ fontFamily: 'var(--font-cursive)' }}
                     >
                       {item.title}
                     </Link>
@@ -125,7 +127,8 @@ export function Navbar() {
               </NavigationMenuList>
             </NavigationMenu>
             <Button
-              className="bg-brand-red hover:bg-brand-red/90 text-white font-medium text-sm px-6 py-2 h-auto shadow-sm hover:shadow-md transition-all duration-200 rounded-full ml-2"
+              className="bg-brand-red hover:bg-brand-red/90 text-white font-medium text-xl px-6 py-2 h-auto shadow-sm hover:shadow-md transition-all duration-200 rounded-full ml-2"
+              style={{ fontFamily: 'var(--font-cursive)' }}
             >
               Apply Now
             </Button>
@@ -149,7 +152,10 @@ export function Navbar() {
                 className="w-full h-screen max-w-none rounded-none px-6 py-6 flex flex-col bg-gradient-space"
               >
                 <SheetHeader className="flex items-center justify-between mb-4">
-                  <SheetTitle className="font-heading text-brand-blue text-left text-xl">
+                  <SheetTitle
+                    className="font-heading text-brand-blue text-left text-2xl"
+                    style={{ fontFamily: 'var(--font-cursive)' }}
+                  >
                     Menu
                   </SheetTitle>
                 </SheetHeader>
@@ -162,6 +168,7 @@ export function Navbar() {
                         href={item.href}
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="flex flex-col items-center gap-2 rounded-full px-6 py-2 text-2xl font-semibold tracking-widest uppercase transition-colors hover:text-brand-red"
+                        style={{ fontFamily: 'var(--font-cursive)' }}
                       >
                         <Icon className="h-6 w-6 text-brand-gray" />
                         <span>{item.title}</span>
@@ -170,7 +177,8 @@ export function Navbar() {
                   })}
                   <div className="pt-8 mt-4 w-full max-w-xs">
                     <Button
-                      className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-semibold py-4 rounded-full text-sm tracking-widest uppercase"
+                      className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-semibold py-4 rounded-full text-xl tracking-widest uppercase"
+                      style={{ fontFamily: 'var(--font-cursive)' }}
                     >
                       Apply Now
                     </Button>
