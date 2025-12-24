@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk, Patrick_Hand } from "next/font/google";
+import { Inter, Space_Grotesk, Patrick_Hand, Poppins, Montserrat } from "next/font/google";
 import "./globals.css";
 
 // Primary font for body text - clean and readable
@@ -17,12 +17,26 @@ const spaceGrotesk = Space_Grotesk({
   weight: ["400", "500", "600", "700"],
 });
 
-// Handwritten font for subheadings (upright, non-italic style)
 const patrickHand = Patrick_Hand({
   variable: "--font-cursive",
   subsets: ["latin"],
   display: "swap",
   weight: ["400"],
+});
+
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
+});
+
+// Strong display font for headlines - premium and impactful
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["600", "700", "800", "900"],
 });
 
 
@@ -52,7 +66,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${spaceGrotesk.variable} ${patrickHand.variable} antialiased font-sans bg-gradient-space min-h-screen`}
+        className={`${inter.variable} ${spaceGrotesk.variable} ${patrickHand.variable} ${poppins.variable} ${montserrat.variable} antialiased font-sans bg-gradient-space min-h-screen`}
       >
         {children}
       </body>

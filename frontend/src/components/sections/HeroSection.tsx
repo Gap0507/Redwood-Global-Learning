@@ -85,7 +85,7 @@ export function HeroSection() {
     }, [subIndex, index, isDeleting, pause])
 
     return (
-        <section className="relative min-h-screen flex items-start lg:items-center overflow-hidden pt-32 lg:pt-32">
+        <section className="relative h-[calc(100vh-80px)] flex items-start lg:items-center overflow-hidden pt-20 lg:pt-16">
             {/* Background Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-hero -z-10" />
 
@@ -93,30 +93,52 @@ export function HeroSection() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     {/* Left Content */}
                     <motion.div
-                        className="flex flex-col gap-4 lg:gap-6"
+                        className="flex flex-col gap-3 lg:gap-4"
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
                     >
+                        {/* Tagline with decorative elements */}
+                        <motion.div
+                            className="flex items-center gap-3"
+                            variants={itemVariants}
+                        >
+                            <span className="w-8 h-[2px] bg-gradient-to-r from-brand-red to-brand-red/50 rounded-full" />
+                            <span className="w-1.5 h-1.5 bg-brand-red rounded-full animate-pulse" />
+                            <p
+                                className="text-xs sm:text-sm font-medium text-brand-gray/80 tracking-[0.2em] uppercase"
+                                style={{ fontFamily: 'var(--font-poppins)' }}
+                            >
+                                Where Students Become Global Citizens
+                            </p>
+                        </motion.div>
+
                         {/* Animated Headline */}
                         <div className="overflow-hidden">
                             <motion.h1
-                                className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-brand-blue leading-[1.1]"
+                                className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] font-extrabold tracking-tight text-brand-blue leading-[1.05] flex flex-wrap gap-x-3 gap-y-0"
                                 variants={headlineVariants}
+                                style={{ fontWeight: 800 }}
                             >
-                                {headlineText}
+                                {headlineText.split(" ").map((word, index) => (
+                                    <span
+                                        key={index}
+                                        className="inline-block transition-colors duration-300 rounded-lg px-1 py-0.5 hover:bg-rose-200/80"
+                                    >
+                                        {word}
+                                    </span>
+                                ))}
                             </motion.h1>
                         </div>
 
                         {/* Subheading */}
                         <motion.p
-                            className="text-xl sm:text-2xl md:text-3xl text-brand-gray max-w-xl leading-relaxed min-h-[4em] sm:min-h-[3em]"
+                            className="text-base sm:text-lg md:text-xl text-brand-gray/90 max-w-xl leading-relaxed min-h-[3em] sm:min-h-[2.5em] font-body mt-1"
                             variants={itemVariants}
-                            style={{ fontFamily: 'var(--font-cursive)' }}
                         >
-                            Redwood Learning creates immersive global exchange programs
+                            Redwood Learning creates immersive global exchange
                             <br />
-                            where students grow through{" "}
+                            programs where students grow through{" "}
                             <span className="font-semibold text-brand-red">
                                 {typewriterWords[index].substring(0, subIndex)}
                             </span>
@@ -125,7 +147,7 @@ export function HeroSection() {
 
                         {/* CTA Buttons */}
                         <motion.div
-                            className="flex flex-col sm:flex-row items-center gap-6 pt-4"
+                            className="flex flex-col sm:flex-row items-center gap-5 pt-2"
                             variants={itemVariants}
                         >
                             <Button
@@ -137,7 +159,7 @@ export function HeroSection() {
                                 href="/about"
                                 className="group flex items-center gap-2 text-brand-blue font-bold text-base transition-colors hover:text-brand-red hover:underline hover:decoration-brand-red hover:underline-offset-4 cursor-pointer"
                             >
-                                Learn More
+                                About Us
                             </Link>
                         </motion.div>
 
@@ -152,20 +174,20 @@ export function HeroSection() {
                             className="flex flex-col gap-6"
                             variants={itemVariants}
                         >
-                            <div className="flex items-center gap-3 text-brand-blue/80 font-medium" style={{ fontFamily: 'var(--font-cursive)' }}>
+                            <div className="flex items-center gap-3 text-brand-blue/80 font-medium font-body">
                                 <div className="p-2 bg-brand-blue/5 rounded-full">
                                     <Globe className="h-5 w-5 text-brand-blue" />
                                 </div>
-                                <span className="text-xl tracking-wide">Trusted by students across 15+ countries</span>
+                                <span className="text-lg tracking-wide">Trusted by Students and Institutions globally</span>
                             </div>
                             <div className="flex items-center gap-4">
                                 {[
-                                    { code: "ca", label: "Canada" },
-                                    { code: "fr", label: "France" },
-                                    { code: "jp", label: "Japan" },
-                                    { code: "gr", label: "Greece" },
+                                    { code: "in", label: "India" },
                                     { code: "gb", label: "UK" },
-                                    { code: "us", label: "USA" },
+                                    { code: "id", label: "Indonesia" },
+                                    { code: "th", label: "Thailand" },
+                                    { code: "vn", label: "Vietnam" },
+                                    { code: "jp", label: "Japan" },
                                 ].map((flag, i) => (
                                     <motion.div
                                         key={flag.code}
@@ -190,13 +212,12 @@ export function HeroSection() {
 
                     {/* Right Side - Enhanced Globe Section */}
                     <motion.div
-                        className="hidden lg:flex flex-col items-center justify-center relative h-full min-h-[600px]"
+                        className="hidden lg:flex flex-col items-center justify-center relative h-full min-h-[500px]"
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.8, delay: 0.5 }}
                     >
-                        {/* Shiny Background Layer */}
-                        <div className="absolute inset-0 globe-section-bg" />
+
 
                         {/* Sparkle Effects */}
                         <div className="absolute inset-0 overflow-hidden pointer-events-none">

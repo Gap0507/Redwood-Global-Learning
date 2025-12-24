@@ -51,6 +51,11 @@
     /* Stronger light sky blue */
     --bg-light-gray: 210 8% 90%;
     /* Noticeable light gray */
+
+    /* Font Families */
+    --font-heading: var(--font-montserrat), var(--font-poppins), var(--font-space-grotesk), system-ui, sans-serif;
+    --font-display: var(--font-montserrat), system-ui, sans-serif;
+    --font-body: var(--font-inter), system-ui, sans-serif;
   }
 
   .dark {
@@ -85,8 +90,10 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: var(--font-inter), system-ui, sans-serif;
+    font-family: var(--font-body);
     letter-spacing: 0.01em;
+    cursor: default;
+    /* Fix for "I" beam cursor everywhere */
   }
 
   h1,
@@ -95,8 +102,8 @@
   h4,
   h5,
   h6 {
-    font-family: var(--font-space-grotesk), system-ui, sans-serif;
-    letter-spacing: 0.02em;
+    font-family: var(--font-heading);
+    letter-spacing: -0.01em;
     font-weight: 600;
   }
 
@@ -136,8 +143,8 @@
   .bg-gradient-hero {
     background: linear-gradient(180deg,
         hsl(var(--background)) 0%,
-        hsl(var(--bg-soft)) 40%,
-        hsl(var(--bg-light-gray)) 70%,
+        rgba(23, 67, 123, 0.03) 40%,
+        rgba(23, 67, 123, 0.05) 70%,
         hsl(var(--background)) 100%);
   }
 
@@ -152,6 +159,14 @@
 
   .text-brand-gray {
     color: hsl(var(--brand-gray));
+  }
+
+  .font-heading {
+    font-family: var(--font-heading);
+  }
+
+  .font-body {
+    font-family: var(--font-body);
   }
 
   .bg-brand-blue {
