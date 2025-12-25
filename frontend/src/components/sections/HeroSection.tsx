@@ -75,7 +75,7 @@ export function HeroSection() {
     }, [subIndex, index, isDeleting, pause])
 
     return (
-        <section className="relative h-screen flex items-center overflow-hidden pt-24">
+        <section className="relative min-h-screen flex items-center overflow-hidden pt-32 lg:pt-24 pb-12 lg:pb-0">
             {/* Background Image */}
             <div className="absolute inset-0 -z-10">
                 <Image
@@ -123,7 +123,7 @@ export function HeroSection() {
                                 {/* GROW */}
                                 <div className="relative inline-block">
                                     <h1
-                                        className="font-montserrat text-[5.5rem] font-black tracking-tighter text-brand-blue leading-[0.9] relative z-10"
+                                        className="font-montserrat text-[3.5rem] lg:text-[5.5rem] font-black tracking-tighter text-brand-blue leading-[0.9] relative z-10"
                                         style={{
                                             fontWeight: 900,
                                             letterSpacing: '-0.04em'
@@ -148,7 +148,7 @@ export function HeroSection() {
                                 {/* BEYOND with accent */}
                                 <div className="relative inline-block -mt-2">
                                     <h1
-                                        className="font-montserrat text-[5.5rem] font-black tracking-tighter leading-[0.9] relative z-10"
+                                        className="font-montserrat text-[3.5rem] lg:text-[5.5rem] font-black tracking-tighter leading-[0.9] relative z-10"
                                         style={{
                                             fontWeight: 900,
                                             letterSpacing: '-0.04em',
@@ -177,7 +177,7 @@ export function HeroSection() {
                                 {/* BORDERS */}
                                 <div className="relative inline-block -mt-2">
                                     <h1
-                                        className="font-montserrat text-[5.5rem] font-black tracking-tighter text-brand-blue leading-[0.9] relative z-10"
+                                        className="font-montserrat text-[3.5rem] lg:text-[5.5rem] font-black tracking-tighter text-brand-blue leading-[0.9] relative z-10"
                                         style={{
                                             fontWeight: 900,
                                             letterSpacing: '-0.04em'
@@ -224,7 +224,7 @@ export function HeroSection() {
                             variants={itemVariants}
                         >
                             <Button
-                                className="bg-brand-red hover:bg-brand-red/90 text-white font-bold text-base px-9 py-3 h-12 shadow-lg hover:shadow-brand-red/30 transition-all duration-300 rounded-full group relative overflow-hidden"
+                                className="bg-brand-red hover:bg-brand-red/90 text-white font-bold text-sm lg:text-base px-6 lg:px-9 py-2 lg:py-3 h-10 lg:h-12 shadow-lg hover:shadow-brand-red/30 transition-all duration-300 rounded-full group relative overflow-hidden"
                             >
                                 <span className="relative z-10 flex items-center gap-2">
                                     Explore Programs
@@ -234,7 +234,7 @@ export function HeroSection() {
                             </Button>
                             <Link
                                 href="/about"
-                                className="group flex items-center gap-2 text-brand-blue font-bold text-base transition-all hover:text-brand-red relative"
+                                className="group flex items-center gap-2 text-brand-blue font-bold text-sm lg:text-base transition-all hover:text-brand-red relative"
                             >
                                 <span>About Us</span>
                                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -282,14 +282,15 @@ export function HeroSection() {
                     </motion.div>
 
                     {/* Right Side - Globe */}
+                    {/* Right Side - Globe */}
                     <motion.div
-                        className="hidden lg:flex items-center justify-center relative"
+                        className="flex items-center justify-center relative w-full mt-8 lg:mt-0"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.8, delay: 0.4 }}
                         style={{ overflow: 'visible' }}
                     >
-                        <div className="relative" style={{ width: '600px', height: '600px', overflow: 'visible' }}>
+                        <div className="relative w-full max-w-[400px] lg:max-w-[600px] aspect-square" style={{ overflow: 'visible' }}>
                             <World
                                 globeConfig={globeConfig}
                                 data={sampleArcs}

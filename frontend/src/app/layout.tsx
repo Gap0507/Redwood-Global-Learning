@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk, Patrick_Hand, Poppins, Montserrat } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 // Primary font for body text - clean and readable
@@ -65,6 +66,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <head>
+        <Script src="/webgpu-polyfill.js" strategy="beforeInteractive" />
+      </head>
       <body
         className={`${inter.variable} ${spaceGrotesk.variable} ${patrickHand.variable} ${poppins.variable} ${montserrat.variable} antialiased font-sans bg-gradient-space min-h-screen`}
       >

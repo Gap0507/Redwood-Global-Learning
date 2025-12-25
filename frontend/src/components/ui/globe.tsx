@@ -7,6 +7,11 @@ import { OrbitControls, Html } from "@react-three/drei";
 import countries from "@/data/globe.json";
 import { programLocations, ProgramLocation } from "@/data/sampleArcs";
 
+// Polyfill for mobile browsers that don't support WebGPU
+if (typeof window !== 'undefined' && typeof (window as any).GPUShaderStage === 'undefined') {
+    (window as any).GPUShaderStage = { VERTEX: 1, FRAGMENT: 2, COMPUTE: 4 };
+}
+
 declare module "@react-three/fiber" {
     interface ThreeElements {
         threeGlobe: ThreeElements["mesh"] & {
