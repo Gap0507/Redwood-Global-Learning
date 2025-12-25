@@ -1,243 +1,415 @@
 "use client";
-
-import createGlobe from "cobe";
 import { useEffect, useRef, useState } from "react";
-import { useSpring } from "react-spring";
+import { Color, Scene, Fog, PerspectiveCamera, Vector3 } from "three";
+import ThreeGlobe from "three-globe";
+import { useThree, Canvas, extend } from "@react-three/fiber";
+import { OrbitControls, Html } from "@react-three/drei";
+import countries from "@/data/globe.json";
+import { programLocations, ProgramLocation } from "@/data/sampleArcs";
 
-interface Marker {
-    location: [number, number];
-    size: number;
-    city: string;
-    country: string;
+declare module "@react-three/fiber" {
+    interface ThreeElements {
+        threeGlobe: ThreeElements["mesh"] & {
+            new(): ThreeGlobe;
+        };
+    }
 }
 
-const markers: Marker[] = [
-    // North America
-    { location: [37.7595, -122.4367], size: 0.1, city: "San Francisco", country: "United States" },
-    { location: [40.7128, -74.006], size: 0.1, city: "New York", country: "United States" },
-    { location: [45.4215, -75.6972], size: 0.1, city: "Ottawa", country: "Canada" },
-    // Europe
-    { location: [51.5074, -0.1278], size: 0.1, city: "London", country: "United Kingdom" },
-    { location: [48.8566, 2.3522], size: 0.1, city: "Paris", country: "France" },
-    { location: [52.52, 13.405], size: 0.1, city: "Berlin", country: "Germany" },
-    { location: [37.9838, 23.7275], size: 0.1, city: "Athens", country: "Greece" },
-    // Asia
-    { location: [35.6762, 139.6503], size: 0.1, city: "Tokyo", country: "Japan" },
-    { location: [28.6139, 77.209], size: 0.1, city: "New Delhi", country: "India" },
-    { location: [1.3521, 103.8198], size: 0.1, city: "Singapore", country: "Singapore" },
-    // Australia
-    { location: [-33.8688, 151.2093], size: 0.1, city: "Sydney", country: "Australia" },
-];
+extend({ ThreeGlobe: ThreeGlobe });
 
-export function Globe({ className }: { className?: string }) {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const pointerInteracting = useRef<number | null>(null);
-    const pointerInteractionMovement = useRef(0);
-    const phiRef = useRef(0); // Track current globe rotation for hover detection
-    const [hoveredMarker, setHoveredMarker] = useState<Marker | null>(null);
-    const [cardPosition, setCardPosition] = useState({ x: 0, y: 0 });
+const RING_PROPAGATION_SPEED = 3;
+const aspect = 1.2;
+const cameraZ = 300;
 
-    const [{ r }, api] = useSpring(() => ({
-        r: 0,
-        config: {
-            mass: 1,
-            tension: 280,
-            friction: 40,
-            precision: 0.001,
-        },
-    }));
+type Position = {
+    order: number;
+    startLat: number;
+    startLng: number;
+    endLat: number;
+    endLng: number;
+    arcAlt: number;
+    color: string;
+    startName?: string;
+    endName?: string;
+};
 
-    // Convert lat/lng to screen coordinates
-    const projectToScreen = (lat: number, lng: number, phi: number, theta: number, width: number) => {
-        const canvas = canvasRef.current;
-        if (!canvas) return null;
+export type GlobeConfig = {
+    pointSize?: number;
+    globeColor?: string;
+    showAtmosphere?: boolean;
+    atmosphereColor?: string;
+    atmosphereAltitude?: number;
+    emissive?: string;
+    emissiveIntensity?: number;
+    shininess?: number;
+    polygonColor?: string;
+    ambientLight?: string;
+    directionalLeftLight?: string;
+    directionalTopLight?: string;
+    pointLight?: string;
+    arcTime?: number;
+    arcLength?: number;
+    rings?: number;
+    maxRings?: number;
+    initialPosition?: {
+        lat: number;
+        lng: number;
+    };
+    autoRotate?: boolean;
+    autoRotateSpeed?: number;
+};
 
-        const phiRad = phi;
-        const thetaRad = theta;
-        const latRad = (lat * Math.PI) / 180;
-        const lngRad = (lng * Math.PI) / 180;
+interface WorldProps {
+    globeConfig: GlobeConfig;
+    data: Position[];
+    onLocationClick?: (location: ProgramLocation) => void;
+}
 
-        const x = Math.cos(latRad) * Math.sin(lngRad - phiRad);
-        const y = Math.sin(latRad) * Math.cos(thetaRad) - Math.cos(latRad) * Math.cos(lngRad - phiRad) * Math.sin(thetaRad);
-        const z = Math.sin(latRad) * Math.sin(thetaRad) + Math.cos(latRad) * Math.cos(lngRad - phiRad) * Math.cos(thetaRad);
+let numbersOfRings = [0];
 
-        if (z < 0) return null; // Behind the globe
+export function Globe({ globeConfig, data, onLocationClick }: WorldProps) {
+    const globeRef = useRef<ThreeGlobe | null>(null);
+    const groupRef = useRef<any>(null);
+    const [isInitialized, setIsInitialized] = useState(false);
+    const [hoveredPoint, setHoveredPoint] = useState<any | null>(null);
 
-        const scale = width / 2;
-        const screenX = x * scale + width / 2;
-        const screenY = -y * scale + width / 2;
-
-        return { x: screenX, y: screenY }; // No division - already in CSS pixel space
+    const defaultProps = {
+        pointSize: 1,
+        atmosphereColor: "#ffffff",
+        showAtmosphere: true,
+        atmosphereAltitude: 0.1,
+        polygonColor: "rgba(255,255,255,0.7)",
+        globeColor: "#1d072e",
+        emissive: "#000000",
+        emissiveIntensity: 0.1,
+        shininess: 0.9,
+        arcTime: 2000,
+        arcLength: 0.9,
+        rings: 1,
+        maxRings: 3,
+        ...globeConfig,
     };
 
-    const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-        // Only check for hover if not dragging
-        if (pointerInteracting.current !== null) {
-            setHoveredMarker(null);
-            return;
+    // Initialize globe only once
+    useEffect(() => {
+        if (!globeRef.current) {
+            globeRef.current = new ThreeGlobe();
+            setIsInitialized(true);
+        }
+    }, []);
+
+    // Build material when globe is initialized or when relevant props change
+    useEffect(() => {
+        if (!globeRef.current || !isInitialized) return;
+
+        const globeMaterial = globeRef.current.globeMaterial() as unknown as {
+            color: Color;
+            emissive: Color;
+            emissiveIntensity: number;
+            shininess: number;
+        };
+        globeMaterial.color = new Color(globeConfig.globeColor);
+        globeMaterial.emissive = new Color(globeConfig.emissive);
+        globeMaterial.emissiveIntensity = globeConfig.emissiveIntensity || 0.1;
+        globeMaterial.shininess = globeConfig.shininess || 0.9;
+    }, [
+        isInitialized,
+        globeConfig.globeColor,
+        globeConfig.emissive,
+        globeConfig.emissiveIntensity,
+        globeConfig.shininess,
+    ]);
+
+    // Build data when globe is initialized or when data changes
+    useEffect(() => {
+        if (!globeRef.current || !isInitialized || !data) return;
+
+        const arcs = data;
+        let points: { size: number; order: number; color: string; lat: number; lng: number; name?: string }[] = [];
+        for (let i = 0; i < arcs.length; i++) {
+            const arc = arcs[i];
+            points.push({
+                size: defaultProps.pointSize,
+                order: arc.order,
+                color: arc.color,
+                lat: arc.startLat,
+                lng: arc.startLng,
+                name: arc.startName,
+            });
+            points.push({
+                size: defaultProps.pointSize,
+                order: arc.order,
+                color: arc.color,
+                lat: arc.endLat,
+                lng: arc.endLng,
+                name: arc.endName,
+            });
         }
 
-        const canvas = canvasRef.current;
-        if (!canvas) return;
+        // remove duplicates for same lat and lng
+        const filteredPoints = points.filter(
+            (v, i, a) =>
+                a.findIndex((v2) =>
+                    ["lat", "lng"].every(
+                        (k) => v2[k as "lat" | "lng"] === v[k as "lat" | "lng"],
+                    ),
+                ) === i,
+        );
 
-        const rect = canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
+        globeRef.current
+            .hexPolygonsData(countries.features)
+            .hexPolygonResolution(3)
+            .hexPolygonMargin(0.7)
+            .showAtmosphere(defaultProps.showAtmosphere)
+            .atmosphereColor(defaultProps.atmosphereColor)
+            .atmosphereAltitude(defaultProps.atmosphereAltitude)
+            .hexPolygonColor(() => defaultProps.polygonColor);
 
-        let foundMarker: Marker | null = null;
-        const phi = phiRef.current; // Use the actual globe rotation
-        const width = canvas.offsetWidth;
+        globeRef.current
+            .arcsData(data)
+            .arcStartLat((d) => (d as { startLat: number }).startLat * 1)
+            .arcStartLng((d) => (d as { startLng: number }).startLng * 1)
+            .arcEndLat((d) => (d as { endLat: number }).endLat * 1)
+            .arcEndLng((d) => (d as { endLng: number }).endLng * 1)
+            .arcColor((e: any) => (e as { color: string }).color)
+            .arcAltitude((e) => (e as { arcAlt: number }).arcAlt * 1)
+            .arcStroke(() => [0.32, 0.28, 0.3][Math.round(Math.random() * 2)])
+            .arcDashLength(defaultProps.arcLength)
+            .arcDashInitialGap((e) => (e as { order: number }).order * 1)
+            .arcDashGap(15)
+            .arcDashAnimateTime(() => defaultProps.arcTime);
 
-        for (const marker of markers) {
-            const projected = projectToScreen(marker.location[0], marker.location[1], phi, 0.3, width);
-            if (projected) {
-                const distance = Math.sqrt(
-                    Math.pow(mouseX - projected.x, 2) + Math.pow(mouseY - projected.y, 2)
-                );
+        globeRef.current
+            .pointsData(filteredPoints)
+            .pointColor((e) => (e as { color: string }).color)
+            .pointsMerge(true)
+            .pointAltitude(0.0)
+            .pointRadius(2);
 
-                if (distance < 20) { // Larger hover radius for easier detection
-                    foundMarker = marker;
-                    setCardPosition({ x: e.clientX, y: e.clientY });
-                    break;
-                }
+        globeRef.current
+            .ringsData([])
+            .ringColor(() => defaultProps.polygonColor)
+            .ringMaxRadius(defaultProps.maxRings)
+            .ringPropagationSpeed(RING_PROPAGATION_SPEED)
+            .ringRepeatPeriod(
+                (defaultProps.arcTime * defaultProps.arcLength) / defaultProps.rings,
+            );
+    }, [
+        isInitialized,
+        data,
+        defaultProps.pointSize,
+        defaultProps.showAtmosphere,
+        defaultProps.atmosphereColor,
+        defaultProps.atmosphereAltitude,
+        defaultProps.polygonColor,
+        defaultProps.arcLength,
+        defaultProps.arcTime,
+        defaultProps.rings,
+        defaultProps.maxRings,
+    ]);
+
+    // Handle rings animation with cleanup
+    useEffect(() => {
+        if (!globeRef.current || !isInitialized || !data) return;
+
+        const interval = setInterval(() => {
+            if (!globeRef.current) return;
+
+            const newNumbersOfRings = genRandomNumbers(
+                0,
+                data.length,
+                Math.floor((data.length * 4) / 5),
+            );
+
+            const ringsData = data
+                .filter((d, i) => newNumbersOfRings.includes(i))
+                .map((d) => ({
+                    lat: d.startLat,
+                    lng: d.startLng,
+                    color: d.color,
+                }));
+
+            globeRef.current.ringsData(ringsData);
+        }, 2000);
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, [isInitialized, data]);
+
+    const handleGlobeHover = (e: any) => {
+        if (!globeRef.current) return;
+
+        const point = e.point;
+        if (!point) return;
+
+        let closestLocation: ProgramLocation | null = null;
+        let minDistance = Infinity;
+        const threshold = 10;
+
+        for (const loc of programLocations) {
+            const coords = (globeRef.current as any).getCoords(loc.lat, loc.lng, 0);
+            const dist = Math.sqrt(
+                Math.pow(point.x - coords.x, 2) +
+                Math.pow(point.y - coords.y, 2) +
+                Math.pow(point.z - coords.z, 2)
+            );
+
+            if (dist < minDistance) {
+                minDistance = dist;
+                closestLocation = loc;
             }
         }
 
-        setHoveredMarker(foundMarker);
+        if (minDistance < threshold && closestLocation) {
+            setHoveredPoint(closestLocation);
+            document.body.style.cursor = "pointer";
+        } else {
+            setHoveredPoint(null);
+            document.body.style.cursor = "auto";
+        }
     };
 
-    useEffect(() => {
-        let phi = 0;
-        let width = 0;
-        const onResize = () => canvasRef.current && (width = canvasRef.current.offsetWidth);
-        window.addEventListener("resize", onResize);
-        onResize();
-        const globe = createGlobe(canvasRef.current!, {
-            devicePixelRatio: 2,
-            width: width * 2,
-            height: width * 2,
-            phi: 0,
-            theta: 0.3,
-            dark: 0,
-            diffuse: 1.2,
-            mapSamples: 16000,
-            mapBrightness: 6,
-            baseColor: [1, 1, 1],
-            markerColor: [255 / 255, 59 / 255, 48 / 255], // Bright Radiant Red (iOS style)
-            glowColor: [1, 1, 1], // White to remove blue glow
-            markers: markers.map(m => ({ location: m.location, size: m.size })),
-            onRender: (state) => {
-                // This prevents rotation while dragging
-                if (!pointerInteracting.current) {
-                    // Called on every animation frame.
-                    // `state` will be an empty object, return updated options.
-                    phi += 0.005;
-                }
-                const totalPhi = phi + r.get();
-                phiRef.current = totalPhi; // Store for hover detection
-                state.phi = totalPhi;
-                state.width = width * 2;
-                state.height = width * 2;
-            },
-        });
-        setTimeout(() => (canvasRef.current!.style.opacity = "1"));
-        return () => {
-            globe.destroy();
-            window.removeEventListener("resize", onResize);
-        };
-    }, []);
+    const handleGlobeClick = (e: any) => {
+        if (!globeRef.current || !onLocationClick) return;
+
+        const point = e.point;
+        if (!point) return;
+
+        let closestLocation: ProgramLocation | null = null;
+        let minDistance = Infinity;
+        const threshold = 10;
+
+        for (const loc of programLocations) {
+            const coords = (globeRef.current as any).getCoords(loc.lat, loc.lng, 0);
+            const dist = Math.sqrt(
+                Math.pow(point.x - coords.x, 2) +
+                Math.pow(point.y - coords.y, 2) +
+                Math.pow(point.z - coords.z, 2)
+            );
+
+            if (dist < minDistance) {
+                minDistance = dist;
+                closestLocation = loc;
+            }
+        }
+
+        if (minDistance < threshold && closestLocation) {
+            onLocationClick(closestLocation);
+        }
+    };
+
+    const getTooltipPosition = () => {
+        if (!hoveredPoint || !globeRef.current) return [0, 0, 0];
+        const coords = (globeRef.current as any).getCoords(hoveredPoint.lat, hoveredPoint.lng, 0.1);
+        return [coords.x, coords.y, coords.z];
+    };
 
     return (
-        <div
-            style={{
-                width: "100%",
-                maxWidth: 600,
-                aspectRatio: 1,
-                margin: "auto",
-                position: "relative",
-            }}
-            className={className}
-        >
-            <canvas
-                ref={canvasRef}
-                onPointerDown={(e) => {
-                    pointerInteracting.current =
-                        e.clientX - pointerInteractionMovement.current;
-                    canvasRef.current!.style.cursor = "grabbing";
-                }}
-                onPointerUp={() => {
-                    pointerInteracting.current = null;
-                    canvasRef.current!.style.cursor = "grab";
-                }}
-                onPointerOut={() => {
-                    pointerInteracting.current = null;
-                    canvasRef.current!.style.cursor = "grab";
-                    setHoveredMarker(null);
-                }}
-                onMouseMove={(e) => {
-                    handleCanvasMouseMove(e);
-
-                    if (pointerInteracting.current !== null) {
-                        const delta = e.clientX - pointerInteracting.current;
-                        pointerInteractionMovement.current = delta;
-                        api.start({
-                            r: delta / 200,
-                        });
-                    }
-                }}
-                onTouchMove={(e) => {
-                    if (pointerInteracting.current !== null && e.touches[0]) {
-                        const delta = e.touches[0].clientX - pointerInteracting.current;
-                        pointerInteractionMovement.current = delta;
-                        api.start({
-                            r: delta / 100,
-                        });
-                    }
-                }}
-                style={{
-                    width: "100%",
-                    height: "100%",
-                    cursor: "grab",
-                    contain: "layout paint size",
-                    opacity: 0,
-                    transition: "opacity 1s ease",
-                }}
-            />
-
-            {/* Hover Card */}
-            {hoveredMarker && (
-                <div
-                    style={{
-                        position: "fixed",
-                        left: cardPosition.x + 15,
-                        top: cardPosition.y - 30,
-                        pointerEvents: "none",
-                        zIndex: 1000,
+        <group ref={groupRef}>
+            {globeRef.current && (
+                <primitive
+                    object={globeRef.current}
+                    onPointerMove={handleGlobeHover}
+                    onClick={handleGlobeClick}
+                    onPointerOut={() => {
+                        setHoveredPoint(null);
+                        document.body.style.cursor = "auto";
                     }}
-                >
-                    <div
-                        style={{
-                            background: "linear-gradient(135deg, rgba(255, 59, 48, 0.95) 0%, rgba(255, 89, 78, 0.95) 100%)",
-                            backdropFilter: "blur(12px)",
-                            padding: "12px 16px",
-                            borderRadius: "12px",
-                            boxShadow: "0 8px 32px rgba(255, 59, 48, 0.3), 0 2px 8px rgba(0, 0, 0, 0.1)",
-                            border: "1px solid rgba(255, 255, 255, 0.2)",
-                            minWidth: "180px",
-                        }}
-                    >
-                        <div style={{ fontSize: "13px", color: "rgba(255, 255, 255, 0.85)", marginBottom: "4px", fontWeight: 500 }}>
-                            Programs in
-                        </div>
-                        <div style={{ fontSize: "16px", color: "#ffffff", fontWeight: 600, marginBottom: "2px" }}>
-                            {hoveredMarker.country}
-                        </div>
-                        <div style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.75)" }}>
-                            {hoveredMarker.city}
-                        </div>
-                    </div>
-                </div>
+                />
             )}
-        </div>
+            {hoveredPoint && (
+                <Html position={getTooltipPosition() as any} style={{ pointerEvents: 'none' }}>
+                    <div className="bg-white/95 backdrop-blur-md px-4 py-2 rounded-xl shadow-xl border border-brand-blue/10 transform -translate-x-1/2 -translate-y-[150%] whitespace-nowrap z-50">
+                        <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-brand-red animate-pulse" />
+                            <p className="text-brand-blue font-bold text-sm">{hoveredPoint.city}, {hoveredPoint.country}</p>
+                        </div>
+                        <p className="text-xs text-brand-gray mt-1">Click to view programs</p>
+                    </div>
+                </Html>
+            )}
+        </group>
     );
+}
+
+export function WebGLRendererConfig() {
+    const { gl, size } = useThree();
+
+    useEffect(() => {
+        gl.setPixelRatio(window.devicePixelRatio);
+        gl.setSize(size.width, size.height);
+        gl.setClearColor(0xffaaff, 0);
+    }, [gl, size]);
+
+    return null;
+}
+
+export function World(props: WorldProps) {
+    const { globeConfig } = props;
+    const scene = new Scene();
+    scene.fog = new Fog(0xffffff, 400, 2000);
+    return (
+        <Canvas scene={scene} camera={new PerspectiveCamera(50, 1, 180, 1800)}>
+            <WebGLRendererConfig />
+            <ambientLight color="#ffffff" intensity={1.5} />
+            <directionalLight
+                color="#ffffff"
+                position={new Vector3(-400, 100, 400)}
+                intensity={2}
+            />
+            <directionalLight
+                color="#ffffff"
+                position={new Vector3(-200, 500, 200)}
+                intensity={1.5}
+            />
+            <directionalLight
+                color="#ffffff"
+                position={new Vector3(400, 200, -300)}
+                intensity={1}
+            />
+            <pointLight
+                color="#ffffff"
+                position={new Vector3(0, 300, 400)}
+                intensity={2}
+            />
+            <Globe {...props} />
+            <OrbitControls
+                enablePan={false}
+                enableZoom={false}
+                minDistance={cameraZ}
+                maxDistance={cameraZ}
+                autoRotateSpeed={globeConfig.autoRotateSpeed || 1}
+                autoRotate={globeConfig.autoRotate !== false}
+                minPolarAngle={Math.PI / 3.5}
+                maxPolarAngle={Math.PI - Math.PI / 3}
+            />
+        </Canvas>
+    );
+}
+
+export function hexToRgb(hex: string) {
+    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+        return r + r + g + g + b + b;
+    });
+
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result
+        ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16),
+        }
+        : null;
+}
+
+export function genRandomNumbers(min: number, max: number, count: number) {
+    const arr: number[] = [];
+    while (arr.length < count) {
+        const r = Math.floor(Math.random() * (max - min)) + min;
+        if (arr.indexOf(r) === -1) arr.push(r);
+    }
+
+    return arr;
 }

@@ -1,49 +1,41 @@
 "use client"
 
-import { motion, Variants } from "framer-motion"
+import { motion, Variants, AnimatePresence } from "framer-motion"
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Globe, ArrowRight, MapPin } from "lucide-react"
+import { Globe, ArrowRight, X, Clock, MapPin } from "lucide-react"
 import Image from "next/image"
-import { Globe as InteractiveGlobe } from "@/components/ui/globe"
+import dynamic from "next/dynamic"
+import { sampleArcs, globeConfig, ProgramLocation } from "@/data/sampleArcs"
+
+const World = dynamic(() => import("@/components/ui/globe").then((m) => m.World), {
+    ssr: false,
+})
 
 const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.15,
-            delayChildren: 0.3,
+            staggerChildren: 0.1,
+            delayChildren: 0.2,
         },
     },
 }
 
 const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, x: -30 },
     visible: {
         opacity: 1,
-        y: 0,
+        x: 0,
         transition: {
-            duration: 0.6,
-            ease: [0.22, 1, 0.36, 1], // Custom ease for smooth feel
+            duration: 0.5,
+            ease: [0.22, 1, 0.36, 1],
         },
     },
 }
 
-const headlineVariants: Variants = {
-    hidden: { opacity: 0, y: 6 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            duration: 0.3,
-            ease: "easeOut",
-        },
-    },
-}
-
-const headlineText = "GROW BEYOND BORDERS"
 const typewriterWords = ["global cultures", "real-world learning", "international communities"]
 
 export function HeroSection() {
@@ -51,33 +43,31 @@ export function HeroSection() {
     const [subIndex, setSubIndex] = useState(0)
     const [isDeleting, setIsDeleting] = useState(false)
     const [pause, setPause] = useState(false)
+    const [hoveredWord, setHoveredWord] = useState<number | null>(null)
+    const [selectedLocation, setSelectedLocation] = useState<ProgramLocation | null>(null)
 
     useEffect(() => {
         if (pause) return
 
         const currentWord = typewriterWords[index]
-        const typingSpeed = isDeleting ? 50 : 100 // 40-60ms for deleting, 90-110ms for typing
+        const typingSpeed = isDeleting ? 50 : 100
 
         const timeout = setTimeout(() => {
             if (!isDeleting && subIndex < currentWord.length) {
-                // Typing
                 setSubIndex((prev) => prev + 1)
             } else if (isDeleting && subIndex > 0) {
-                // Deleting
                 setSubIndex((prev) => prev - 1)
             } else if (!isDeleting && subIndex === currentWord.length) {
-                // Pause after typing
                 setPause(true)
                 setTimeout(() => {
                     setPause(false)
                     setIsDeleting(true)
-                }, 2000) // 1.5-2s pause
+                }, 2000)
             } else if (isDeleting && subIndex === 0) {
-                // Switch to next word
                 setIsDeleting(false)
                 setIndex((prev) => (prev + 1) % typewriterWords.length)
                 setPause(true)
-                setTimeout(() => setPause(false), 300) // 300ms pause before next word
+                setTimeout(() => setPause(false), 300)
             }
         }, typingSpeed)
 
@@ -85,55 +75,138 @@ export function HeroSection() {
     }, [subIndex, index, isDeleting, pause])
 
     return (
-        <section className="relative h-[calc(100vh-80px)] flex items-start lg:items-center overflow-hidden pt-20 lg:pt-16">
-            {/* Background Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-hero -z-10" />
+        <section className="relative h-screen flex items-center overflow-hidden pt-24">
+            {/* Background Image */}
+            <div className="absolute inset-0 -z-10">
+                <Image
+                    src="/herobackground.png"
+                    alt="Hero Background"
+                    fill
+                    className="object-cover"
+                    priority
+                />
+            </div>
 
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                    {/* Left Content */}
+            <div className="container mx-auto px-8 max-w-7xl">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    {/* Left Content - Unique Layout */}
                     <motion.div
-                        className="flex flex-col gap-3 lg:gap-4"
+                        className="flex flex-col gap-6"
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
                     >
-                        {/* Tagline with decorative elements */}
+                        {/* Tagline with Modern Design */}
                         <motion.div
-                            className="flex items-center gap-3"
+                            className="relative inline-flex items-center gap-3 self-start"
                             variants={itemVariants}
                         >
-                            <span className="w-8 h-[2px] bg-gradient-to-r from-brand-red to-brand-red/50 rounded-full" />
-                            <span className="w-1.5 h-1.5 bg-brand-red rounded-full animate-pulse" />
+                            <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 bg-brand-red rounded-full animate-pulse" />
+                                <div className="w-1 h-1 bg-brand-red/60 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }} />
+                            </div>
                             <p
-                                className="text-xs sm:text-sm font-medium text-brand-gray/80 tracking-[0.2em] uppercase"
+                                className="text-xs font-semibold text-brand-gray/70 tracking-[0.25em] uppercase"
                                 style={{ fontFamily: 'var(--font-poppins)' }}
                             >
                                 Where Students Become Global Citizens
                             </p>
+                            <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-brand-red/50 via-brand-red/20 to-transparent" />
                         </motion.div>
 
-                        {/* Animated Headline */}
-                        <div className="overflow-hidden">
-                            <motion.h1
-                                className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] font-extrabold tracking-tight text-brand-blue leading-[1.05] flex flex-wrap gap-x-3 gap-y-0"
-                                variants={headlineVariants}
-                                style={{ fontWeight: 800 }}
-                            >
-                                {headlineText.split(" ").map((word, index) => (
-                                    <span
-                                        key={index}
-                                        className="inline-block transition-colors duration-300 rounded-lg px-1 py-0.5 hover:bg-rose-200/80"
+                        {/* Creative Header with Stacked Layout */}
+                        <motion.div
+                            className="relative"
+                            variants={itemVariants}
+                        >
+                            <div className="flex flex-col gap-1">
+                                {/* GROW */}
+                                <div className="relative inline-block">
+                                    <h1
+                                        className="font-montserrat text-[5.5rem] font-black tracking-tighter text-brand-blue leading-[0.9] relative z-10"
+                                        style={{
+                                            fontWeight: 900,
+                                            letterSpacing: '-0.04em'
+                                        }}
+                                        onMouseEnter={() => setHoveredWord(0)}
+                                        onMouseLeave={() => setHoveredWord(null)}
                                     >
-                                        {word}
-                                    </span>
-                                ))}
-                            </motion.h1>
-                        </div>
+                                        GROW
+                                    </h1>
+                                    {hoveredWord === 0 && (
+                                        <motion.div
+                                            className="absolute inset-0 bg-gradient-to-r from-brand-red/10 via-brand-red/5 to-transparent rounded-2xl -z-10"
+                                            layoutId="hover-bg"
+                                            initial={{ opacity: 0, scale: 0.8 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.8 }}
+                                            transition={{ duration: 0.2 }}
+                                        />
+                                    )}
+                                </div>
+
+                                {/* BEYOND with accent */}
+                                <div className="relative inline-block -mt-2">
+                                    <h1
+                                        className="font-montserrat text-[5.5rem] font-black tracking-tighter leading-[0.9] relative z-10"
+                                        style={{
+                                            fontWeight: 900,
+                                            letterSpacing: '-0.04em',
+                                            background: 'linear-gradient(135deg, #17437B 0%, #E63946 100%)',
+                                            WebkitBackgroundClip: 'text',
+                                            WebkitTextFillColor: 'transparent',
+                                            backgroundClip: 'text'
+                                        }}
+                                        onMouseEnter={() => setHoveredWord(1)}
+                                        onMouseLeave={() => setHoveredWord(null)}
+                                    >
+                                        BEYOND
+                                    </h1>
+                                    {hoveredWord === 1 && (
+                                        <motion.div
+                                            className="absolute inset-0 bg-gradient-to-r from-brand-blue/10 via-brand-blue/5 to-transparent rounded-2xl -z-10"
+                                            layoutId="hover-bg"
+                                            initial={{ opacity: 0, scale: 0.8 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.8 }}
+                                            transition={{ duration: 0.2 }}
+                                        />
+                                    )}
+                                </div>
+
+                                {/* BORDERS */}
+                                <div className="relative inline-block -mt-2">
+                                    <h1
+                                        className="font-montserrat text-[5.5rem] font-black tracking-tighter text-brand-blue leading-[0.9] relative z-10"
+                                        style={{
+                                            fontWeight: 900,
+                                            letterSpacing: '-0.04em'
+                                        }}
+                                        onMouseEnter={() => setHoveredWord(2)}
+                                        onMouseLeave={() => setHoveredWord(null)}
+                                    >
+                                        BORDERS
+                                    </h1>
+                                    {hoveredWord === 2 && (
+                                        <motion.div
+                                            className="absolute inset-0 bg-gradient-to-r from-brand-red/10 via-brand-red/5 to-transparent rounded-2xl -z-10"
+                                            layoutId="hover-bg"
+                                            initial={{ opacity: 0, scale: 0.8 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.8 }}
+                                            transition={{ duration: 0.2 }}
+                                        />
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Decorative accent line */}
+                            <div className="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b from-brand-red via-brand-blue/30 to-transparent rounded-full" />
+                        </motion.div>
 
                         {/* Subheading */}
                         <motion.p
-                            className="text-base sm:text-lg md:text-xl text-brand-gray/90 max-w-xl leading-relaxed min-h-[3em] sm:min-h-[2.5em] font-body mt-1"
+                            className="text-lg text-brand-gray/90 max-w-xl leading-relaxed font-body"
                             variants={itemVariants}
                         >
                             Redwood Learning creates immersive global exchange
@@ -147,40 +220,40 @@ export function HeroSection() {
 
                         {/* CTA Buttons */}
                         <motion.div
-                            className="flex flex-col sm:flex-row items-center gap-5 pt-2"
+                            className="flex items-center gap-6 pt-2"
                             variants={itemVariants}
                         >
                             <Button
-                                className="bg-brand-red hover:bg-brand-red/90 text-white font-bold text-base px-8 py-3 h-12 shadow-lg hover:shadow-brand-red/20 transition-all duration-300 rounded-full group"
+                                className="bg-brand-red hover:bg-brand-red/90 text-white font-bold text-base px-9 py-3 h-12 shadow-lg hover:shadow-brand-red/30 transition-all duration-300 rounded-full group relative overflow-hidden"
                             >
-                                Explore Programs
+                                <span className="relative z-10 flex items-center gap-2">
+                                    Explore Programs
+                                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                </span>
+                                <div className="absolute inset-0 bg-gradient-to-r from-brand-red to-red-600 opacity-0 group-hover:opacity-100 transition-opacity" />
                             </Button>
                             <Link
                                 href="/about"
-                                className="group flex items-center gap-2 text-brand-blue font-bold text-base transition-colors hover:text-brand-red hover:underline hover:decoration-brand-red hover:underline-offset-4 cursor-pointer"
+                                className="group flex items-center gap-2 text-brand-blue font-bold text-base transition-all hover:text-brand-red relative"
                             >
-                                About Us
+                                <span>About Us</span>
+                                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-brand-red scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
                             </Link>
                         </motion.div>
 
-                        {/* Decorative Keyline */}
-                        <motion.div
-                            className="w-full max-w-md h-px bg-gradient-to-r from-brand-blue/20 via-brand-blue/5 to-transparent"
-                            variants={itemVariants}
-                        />
-
                         {/* Trusted By Section */}
                         <motion.div
-                            className="flex flex-col gap-6"
+                            className="flex flex-col gap-4 pt-2"
                             variants={itemVariants}
                         >
                             <div className="flex items-center gap-3 text-brand-blue/80 font-medium font-body">
                                 <div className="p-2 bg-brand-blue/5 rounded-full">
-                                    <Globe className="h-5 w-5 text-brand-blue" />
+                                    <Globe className="h-4 w-4 text-brand-blue" />
                                 </div>
-                                <span className="text-lg tracking-wide">Trusted by Students and Institutions globally</span>
+                                <span className="text-base tracking-wide">Trusted by Students and Institutions globally</span>
                             </div>
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-3">
                                 {[
                                     { code: "in", label: "India" },
                                     { code: "gb", label: "UK" },
@@ -188,14 +261,12 @@ export function HeroSection() {
                                     { code: "th", label: "Thailand" },
                                     { code: "vn", label: "Vietnam" },
                                     { code: "jp", label: "Japan" },
-                                ].map((flag, i) => (
+                                ].map((flag) => (
                                     <motion.div
                                         key={flag.code}
-                                        className="relative w-14 h-9 bg-white rounded-xl shadow-premium border border-brand-blue/5 overflow-hidden group cursor-pointer"
-                                        whileHover={{ y: -2, scale: 1.02 }}
+                                        className="relative w-12 h-8 bg-white rounded-lg shadow-md border border-brand-blue/5 overflow-hidden group cursor-pointer"
+                                        whileHover={{ y: -3, scale: 1.05 }}
                                         transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                                        initial={{ opacity: 0, scale: 0.8 }}
-                                        animate={{ opacity: 1, scale: 1 }}
                                     >
                                         <Image
                                             src={`https://flagcdn.com/${flag.code}.svg`}
@@ -210,166 +281,124 @@ export function HeroSection() {
                         </motion.div>
                     </motion.div>
 
-                    {/* Right Side - Enhanced Globe Section */}
+                    {/* Right Side - Globe */}
                     <motion.div
-                        className="hidden lg:flex flex-col items-center justify-center relative h-full min-h-[500px]"
-                        initial={{ opacity: 0, scale: 0.95 }}
+                        className="hidden lg:flex items-center justify-center relative"
+                        initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.8, delay: 0.5 }}
+                        transition={{ duration: 0.8, delay: 0.4 }}
+                        style={{ overflow: 'visible' }}
                     >
-
-
-                        {/* Sparkle Effects */}
-                        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                            <div className="sparkle sparkle-1" />
-                            <div className="sparkle sparkle-2" />
-                            <div className="sparkle sparkle-3" />
-                            <div className="sparkle sparkle-4" />
-                            <div className="sparkle sparkle-5" />
-                            <div className="sparkle sparkle-6" />
-                            <div className="sparkle sparkle-7" />
-                            <div className="sparkle sparkle-8" />
-                        </div>
-
-
-                        {/* Globe with Glow Effects */}
-                        <div className="relative flex items-center justify-center translate-y-6" style={{ width: '600px', height: '600px' }}>
-                            {/* SVG Connection Arcs - Diagonal from top-left to bottom-right */}
-                            <svg
-                                className="absolute pointer-events-none"
-                                style={{ width: '750px', height: '750px', zIndex: 5 }}
-                                viewBox="0 0 750 750"
-                            >
-                                <defs>
-                                    {/* Bright shiny gradient for arcs */}
-                                    <linearGradient id="arcGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" stopColor="rgba(255, 255, 255, 1)" />
-                                        <stop offset="25%" stopColor="rgba(220, 240, 255, 0.95)" />
-                                        <stop offset="50%" stopColor="rgba(255, 255, 255, 1)" />
-                                        <stop offset="75%" stopColor="rgba(200, 230, 255, 0.9)" />
-                                        <stop offset="100%" stopColor="rgba(255, 255, 255, 0.95)" />
-                                    </linearGradient>
-
-                                    <linearGradient id="arcGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" stopColor="rgba(255, 255, 255, 0.95)" />
-                                        <stop offset="35%" stopColor="rgba(180, 210, 255, 0.85)" />
-                                        <stop offset="65%" stopColor="rgba(255, 255, 255, 0.9)" />
-                                        <stop offset="100%" stopColor="rgba(220, 240, 255, 0.85)" />
-                                    </linearGradient>
-
-                                    <linearGradient id="arcGradient3" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" stopColor="rgba(255, 255, 255, 0.9)" />
-                                        <stop offset="50%" stopColor="rgba(200, 220, 255, 0.8)" />
-                                        <stop offset="100%" stopColor="rgba(255, 255, 255, 0.85)" />
-                                    </linearGradient>
-
-                                    {/* Strong glow filter for bright shiny effect */}
-                                    <filter id="arcGlow" x="-100%" y="-100%" width="300%" height="300%">
-                                        <feGaussianBlur stdDeviation="6" result="blur1" />
-                                        <feGaussianBlur stdDeviation="2" result="blur2" />
-                                        <feMerge>
-                                            <feMergeNode in="blur1" />
-                                            <feMergeNode in="blur2" />
-                                            <feMergeNode in="SourceGraphic" />
-                                        </feMerge>
-                                    </filter>
-                                </defs>
-
-                                {/* Outer arc - bright shiny ring */}
-                                <ellipse
-                                    cx="375"
-                                    cy="375"
-                                    rx="340"
-                                    ry="130"
-                                    fill="none"
-                                    stroke="url(#arcGradient1)"
-                                    strokeWidth="2.5"
-                                    filter="url(#arcGlow)"
-                                    style={{ transform: 'rotate(-25deg)', transformOrigin: '375px 375px' }}
-                                />
-
-                                {/* Middle arc - bright shiny ring */}
-                                <ellipse
-                                    cx="375"
-                                    cy="375"
-                                    rx="360"
-                                    ry="150"
-                                    fill="none"
-                                    stroke="url(#arcGradient2)"
-                                    strokeWidth="2"
-                                    filter="url(#arcGlow)"
-                                    style={{ transform: 'rotate(-15deg)', transformOrigin: '375px 375px' }}
-                                />
-
-                                {/* Inner arc - bright shiny ring */}
-                                <ellipse
-                                    cx="375"
-                                    cy="375"
-                                    rx="320"
-                                    ry="110"
-                                    fill="none"
-                                    stroke="url(#arcGradient3)"
-                                    strokeWidth="2"
-                                    filter="url(#arcGlow)"
-                                    style={{ transform: 'rotate(-35deg)', transformOrigin: '375px 375px' }}
-                                />
-
-                                {/* Animated connection path 1 */}
-                                <path
-                                    d="M 100 300 Q 375 100 650 350"
-                                    fill="none"
-                                    stroke="url(#arcGradient1)"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    filter="url(#arcGlow)"
-                                    className="connection-arc"
-                                />
-
-                                {/* Animated connection path 2 */}
-                                <path
-                                    d="M 120 450 Q 375 280 630 480"
-                                    fill="none"
-                                    stroke="url(#arcGradient2)"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    filter="url(#arcGlow)"
-                                    className="connection-arc"
-                                    style={{ animationDelay: '0.6s' }}
-                                />
-                            </svg>
-
-                            {/* Outer glow - positioned behind */}
-                            <div
-                                className="absolute rounded-full pointer-events-none"
-                                style={{
-                                    width: '700px',
-                                    height: '700px',
-                                    background: 'radial-gradient(circle, rgba(23, 67, 123, 0.08) 0%, rgba(23, 67, 123, 0.04) 40%, transparent 70%)',
-                                    filter: 'blur(40px)',
-                                    zIndex: 0
-                                }}
+                        <div className="relative" style={{ width: '600px', height: '600px', overflow: 'visible' }}>
+                            <World
+                                globeConfig={globeConfig}
+                                data={sampleArcs}
+                                onLocationClick={(location) => setSelectedLocation(location)}
                             />
-
-                            {/* Inner glow - positioned behind */}
-                            <div
-                                className="absolute rounded-full pointer-events-none"
-                                style={{
-                                    width: '650px',
-                                    height: '650px',
-                                    background: 'radial-gradient(circle, rgba(255, 255, 255, 0.6) 0%, rgba(220, 235, 255, 0.4) 30%, rgba(180, 210, 250, 0.2) 50%, transparent 70%)',
-                                    filter: 'blur(30px)',
-                                    zIndex: 1
-                                }}
-                            />
-
-                            {/* The Interactive Globe */}
-                            <div className="relative" style={{ zIndex: 10, width: '100%', height: '100%' }}>
-                                <InteractiveGlobe className="" />
-                            </div>
                         </div>
                     </motion.div>
                 </div>
             </div>
+
+            {/* Program Modal */}
+            <AnimatePresence>
+                {selectedLocation && (
+                    <motion.div
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        {/* Backdrop */}
+                        <motion.div
+                            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                            onClick={() => setSelectedLocation(null)}
+                        />
+
+                        {/* Modal */}
+                        <motion.div
+                            className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[80vh] overflow-y-auto"
+                            initial={{ scale: 0.9, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            exit={{ scale: 0.9, y: 20 }}
+                        >
+                            {/* Header */}
+                            <div className="sticky top-0 bg-white z-10 p-6 pb-0 rounded-t-2xl">
+                                <button
+                                    onClick={() => setSelectedLocation(null)}
+                                    className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                                <div className="flex flex-col items-center justify-center text-center">
+                                    <div className="w-32 h-24 relative mb-4 rounded-xl overflow-hidden shadow-2xl border-4 border-white ring-1 ring-gray-100">
+                                        <Image
+                                            src={`https://flagcdn.com/${selectedLocation.flagCode}.svg`}
+                                            alt={selectedLocation.country}
+                                            fill
+                                            className="object-cover"
+                                        />
+                                    </div>
+                                    <h2 className="text-3xl font-bold text-gray-900 mb-1">{selectedLocation.city}</h2>
+                                    <p className="text-lg text-gray-500 font-medium mb-4">{selectedLocation.country}</p>
+                                    <div className="flex items-center gap-2 text-brand-blue/80 text-sm font-medium bg-brand-blue/5 px-3 py-1 rounded-full">
+                                        <MapPin className="w-4 h-4" />
+                                        <span>{selectedLocation.programs.length} program{selectedLocation.programs.length > 1 ? 's' : ''} available</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Programs List */}
+                            <div className="p-6 space-y-4">
+                                {selectedLocation.programs.map((program, idx) => (
+                                    <motion.div
+                                        key={idx}
+                                        className="border border-brand-blue/10 rounded-xl p-4 hover:border-brand-blue/30 hover:shadow-lg transition-all group"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: idx * 0.1 }}
+                                    >
+                                        <h3 className="font-bold text-brand-blue text-lg mb-2 group-hover:text-brand-red transition-colors">
+                                            {program.name}
+                                        </h3>
+                                        <p className="text-brand-gray text-sm mb-3">
+                                            {program.description}
+                                        </p>
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2 text-brand-gray/70 text-xs">
+                                                <Clock className="w-3.5 h-3.5" />
+                                                <span>{program.duration}</span>
+                                            </div>
+                                            <Link
+                                                href={program.slug}
+                                                className="flex items-center gap-1 text-brand-red font-semibold text-sm hover:gap-2 transition-all"
+                                                onClick={() => setSelectedLocation(null)}
+                                            >
+                                                View Program
+                                                <ArrowRight className="w-4 h-4" />
+                                            </Link>
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </div>
+
+                            {/* Footer */}
+                            <div className="p-6 pt-0">
+                                <Link
+                                    href="/programs"
+                                    className="block w-full"
+                                    onClick={() => setSelectedLocation(null)}
+                                >
+                                    <Button className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-bold py-3 rounded-xl">
+                                        Explore All Programs
+                                        <ArrowRight className="w-4 h-4 ml-2" />
+                                    </Button>
+                                </Link>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </section>
     )
 }
