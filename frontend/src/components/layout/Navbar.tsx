@@ -80,8 +80,8 @@ export function Navbar() {
                   <NavigationMenuItem key={item.title}>
                     <Link
                       href={item.href}
-                      className="group inline-flex h-auto w-max items-center justify-center rounded-md px-4 py-2 text-xl font-medium text-brand-gray transition-all hover:text-brand-blue focus:text-brand-blue focus:outline-none hover:border-b-[1.5px] hover:border-brand-blue"
-                      style={{ fontFamily: 'var(--font-cursive)' }}
+                      className="group inline-flex h-auto w-max items-center justify-center rounded-md px-4 py-2 text-sm lg:text-base font-medium text-brand-gray transition-all hover:text-brand-blue focus:text-brand-blue focus:outline-none hover:border-b-[1.5px] hover:border-brand-blue"
+                      style={{ fontFamily: 'var(--font-montserrat)' }}
                     >
                       {item.title}
                     </Link>
@@ -117,8 +117,8 @@ export function Navbar() {
                   <NavigationMenuItem key={item.title}>
                     <Link
                       href={item.href}
-                      className="group inline-flex h-auto w-max items-center justify-center rounded-md px-4 py-2 text-xl font-medium text-brand-gray transition-all hover:text-brand-blue focus:text-brand-blue focus:outline-none hover:border-b-[1.5px] hover:border-brand-blue"
-                      style={{ fontFamily: 'var(--font-cursive)' }}
+                      className="group inline-flex h-auto w-max items-center justify-center rounded-md px-4 py-2 text-sm lg:text-base font-medium text-brand-gray transition-all hover:text-brand-blue focus:text-brand-blue focus:outline-none hover:border-b-[1.5px] hover:border-brand-blue"
+                      style={{ fontFamily: 'var(--font-montserrat)' }}
                     >
                       {item.title}
                     </Link>
@@ -127,8 +127,8 @@ export function Navbar() {
               </NavigationMenuList>
             </NavigationMenu>
             <Button
-              className="bg-brand-red hover:bg-brand-red/90 text-white font-medium text-xl px-6 py-2 h-auto shadow-sm hover:shadow-md transition-all duration-200 rounded-full ml-2"
-              style={{ fontFamily: 'var(--font-cursive)' }}
+              className="bg-brand-red hover:bg-brand-red/90 text-white font-medium text-sm lg:text-base px-6 py-2 h-auto shadow-sm hover:shadow-md transition-all duration-200 rounded-full ml-2"
+              style={{ fontFamily: 'var(--font-montserrat)' }}
             >
               Apply Now
             </Button>
@@ -154,7 +154,7 @@ export function Navbar() {
                 <SheetHeader className="flex items-center justify-between mb-4">
                   <SheetTitle
                     className="font-heading text-brand-blue text-left text-2xl"
-                    style={{ fontFamily: 'var(--font-cursive)' }}
+                    style={{ fontFamily: 'var(--font-montserrat)' }}
                   >
                     Menu
                   </SheetTitle>
@@ -167,8 +167,8 @@ export function Navbar() {
                         key={item.title}
                         href={item.href}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="flex flex-col items-center gap-2 rounded-full px-6 py-2 text-2xl font-semibold tracking-widest uppercase transition-colors hover:text-brand-red"
-                        style={{ fontFamily: 'var(--font-cursive)' }}
+                        className="flex flex-col items-center gap-2 rounded-full px-6 py-2 text-xl font-semibold tracking-widest uppercase transition-colors hover:text-brand-red"
+                        style={{ fontFamily: 'var(--font-montserrat)' }}
                       >
                         <Icon className="h-6 w-6 text-brand-gray" />
                         <span>{item.title}</span>
@@ -177,8 +177,8 @@ export function Navbar() {
                   })}
                   <div className="pt-8 mt-4 w-full max-w-xs">
                     <Button
-                      className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-semibold py-4 rounded-full text-xl tracking-widest uppercase"
-                      style={{ fontFamily: 'var(--font-cursive)' }}
+                      className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-semibold py-4 rounded-full text-lg tracking-widest uppercase"
+                      style={{ fontFamily: 'var(--font-montserrat)' }}
                     >
                       Apply Now
                     </Button>
