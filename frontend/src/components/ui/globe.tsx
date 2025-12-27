@@ -62,6 +62,7 @@ export type GlobeConfig = {
     };
     autoRotate?: boolean;
     autoRotateSpeed?: number;
+    showArcs?: boolean;
 };
 
 interface WorldProps {
@@ -92,6 +93,7 @@ export function Globe({ globeConfig, data, onLocationClick }: WorldProps) {
         arcLength: 0.9,
         rings: 1,
         maxRings: 3,
+        showArcs: true,
         ...globeConfig,
     };
 
@@ -171,7 +173,7 @@ export function Globe({ globeConfig, data, onLocationClick }: WorldProps) {
             .hexPolygonColor(() => defaultProps.polygonColor);
 
         globeRef.current
-            .arcsData(data)
+            .arcsData(defaultProps.showArcs ? data : [])
             .arcStartLat((d) => (d as { startLat: number }).startLat * 1)
             .arcStartLng((d) => (d as { startLng: number }).startLng * 1)
             .arcEndLat((d) => (d as { endLat: number }).endLat * 1)
@@ -211,6 +213,7 @@ export function Globe({ globeConfig, data, onLocationClick }: WorldProps) {
         defaultProps.arcTime,
         defaultProps.rings,
         defaultProps.maxRings,
+        defaultProps.showArcs,
     ]);
 
     // Handle rings animation with cleanup
