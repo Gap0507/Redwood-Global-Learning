@@ -18,6 +18,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { ApplyNowForm } from "@/components/forms/ApplyNowForm"
 import { cn } from "@/lib/utils"
 
 const navigationItems = [
@@ -47,7 +48,7 @@ const navigationItems = [
   },
 ]
 
-export function Navbar() {
+export function Navbar({ onApplyClick }: { onApplyClick?: () => void }) {
   const router = useRouter()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -127,6 +128,7 @@ export function Navbar() {
               </NavigationMenuList>
             </NavigationMenu>
             <Button
+              onClick={onApplyClick}
               className="bg-brand-red hover:bg-brand-red/90 text-white font-medium text-sm lg:text-base px-6 py-2 h-auto shadow-sm hover:shadow-md transition-all duration-200 rounded-full ml-2"
               style={{ fontFamily: 'var(--font-montserrat)' }}
             >
@@ -177,6 +179,10 @@ export function Navbar() {
                   })}
                   <div className="pt-8 mt-4 w-full max-w-xs">
                     <Button
+                      onClick={() => {
+                        setIsMobileMenuOpen(false)
+                        if (onApplyClick) onApplyClick()
+                      }}
                       className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-semibold py-4 rounded-full text-lg tracking-widest uppercase"
                       style={{ fontFamily: 'var(--font-montserrat)' }}
                     >
