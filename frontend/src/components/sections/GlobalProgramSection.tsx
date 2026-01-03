@@ -1,63 +1,27 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
-
-// Country Data
-const programs = [
-    {
-        id: 'thailand',
-        country: 'Thailand',
-        title: 'Thailand',
-        image: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&q=80&w=800',
-        description: 'Engage in international learning experiences that combine academic exposure with cultural exploration: Discover Thailand’s vibrant traditions, global perspectives, and dynamic learning environments',
-        flag: 'th'
-    },
-    {
-        id: 'japan',
-        country: 'Japan',
-        title: 'Japan',
-        image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&q=80&w=800',
-        description: 'Experience a unique academic and cultural environment where tradition meets innovation. Engage with structured learning while immersing yourself in Japan’s rich heritage, discipline, and modern global outlook.',
-        flag: 'jp'
-    },
-    {
-        id: 'bali',
-        country: 'Bali',
-        title: 'Bali',
-        image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&q=80&w=800',
-        description: 'Participate in experiential learning programs that blend education with cultural immersion. Explore sustainability, creativity, and community-driven learning within Bali’s distinctive cultural setting.',
-        flag: 'id'
-    },
-    {
-        id: 'india',
-        country: 'India',
-        title: 'India',
-        image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&q=80&w=800',
-        description: 'Engage with a diverse learning environment shaped by history, culture, and contemporary thought. Experience India’s academic depth, community-driven learning, and cultural richness through immersive, real-world educational experiences.',
-        flag: 'in'
-    },
-    {
-        id: 'vietnam',
-        country: 'Vietnam',
-        title: 'Vietnam',
-        image: 'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&q=80&w=800',
-        description: 'Engage in emerging global learning environments that combine academic exposure with cultural depth. Experience Vietnam’s dynamic growth, rich history, and evolving education landscape through immersive, real-world learning experiences.',
-        flag: 'vn'
-    }
-];
+import { getGlobalProgramsContent, defaultGlobalProgramsContent, GlobalProgramsContent } from '@/lib/globalProgramsContent';
 
 export function GlobalProgramSection() {
+    const [content, setContent] = useState<GlobalProgramsContent>(defaultGlobalProgramsContent);
+
+    // Fetch CMS content on mount
+    useEffect(() => {
+        getGlobalProgramsContent().then(setContent);
+    }, []);
+
     // We want to show a "page" of 4 items.
     // Calculations for pagination
     const itemsPerPage = 4;
     const [page, setPage] = useState(0);
-    const totalPages = Math.ceil(programs.length / itemsPerPage);
+    const totalPages = Math.ceil(content.programs.length / itemsPerPage);
 
     // Get current items
-    const currentPrograms = programs.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
+    const currentPrograms = content.programs.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
 
     // If we don't have enough items to fill a page (e.g. last page has 1 item), we might want to stay consistent?
     // For now, let's just render what we have.
@@ -84,7 +48,7 @@ export function GlobalProgramSection() {
                         transition={{ duration: 0.6, delay: 0.1 }}
                         className="text-2xl md:text-4xl lg:text-5xl font-black text-brand-blue font-montserrat tracking-tight mb-3 md:mb-4"
                     >
-                        Global Exchange Programs
+                        {content.sectionTitle}
                     </motion.h3>
                     <motion.p
                         initial={{ opacity: 0, y: 30 }}
@@ -92,7 +56,7 @@ export function GlobalProgramSection() {
                         transition={{ duration: 0.6, delay: 0.2 }}
                         className="text-brand-gray/80 text-sm md:text-base lg:text-lg max-w-3xl mx-auto font-poppins px-4"
                     >
-                        Join our global exchange programs aimed at providing meaningful academic exposure, cultural immersion, and guided learning experiences across selected international destinations.
+                        {content.sectionDescription}
                     </motion.p>
                 </div>
 
@@ -197,7 +161,7 @@ export function GlobalProgramSection() {
                     {/* Alternative: Show ALL flags as "dots" and clicking one jumps to the page containing it? */}
                     <div className="hidden md:block w-px h-6 bg-brand-gray/20 mx-2" />
 
-                    {programs.map((prog, idx) => (
+                    {content.programs.map((prog, idx) => (
                         <button
                             key={prog.id}
                             onClick={() => setPage(Math.floor(idx / itemsPerPage))}

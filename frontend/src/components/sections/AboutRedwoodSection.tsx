@@ -1,10 +1,17 @@
 'use client';
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
+import { getAboutRedwoodContent, defaultAboutRedwoodContent, AboutRedwoodContent } from "@/lib/aboutRedwoodContent";
 
 export function AboutRedwoodSection() {
+    const [content, setContent] = useState<AboutRedwoodContent>(defaultAboutRedwoodContent);
+
+    useEffect(() => {
+        getAboutRedwoodContent().then(setContent);
+    }, []);
+
     return (
         <section className="relative h-auto min-h-[500px] flex items-center overflow-hidden py-16">
             {/* Background Image - Light Theme */}
@@ -28,7 +35,7 @@ export function AboutRedwoodSection() {
                         transition={{ duration: 0.5 }}
                         className="text-brand-blue font-bold tracking-[0.15em] uppercase text-xs md:text-sm font-poppins mb-2"
                     >
-                        WHO WE ARE
+                        {content.tagline}
                     </motion.h2>
                     <motion.h3
                         initial={{ opacity: 0, y: 10 }}
@@ -36,7 +43,7 @@ export function AboutRedwoodSection() {
                         transition={{ duration: 0.5, delay: 0.1 }}
                         className="text-3xl md:text-4xl lg:text-5xl font-black text-brand-blue font-montserrat tracking-tight mb-3"
                     >
-                        About Redwood
+                        {content.title}
                     </motion.h3>
                     <motion.p
                         initial={{ opacity: 0, y: 10 }}
@@ -44,7 +51,7 @@ export function AboutRedwoodSection() {
                         transition={{ duration: 0.5, delay: 0.2 }}
                         className="text-brand-gray/80 text-sm md:text-base font-poppins leading-relaxed max-w-2xl mx-auto"
                     >
-                        Building bridges across cultures through education, experience, and global connection.
+                        {content.description}
                     </motion.p>
                 </div>
 
@@ -63,8 +70,8 @@ export function AboutRedwoodSection() {
                             {/* Image Container - Fixed Aspect Ratio */}
                             <div className="relative w-full aspect-[16/10] overflow-hidden">
                                 <Image
-                                    src="/ourmissioncard.png"
-                                    alt="Our Mission"
+                                    src={content.mission.image}
+                                    alt={content.mission.title}
                                     fill
                                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                                 />
@@ -77,9 +84,11 @@ export function AboutRedwoodSection() {
                                 {/* Decorative line */}
                                 <div className="w-12 h-1 bg-brand-red rounded-full mb-4" />
 
-                                <h4 className="text-brand-blue text-xl md:text-2xl font-bold font-montserrat tracking-tight mb-3">Our Mission</h4>
+                                <h4 className="text-brand-blue text-xl md:text-2xl font-bold font-montserrat tracking-tight mb-3">
+                                    {content.mission.title}
+                                </h4>
                                 <p className="text-brand-gray/80 text-sm font-poppins leading-relaxed">
-                                    To empower the next generation of global leaders by providing accessible, transformative cultural exchange experiences that foster understanding, independence, and lifelong connections across borders.
+                                    {content.mission.description}
                                 </p>
                             </div>
                         </div>
@@ -97,8 +106,8 @@ export function AboutRedwoodSection() {
                             {/* Image Container - Fixed Aspect Ratio */}
                             <div className="relative w-full aspect-[16/10] overflow-hidden">
                                 <Image
-                                    src="/ourvision.png"
-                                    alt="Our Vision"
+                                    src={content.vision.image}
+                                    alt={content.vision.title}
                                     fill
                                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                                 />
@@ -111,9 +120,11 @@ export function AboutRedwoodSection() {
                                 {/* Decorative line */}
                                 <div className="w-12 h-1 bg-brand-red rounded-full mb-4" />
 
-                                <h4 className="text-brand-blue text-xl md:text-2xl font-bold font-montserrat tracking-tight mb-3">Our Vision</h4>
+                                <h4 className="text-brand-blue text-xl md:text-2xl font-bold font-montserrat tracking-tight mb-3">
+                                    {content.vision.title}
+                                </h4>
                                 <p className="text-brand-gray/80 text-sm font-poppins leading-relaxed">
-                                    A world where borders are not barriers but gateways to learning, where every student has the opportunity to explore, adapt, and thrive in a globally connected community.
+                                    {content.vision.description}
                                 </p>
                             </div>
                         </div>

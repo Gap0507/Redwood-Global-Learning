@@ -1,11 +1,18 @@
 'use client';
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import { Phone, Mail, ArrowRight } from "lucide-react";
+import { getContactContent, defaultContactContent, ContactContent } from "@/lib/contactContent";
 
 export function ReadyToGetStartedSection({ onApplyClick }: { onApplyClick?: () => void }) {
+    const [contactContent, setContactContent] = useState<ContactContent>(defaultContactContent);
+
+    useEffect(() => {
+        getContactContent().then(setContactContent);
+    }, []);
+
     return (
         <section className="relative min-h-[350px] sm:min-h-[400px] md:min-h-[500px] flex items-center justify-center overflow-hidden py-12 sm:py-16 md:py-20">
             {/* Background Image */}
@@ -56,7 +63,7 @@ export function ReadyToGetStartedSection({ onApplyClick }: { onApplyClick?: () =
                     <div className="flex items-center gap-2 text-white px-2 md:px-4">
                         <Phone className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" />
                         <span className="font-poppins text-xs md:text-sm font-medium tracking-wide whitespace-nowrap">
-                            1 800-123-4567
+                            {contactContent.contactInfo.phone}
                         </span>
                     </div>
 
@@ -67,7 +74,7 @@ export function ReadyToGetStartedSection({ onApplyClick }: { onApplyClick?: () =
                     <div className="flex items-center gap-2 text-white px-2 md:px-4">
                         <Mail className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" />
                         <span className="font-poppins text-xs md:text-sm font-medium tracking-wide whitespace-nowrap">
-                            info@redwoodglobal
+                            {contactContent.contactInfo.email}
                         </span>
                     </div>
 
@@ -97,7 +104,7 @@ export function ReadyToGetStartedSection({ onApplyClick }: { onApplyClick?: () =
                         <div className="flex items-center gap-3 text-white mb-3">
                             <Phone className="w-4 h-4 text-white flex-shrink-0" />
                             <span className="font-poppins text-sm font-medium tracking-wide">
-                                1 800-123-4567
+                                {contactContent.contactInfo.phone}
                             </span>
                         </div>
 
@@ -108,7 +115,7 @@ export function ReadyToGetStartedSection({ onApplyClick }: { onApplyClick?: () =
                         <div className="flex items-center gap-3 text-white">
                             <Mail className="w-4 h-4 text-white flex-shrink-0" />
                             <span className="font-poppins text-sm font-medium tracking-wide">
-                                info@redwoodglobal
+                                {contactContent.contactInfo.email}
                             </span>
                         </div>
                     </div>
@@ -128,4 +135,3 @@ export function ReadyToGetStartedSection({ onApplyClick }: { onApplyClick?: () =
         </section>
     );
 }
-

@@ -8,6 +8,7 @@ import { Globe, ArrowRight, X, Clock, MapPin } from "lucide-react"
 import Image from "next/image"
 import dynamic from "next/dynamic"
 import { sampleArcs, globeConfig, ProgramLocation } from "@/data/sampleArcs"
+import { getHeroContent, defaultHeroContent, HeroContent } from "@/lib/heroContent"
 
 const World = dynamic(() => import("@/components/ui/globe").then((m) => m.World), {
     ssr: false,
@@ -36,8 +37,6 @@ const itemVariants: Variants = {
     },
 }
 
-const typewriterWords = ["global cultures", "real-world learning", "international communities"]
-
 export function HeroSection() {
     const [index, setIndex] = useState(0)
     const [subIndex, setSubIndex] = useState(0)
@@ -45,11 +44,17 @@ export function HeroSection() {
     const [pause, setPause] = useState(false)
     const [hoveredWord, setHoveredWord] = useState<number | null>(null)
     const [selectedLocation, setSelectedLocation] = useState<ProgramLocation | null>(null)
+    const [content, setContent] = useState<HeroContent>(defaultHeroContent)
+
+    // Fetch CMS content on mount
+    useEffect(() => {
+        getHeroContent().then(setContent)
+    }, [])
 
     useEffect(() => {
         if (pause) return
 
-        const currentWord = typewriterWords[index]
+        const currentWord = content.typingWords[index]
         const typingSpeed = isDeleting ? 50 : 100
 
         const timeout = setTimeout(() => {
@@ -65,14 +70,14 @@ export function HeroSection() {
                 }, 2000)
             } else if (isDeleting && subIndex === 0) {
                 setIsDeleting(false)
-                setIndex((prev) => (prev + 1) % typewriterWords.length)
+                setIndex((prev) => (prev + 1) % content.typingWords.length)
                 setPause(true)
                 setTimeout(() => setPause(false), 300)
             }
         }, typingSpeed)
 
         return () => clearTimeout(timeout)
-    }, [subIndex, index, isDeleting, pause])
+    }, [subIndex, index, isDeleting, pause, content.typingWords])
 
     return (
         <section className="relative min-h-screen flex items-center lg:items-start overflow-hidden pt-40 sm:pt-48 lg:pt-44 pb-20 lg:pb-12">
@@ -109,7 +114,7 @@ export function HeroSection() {
                                 className="text-xs font-semibold text-brand-gray/70 tracking-[0.25em] uppercase"
                                 style={{ fontFamily: 'var(--font-poppins)' }}
                             >
-                                Where Students Become Global Citizens
+                                {content.tagline}
                             </p>
                             <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-brand-red/50 via-brand-red/20 to-transparent" />
                         </motion.div>
@@ -131,7 +136,7 @@ export function HeroSection() {
                                         onMouseEnter={() => setHoveredWord(0)}
                                         onMouseLeave={() => setHoveredWord(null)}
                                     >
-                                        GROW
+                                        {content.headerLines[0] || "GROW"}
                                     </h1>
                                     {hoveredWord === 0 && (
                                         <motion.div
@@ -160,7 +165,7 @@ export function HeroSection() {
                                         onMouseEnter={() => setHoveredWord(1)}
                                         onMouseLeave={() => setHoveredWord(null)}
                                     >
-                                        BEYOND
+                                        {content.headerLines[1] || "BEYOND"}
                                     </h1>
                                     {hoveredWord === 1 && (
                                         <motion.div
@@ -185,7 +190,7 @@ export function HeroSection() {
                                         onMouseEnter={() => setHoveredWord(2)}
                                         onMouseLeave={() => setHoveredWord(null)}
                                     >
-                                        BORDERS
+                                        {content.headerLines[2] || "BORDERS"}
                                     </h1>
                                     {hoveredWord === 2 && (
                                         <motion.div
@@ -209,11 +214,9 @@ export function HeroSection() {
                             className="text-lg text-brand-gray/90 max-w-xl leading-relaxed font-body"
                             variants={itemVariants}
                         >
-                            Redwood Learning creates immersive global exchange
-                            <br />
-                            programs where students grow through{" "}
+                            {content.paragraphText}{" "}
                             <span className="font-semibold text-brand-red">
-                                {typewriterWords[index].substring(0, subIndex)}
+                                {content.typingWords[index]?.substring(0, subIndex)}
                             </span>
                             <span className="inline-block w-[2px] h-[1em] bg-brand-red ml-0.5 align-middle animate-[pulse_1.2s_ease-in-out_infinite]" />
                         </motion.p>
@@ -251,7 +254,7 @@ export function HeroSection() {
                                 <div className="p-2 bg-brand-blue/5 rounded-full">
                                     <Globe className="h-4 w-4 text-brand-blue" />
                                 </div>
-                                <span className="text-base tracking-wide">Trusted by Students and Institutions globally</span>
+                                <span className="text-base tracking-wide">{content.flagsTagline}</span>
                             </div>
                             <div className="flex items-center gap-3">
                                 {[

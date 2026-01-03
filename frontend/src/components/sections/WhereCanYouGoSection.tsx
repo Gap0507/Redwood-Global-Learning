@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import { programLocations, ProgramLocation } from '@/data/sampleArcs';
+import { getWhereCanYouGoContent, defaultWhereCanYouGoContent, WhereCanYouGoContent } from '@/lib/whereCanYouGoContent';
 
 // Dynamically load Globe to avoid SSR issues
 const World = dynamic(() => import('@/components/ui/globe').then((m) => m.World), {
@@ -14,6 +15,11 @@ const World = dynamic(() => import('@/components/ui/globe').then((m) => m.World)
 
 export function WhereCanYouGoSection() {
     const [selectedLocation, setSelectedLocation] = useState<ProgramLocation>(programLocations[0]);
+    const [content, setContent] = useState<WhereCanYouGoContent>(defaultWhereCanYouGoContent);
+
+    useMemo(() => {
+        getWhereCanYouGoContent().then(setContent);
+    }, []);
 
     // Format data for the globe (points only, no arcs)
     const globeData = useMemo(() => {
@@ -74,24 +80,24 @@ export function WhereCanYouGoSection() {
             <div className="container mx-auto px-4 md:px-8 lg:px-28 xl:px-32 relative z-10">
 
                 {/* Desktop Layout: Content on Left */}
-                <div className="hidden lg:flex flex-col justify-center min-h-[600px] py-20 max-w-[40%] xl:max-w-[38%]">
+                <div className="hidden lg:flex flex-col justify-start min-h-[600px] pt-40 pb-20 max-w-[45%] xl:max-w-[42%]">
                     {/* Section Header - Left Aligned on Desktop */}
-                    <div className="text-left mb-8 relative z-30">
+                    <div className="text-left mb-10 relative z-30">
                         <motion.h2
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5 }}
-                            className="text-4xl xl:text-5xl font-black text-white font-montserrat tracking-tight mb-4"
+                            className="text-3xl xl:text-4xl font-black text-white font-montserrat tracking-tight mb-6 leading-tight"
                         >
-                            WHERE CAN YOU GO?
+                            {content.title}
                         </motion.h2>
                         <motion.p
                             initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.1 }}
-                            className="text-white/80 text-lg max-w-md font-poppins"
+                            className="text-white/80 text-base xl:text-lg max-w-lg font-poppins leading-relaxed"
                         >
-                            Explore destinations for our global exchange programs
+                            {content.description}
                         </motion.p>
                     </div>
 
@@ -168,7 +174,7 @@ export function WhereCanYouGoSection() {
                             transition={{ duration: 0.5 }}
                             className="text-3xl font-black text-white font-montserrat tracking-tight mb-4"
                         >
-                            WHERE CAN YOU GO?
+                            {content.title}
                         </motion.h2>
                         <motion.p
                             initial={{ opacity: 0, y: 30 }}
@@ -176,7 +182,7 @@ export function WhereCanYouGoSection() {
                             transition={{ duration: 0.6, delay: 0.1 }}
                             className="text-white/80 text-sm max-w-2xl mx-auto font-poppins"
                         >
-                            Explore destinations for our global exchange programs
+                            {content.description}
                         </motion.p>
                     </div>
 

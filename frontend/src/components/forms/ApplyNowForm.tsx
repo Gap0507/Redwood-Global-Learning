@@ -4,6 +4,7 @@ import * as React from "react"
 import { motion, AnimatePresence } from "motion/react"
 import { X, Send, GraduationCap, School, User, Mail, Phone, Building2, MessageSquare, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { addInquiry } from "@/lib/inquiryService"
 
 interface ApplyNowFormProps {
     isOpen: boolean
@@ -14,6 +15,13 @@ export function ApplyNowForm({ isOpen, onClose }: ApplyNowFormProps) {
     const [role, setRole] = React.useState<"school" | "professor" | null>(null)
     const [isSubmitting, setIsSubmitting] = React.useState(false)
     const [isSuccess, setIsSuccess] = React.useState(false)
+
+    // Form refs
+    const nameRef = React.useRef<HTMLInputElement>(null)
+    const emailRef = React.useRef<HTMLInputElement>(null)
+    const phoneRef = React.useRef<HTMLInputElement>(null)
+    const institutionRef = React.useRef<HTMLInputElement>(null)
+    const messageRef = React.useRef<HTMLTextAreaElement>(null)
 
     // Prevent scrolling when modal is open
     React.useEffect(() => {
@@ -29,18 +37,32 @@ export function ApplyNowForm({ isOpen, onClose }: ApplyNowFormProps) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        setIsSubmitting(true)
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500))
-        setIsSubmitting(false)
-        setIsSuccess(true)
+        if (!role) return
 
-        // Close modal after showing success message
-        setTimeout(() => {
-            setIsSuccess(false)
-            onClose()
-            setRole(null)
-        }, 2000)
+        setIsSubmitting(true)
+
+        const success = await addInquiry({
+            name: nameRef.current?.value || "",
+            email: emailRef.current?.value || "",
+            phone: phoneRef.current?.value || "",
+            role: role,
+            institutionName: institutionRef.current?.value || "",
+            message: messageRef.current?.value || ""
+        })
+
+        setIsSubmitting(false)
+
+        if (success) {
+            setIsSuccess(true)
+            // Close modal after showing success message
+            setTimeout(() => {
+                setIsSuccess(false)
+                onClose()
+                setRole(null)
+            }, 2000)
+        } else {
+            alert("Something went wrong. Please try again.")
+        }
     }
 
     return (
@@ -166,6 +188,7 @@ export function ApplyNowForm({ isOpen, onClose }: ApplyNowFormProps) {
                                                         <User className="w-5 h-5" />
                                                     </div>
                                                     <input
+                                                        ref={nameRef}
                                                         type="text"
                                                         required
                                                         placeholder="Full Name"
@@ -179,6 +202,7 @@ export function ApplyNowForm({ isOpen, onClose }: ApplyNowFormProps) {
                                                         <Mail className="w-5 h-5" />
                                                     </div>
                                                     <input
+                                                        ref={emailRef}
                                                         type="email"
                                                         required
                                                         placeholder="Email Address"
@@ -194,6 +218,7 @@ export function ApplyNowForm({ isOpen, onClose }: ApplyNowFormProps) {
                                                         <Phone className="w-5 h-5" />
                                                     </div>
                                                     <input
+                                                        ref={phoneRef}
                                                         type="tel"
                                                         required
                                                         placeholder="Phone Number"
@@ -207,6 +232,7 @@ export function ApplyNowForm({ isOpen, onClose }: ApplyNowFormProps) {
                                                         <Building2 className="w-5 h-5" />
                                                     </div>
                                                     <input
+                                                        ref={institutionRef}
                                                         type="text"
                                                         required
                                                         placeholder="Institution Name"
@@ -221,6 +247,7 @@ export function ApplyNowForm({ isOpen, onClose }: ApplyNowFormProps) {
                                                     <MessageSquare className="w-5 h-5" />
                                                 </div>
                                                 <textarea
+                                                    ref={messageRef}
                                                     placeholder="Message (Optional)"
                                                     rows={3}
                                                     className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3.5 pl-12 pr-4 text-gray-900 font-poppins text-sm focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue transition-all resize-none"

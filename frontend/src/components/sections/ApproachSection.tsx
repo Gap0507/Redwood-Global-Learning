@@ -1,61 +1,19 @@
 'use client';
 import { ReactLenis } from 'lenis/react';
 import { useTransform, motion, useScroll, MotionValue } from 'motion/react';
-import { JSX, useRef } from 'react';
+import { JSX, useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { ArrowRight, GraduationCap, Globe, ShieldCheck, Rocket, LucideIcon } from 'lucide-react';
 import Link from 'next/link';
+import { getApproachContent, defaultApproachContent, ApproachContent, ApproachCard } from '@/lib/approachContent';
 
-const steps = [
-    {
-        title: 'Academic exposure',
-        subtitle: 'World-Class Education',
-        description: 'Students engage with education in an international setting by learning within global classrooms and institutions. They explore subjects aligned with their interests, experience different teaching styles and academic cultures, and gain insight into how education is approached in different parts of the world. This exposure helps students broaden their perspective, build meaningful academic and professional networks, and gain clarity on future global opportunities.',
-        src: '/academics.png',
-        link: '/programs',
-        color: '#17437B',
-        gradient: 'from-[#17437B] to-[#0D2B52]',
-        id: 1,
-        icon: GraduationCap,
-        stat: '50+ Global Partners'
-    },
-    {
-        title: 'Explore globally, live locally',
-        subtitle: 'Authentic Living',
-        description: 'Students experience the country in its entirety. They explore cities, landmarks, and cultural spaces as travellers, while also living like locals through host family stays, community engagement, and everyday routines. This balance allows them to enjoy discovery while developing an authentic connection with the culture and people.',
-        src: '/culture.png',
-        link: '/about',
-        color: '#E63946',
-        gradient: 'from-[#E63946] to-[#9E1019]',
-        id: 2,
-        icon: Globe,
-        stat: '100% Immersive'
-    },
-    {
-        title: 'Guided experience',
-        subtitle: 'Safety & Mentorship',
-        description: 'Every exchange is thoughtfully planned and supported by Redwood. From preparation and logistics to on-ground guidance and assistance, students and families can rely on a structured, secure, and well-managed international experience throughout the journey.',
-        src: '/guidedsupport.png',
-        link: '/contact',
-        color: '#457B9D',
-        gradient: 'from-[#457B9D] to-[#2A4D63]',
-        id: 3,
-        icon: ShieldCheck,
-        stat: '24/7 Assistance'
-    },
-    {
-        title: 'Lasting growth',
-        subtitle: 'Future Ready',
-        description: 'Students return with more than experiences. They develop confidence, independence, and a global perspective shaped by real-world exposure and cross-cultural understanding—qualities that continue to influence their academic choices, careers, and life paths.',
-        src: '/outcomes.png',
-        link: '/programs',
-        color: '#E63946',
-        gradient: 'from-[#17437B] to-[#E63946]', // Special gradient for Outcomes
-        id: 4,
-        icon: Rocket,
-        stat: 'Lifelong Network'
-    },
-];
+// Icon mapping for CMS compatibility
+const iconMap: Record<string, LucideIcon> = {
+    GraduationCap,
+    Globe,
+    ShieldCheck,
+    Rocket,
+};
 
 export function ApproachSection(): JSX.Element {
     const container = useRef(null);
@@ -63,6 +21,13 @@ export function ApproachSection(): JSX.Element {
         target: container,
         offset: ['start start', 'end end'],
     });
+
+    const [content, setContent] = useState<ApproachContent>(defaultApproachContent);
+
+    // Fetch CMS content on mount
+    useEffect(() => {
+        getApproachContent().then(setContent);
+    }, []);
 
     return (
         <ReactLenis root>
@@ -97,61 +62,30 @@ export function ApproachSection(): JSX.Element {
                             className='text-xl md:text-2xl text-brand-gray/80 font-medium leading-relaxed'
                             style={{ fontFamily: 'var(--font-poppins)' }}
                         >
-                            A holistic journey designed to transform students into global citizens through education, cultural immersion, and guided support.
+                            {content.sectionSubtitle}
                         </motion.p>
                     </div>
                 </div>
 
-                {/* Enhanced Decorative Elements - Left */}
-                <div className="hidden xl:block fixed left-8 top-1/2 -translate-y-1/2 z-0 pointer-events-none w-24">
-                    <motion.div
-                        initial={{ opacity: 0, x: -50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 1 }}
-                        className="relative h-[600px] flex flex-col items-center justify-center"
-                    >
-                        {/* Connecting Line */}
-                        <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brand-blue/20 to-transparent -translate-x-1/2" />
-
-                        {/* Interactive Nodes */}
-                        <div className="flex flex-col gap-24 relative z-10">
-                            {['Start', 'Learn', 'Grow', 'Lead'].map((label, idx) => (
-                                <div key={idx} className="relative group">
-                                    <motion.div
-                                        className="w-3 h-3 rounded-full bg-brand-blue/20 border border-brand-blue/40 backdrop-blur-sm"
-                                        animate={{
-                                            boxShadow: ['0 0 0 0px rgba(23, 67, 123, 0)', '0 0 0 4px rgba(23, 67, 123, 0.1)', '0 0 0 0px rgba(23, 67, 123, 0)']
-                                        }}
-                                        transition={{ duration: 3, repeat: Infinity, delay: idx * 0.5 }}
-                                    />
-                                    <div className="absolute left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-xs font-bold text-brand-blue tracking-widest uppercase bg-white/80 px-2 py-1 rounded-md backdrop-blur-sm">
-                                        {label}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Floating Background Blobs */}
-                        <motion.div
-                            animate={{ y: [-20, 20, -20], rotate: [0, 10, 0] }}
-                            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                            className="absolute top-1/4 -left-12 w-32 h-32 bg-brand-red/5 rounded-full blur-3xl"
-                        />
-                    </motion.div>
-                </div>
-
-
-
 
                 {/* Stacking Cards Section */}
                 <div className='w-full pb-20'>
-                    {steps.map((step, i) => {
-                        const targetScale = 1 - (steps.length - i) * 0.05;
+                    {content.cards.map((card: ApproachCard, i: number) => {
+                        const targetScale = 1 - (content.cards.length - i) * 0.05;
+                        const CardIcon = iconMap[card.icon] || GraduationCap;
                         return (
                             <Card
-                                key={`step_${i}`}
+                                key={`card_${i}`}
                                 i={i}
-                                {...step}
+                                title={card.title}
+                                subtitle={card.subtitle}
+                                description={card.description}
+                                src={card.src}
+                                link={card.link}
+                                color={card.color}
+                                gradient={card.gradient}
+                                icon={CardIcon}
+                                stat={card.stat}
                                 progress={scrollYProgress}
                                 range={[i * 0.25, 1]}
                                 targetScale={targetScale}
