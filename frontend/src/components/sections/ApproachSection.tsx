@@ -81,16 +81,7 @@ export function ApproachSection(): JSX.Element {
                 <div className='relative h-[50vh] w-full flex flex-col items-center justify-center overflow-hidden'>
 
                     <div className='relative z-10 text-center px-4 max-w-4xl mx-auto'>
-                        <motion.span
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5 }}
-                            className="text-brand-red font-bold tracking-widest uppercase text-sm mb-4 block"
-                            style={{ fontFamily: 'var(--font-poppins)' }}
-                        >
-                            Our Philosophy
-                        </motion.span>
-                        <motion.h2
+                        <motion.h1
                             initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.1 }}
@@ -98,7 +89,7 @@ export function ApproachSection(): JSX.Element {
                             style={{ fontFamily: 'var(--font-montserrat)' }}
                         >
                             Our Approach
-                        </motion.h2>
+                        </motion.h1>
                         <motion.p
                             initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
@@ -150,37 +141,7 @@ export function ApproachSection(): JSX.Element {
                 </div>
 
 
-                {/* Enhanced Decorative Elements - Right */}
-                <div className="hidden xl:block fixed right-8 top-1/2 -translate-y-1/2 z-0 pointer-events-none w-24">
-                    <motion.div
-                        initial={{ opacity: 0, x: 50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 1 }}
-                        className="flex flex-col items-center gap-6"
-                    >
-                        {/* Decorative Ring */}
-                        <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                            className="w-12 h-12 rounded-full border-2 border-dashed border-brand-blue/10"
-                        />
 
-                        {/* Vertical Text */}
-                        <div
-                            className="text-brand-blue/20 text-xs font-bold tracking-[0.5em] uppercase"
-                            style={{ writingMode: 'vertical-rl', fontFamily: 'var(--font-montserrat)' }}
-                        >
-                            EXPLORE
-                        </div>
-
-                        {/* Bottom Dot */}
-                        <motion.div
-                            animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                            className="w-2 h-2 rounded-full bg-brand-red/30"
-                        />
-                    </motion.div>
-                </div>
 
                 {/* Stacking Cards Section */}
                 <div className='w-full pb-20'>

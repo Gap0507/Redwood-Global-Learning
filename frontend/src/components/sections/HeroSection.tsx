@@ -75,7 +75,7 @@ export function HeroSection() {
     }, [subIndex, index, isDeleting, pause])
 
     return (
-        <section className="relative min-h-screen flex items-center overflow-hidden pt-32 lg:pt-24 pb-12 lg:pb-0">
+        <section className="relative min-h-screen flex items-center lg:items-start overflow-hidden pt-40 sm:pt-48 lg:pt-44 pb-20 lg:pb-12">
             {/* Background Image */}
             <div className="absolute inset-0 -z-10">
                 <Image
@@ -87,8 +87,8 @@ export function HeroSection() {
                 />
             </div>
 
-            <div className="container mx-auto px-8 max-w-7xl">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="container mx-auto px-6 sm:px-8 max-w-7xl relative z-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                     {/* Left Content - Unique Layout */}
                     <motion.div
                         className="flex flex-col gap-6"
@@ -123,7 +123,7 @@ export function HeroSection() {
                                 {/* GROW */}
                                 <div className="relative inline-block">
                                     <h1
-                                        className="font-montserrat text-[3.5rem] lg:text-[5.5rem] font-black tracking-tighter text-brand-blue leading-[0.9] relative z-10"
+                                        className="font-montserrat text-[2.8rem] sm:text-[3.5rem] lg:text-[5.5rem] font-black tracking-tighter text-brand-blue leading-[0.9] relative z-10"
                                         style={{
                                             fontWeight: 900,
                                             letterSpacing: '-0.04em'
@@ -148,7 +148,7 @@ export function HeroSection() {
                                 {/* BEYOND with accent */}
                                 <div className="relative inline-block -mt-2">
                                     <h1
-                                        className="font-montserrat text-[3.5rem] lg:text-[5.5rem] font-black tracking-tighter leading-[0.9] relative z-10"
+                                        className="font-montserrat text-[2.8rem] sm:text-[3.5rem] lg:text-[5.5rem] font-black tracking-tighter leading-[0.9] relative z-10"
                                         style={{
                                             fontWeight: 900,
                                             letterSpacing: '-0.04em',
@@ -177,7 +177,7 @@ export function HeroSection() {
                                 {/* BORDERS */}
                                 <div className="relative inline-block -mt-2">
                                     <h1
-                                        className="font-montserrat text-[3.5rem] lg:text-[5.5rem] font-black tracking-tighter text-brand-blue leading-[0.9] relative z-10"
+                                        className="font-montserrat text-[2.8rem] sm:text-[3.5rem] lg:text-[5.5rem] font-black tracking-tighter text-brand-blue leading-[0.9] relative z-10"
                                         style={{
                                             fontWeight: 900,
                                             letterSpacing: '-0.04em'

@@ -8,67 +8,43 @@ import { ArrowRight } from 'lucide-react';
 // Country Data
 const programs = [
     {
-        id: 'france',
-        country: 'France',
-        title: 'France',
-        image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=800',
-        description: 'Dive into foreign studies within bustling cities, university, and explore vibrant local culture.',
-        flag: 'fr'
+        id: 'thailand',
+        country: 'Thailand',
+        title: 'Thailand',
+        image: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&q=80&w=800',
+        description: 'Engage in international learning experiences that combine academic exposure with cultural exploration: Discover Thailand’s vibrant traditions, global perspectives, and dynamic learning environments',
+        flag: 'th'
     },
     {
         id: 'japan',
         country: 'Japan',
         title: 'Japan',
         image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&q=80&w=800',
-        description: 'Dive into foreign studies within bustling cities, university, and explore vibrant local culture.',
+        description: 'Experience a unique academic and cultural environment where tradition meets innovation. Engage with structured learning while immersing yourself in Japan’s rich heritage, discipline, and modern global outlook.',
         flag: 'jp'
     },
     {
-        id: 'australia',
-        country: 'Australia',
-        title: 'Australia',
-        image: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&q=80&w=800',
-        description: 'Dive into foreign studies within bustling cities, university, and explore vibrant local culture.',
-        flag: 'au'
-    },
-    {
-        id: 'canada',
-        country: 'Canada',
-        title: 'Canada',
-        image: 'https://images.unsplash.com/photo-1517935706615-2717063c2225?auto=format&fit=crop&q=80&w=800',
-        description: 'Dive into foreign studies within bustling cities, university, and explore vibrant local culture.',
-        flag: 'ca'
+        id: 'bali',
+        country: 'Bali',
+        title: 'Bali',
+        image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&q=80&w=800',
+        description: 'Participate in experiential learning programs that blend education with cultural immersion. Explore sustainability, creativity, and community-driven learning within Bali’s distinctive cultural setting.',
+        flag: 'id'
     },
     {
         id: 'india',
         country: 'India',
         title: 'India',
         image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&q=80&w=800',
-        description: 'Experience India\'s rich heritage through community engagement and cultural exchange.',
+        description: 'Engage with a diverse learning environment shaped by history, culture, and contemporary thought. Experience India’s academic depth, community-driven learning, and cultural richness through immersive, real-world educational experiences.',
         flag: 'in'
-    },
-    {
-        id: 'uk',
-        country: 'UK',
-        title: 'UK',
-        image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&q=80&w=800',
-        description: 'Experience world-class education and historic landmarks in the heart of the United Kingdom.',
-        flag: 'gb'
-    },
-    {
-        id: 'usa',
-        country: 'USA',
-        title: 'USA',
-        image: 'https://images.unsplash.com/photo-1485738422979-f5c462d49f74?auto=format&fit=crop&q=80&w=800',
-        description: 'Explore the land of opportunity with cutting-edge research and diverse campus life.',
-        flag: 'us'
     },
     {
         id: 'vietnam',
         country: 'Vietnam',
         title: 'Vietnam',
         image: 'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&q=80&w=800',
-        description: 'Discover a blend of ancient traditions and rapid modern development throughout the country.',
+        description: 'Engage in emerging global learning environments that combine academic exposure with cultural depth. Experience Vietnam’s dynamic growth, rich history, and evolving education landscape through immersive, real-world learning experiences.',
         flag: 'vn'
     }
 ];
@@ -102,14 +78,6 @@ export function GlobalProgramSection() {
             <div className="container mx-auto px-4 md:px-8 lg:px-24 max-w-7xl">
                 {/* Header */}
                 <div className="text-center mb-8 md:mb-12">
-                    <motion.h2
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="text-brand-blue font-bold tracking-[0.15em] uppercase text-xs md:text-sm lg:text-base font-poppins mb-2 md:mb-3"
-                    >
-                        GLOBAL EXCHANGE PROGRAMS
-                    </motion.h2>
                     <motion.h3
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -124,7 +92,7 @@ export function GlobalProgramSection() {
                         transition={{ duration: 0.6, delay: 0.2 }}
                         className="text-brand-gray/80 text-sm md:text-base lg:text-lg max-w-3xl mx-auto font-poppins px-4"
                     >
-                        Join our global exchange programs and explore exciting cultures, diverse landscapes, and top universities.
+                        Join our global exchange programs aimed at providing meaningful academic exposure, cultural immersion, and guided learning experiences across selected international destinations.
                     </motion.p>
                 </div>
 
