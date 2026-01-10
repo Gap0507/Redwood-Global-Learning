@@ -59,14 +59,13 @@ export function WhereCanYouGoSection() {
 
     return (
         <section
-            className="relative bg-[#0B1221] pt-16 lg:pt-0 pb-0 overflow-hidden -mt-20 z-10"
-            style={{ clipPath: 'polygon(0 10%, 100% 0, 100% 100%, 0 100%)' }}
+            className="relative bg-[#0B1221] pt-0 pb-12 overflow-hidden z-10"
         >
             {/* Desktop/Tablet: Globe positioned absolutely on the right side spanning full height */}
             <div className="hidden lg:block absolute right-0 top-0 bottom-0 w-[60%] z-30 pointer-events-auto">
                 <div className="absolute inset-0 flex items-center justify-end pr-0">
-                    <div className="w-full h-full min-h-[600px] flex items-center justify-end translate-y-12">
-                        <div className="w-[min(110%,880px)] aspect-square relative translate-x-36">
+                    <div className="w-full h-full min-h-[450px] flex items-center justify-end translate-y-2">
+                        <div className="w-[min(140%,1000px)] aspect-square relative translate-x-36">
                             <World
                                 globeConfig={globeConfig}
                                 data={globeData}
@@ -80,7 +79,7 @@ export function WhereCanYouGoSection() {
             <div className="container mx-auto px-4 md:px-8 lg:px-28 xl:px-32 relative z-10">
 
                 {/* Desktop Layout: Content on Left */}
-                <div className="hidden lg:flex flex-col justify-start min-h-[600px] pt-40 pb-20 max-w-[45%] xl:max-w-[42%]">
+                <div className="hidden lg:flex flex-col justify-center min-h-[450px] pt-36 pb-12 max-w-[45%] xl:max-w-[42%]">
                     {/* Section Header - Left Aligned on Desktop */}
                     <div className="text-left mb-10 relative z-30">
                         <motion.h2
