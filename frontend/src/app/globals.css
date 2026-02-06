@@ -43,14 +43,20 @@
     /* Custom brand colors */
     --brand-blue: 210 65% 28%;
     /* #17437B */
+    --brand-blue-dark: 210 70% 20%;
+    /* Darker blue for gradients */
     --brand-red: 4 85% 53%;
     /* #ED1C24 */
+    --brand-red-dark: 4 90% 40%;
+    /* Darker red for gradients */
     --brand-gray: 210 5% 43%;
     /* #6D6E71 */
     --bg-soft: 210 70% 94%;
     /* Stronger light sky blue */
     --bg-light-gray: 210 8% 90%;
     /* Noticeable light gray */
+    --background-light: 210 25% 97%;
+    /* Very light background */
 
     /* Font Families */
     --font-heading: var(--font-montserrat), var(--font-poppins), var(--font-space-grotesk), system-ui, sans-serif;
@@ -413,6 +419,20 @@
     to {
       stroke-dashoffset: -24;
     }
+  }
+
+  /* Marquee Animation */
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee {
+    animation: marquee 15s linear infinite;
   }
 
   /* Location Text Styling */
