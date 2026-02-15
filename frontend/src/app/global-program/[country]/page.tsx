@@ -3,15 +3,17 @@
 import { useParams, notFound } from "next/navigation"
 import { motion } from "framer-motion"
 import { ReactLenis } from 'lenis/react'
-import { getCountryData } from "@/lib/country-data"
+import { getCountryData, CountryData } from "@/lib/country-data"
+import { getCountryPageContent, CountryPageContent } from "@/lib/countryPageContent"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, Calendar, Users, Globe, Home, BookOpen, MapPin, Star, CheckCircle2 } from "lucide-react"
+import { ArrowRight, Calendar, Users, Globe, Home, BookOpen, MapPin, Star, CheckCircle2, Loader2 } from "lucide-react"
 import { Navbar } from "@/components/layout/Navbar"
 import { Footer } from "@/components/layout/Footer"
 import { ApplyNowForm } from "@/components/forms/ApplyNowForm"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { cn } from "@/lib/utils"
 
 // Generate image URL based on program title and country
 function getProgramImage(programTitle: string, countryName: string): string {
@@ -52,12 +54,99 @@ function getProgramImage(programTitle: string, countryName: string): string {
   return imageMap[countryKey]?.[programTitle] || "https://images.unsplash.com/photo-1434030216419-0e55c8712c20"
 }
 
+/**
+ * Maps CMS CountryPageContent to the existing CountryData interface
+ * so all page JSX stays unchanged.
+ */
+function mapCmsToCountryData(cms: CountryPageContent): CountryData {
+  return {
+    name: cms.name,
+    heroImage: cms.hero.heroImage,
+    carouselImages: cms.hero.carouselImages.map((img) => ({
+      image: img.image,
+      title: img.title,
+      description: img.description,
+    })),
+    heroTitle: cms.hero.heroTitle || `Explore Our Programs in ${cms.name}`,
+    heroDescription: cms.hero.heroDescription || cms.programs.description,
+    programsTitle: cms.programs.mainTitle,
+    programsDescription: cms.programs.description,
+    programButtons: (cms.programs.buttons && cms.programs.buttons.length > 0)
+      ? cms.programs.buttons.map(btn => btn.text)
+      : ["Academic Credits", "Cultural Activities", "24/7 Support"],
+    programs: cms.programs.programCards.map((card) => ({
+      title: card.title,
+      duration: card.timeline,
+      description: card.description,
+      image: card.image,
+    })),
+    lifeTitle: cms.lifeExperience.title,
+    lifeDescription: cms.lifeExperience.description,
+    life: {
+      housing: {
+        title: cms.lifeExperience.buttonNames[0] || "Housing",
+        description: cms.information.housing.content,
+        image: cms.information.housing.image,
+      },
+      culture: {
+        title: cms.lifeExperience.buttonNames[1] || "Culture",
+        description: cms.information.culture.content,
+        image: cms.information.culture.image,
+      },
+      language: {
+        title: cms.lifeExperience.buttonNames[2] || "Language",
+        description: cms.information.language.content,
+        image: cms.information.language.image,
+      },
+    },
+    testimonials: cms.studentStories.map((story) => ({
+      name: story.name,
+      title: story.program,
+      quote: story.description,
+      starRating: story.starRating,
+    })),
+    ctaImage: cms.cta.ctaImage,
+  };
+}
+
 export default function CountryProgramPage() {
   const params = useParams()
   const country = params?.country as string
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false)
+  const [data, setData] = useState<CountryData | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-  const data = getCountryData(country)
+  useEffect(() => {
+    if (!country) return;
+    setIsLoading(true);
+    getCountryPageContent(country)
+      .then((cmsData) => {
+        if (cmsData) {
+          setData(mapCmsToCountryData(cmsData));
+        } else {
+          // Fallback to static data
+          const staticData = getCountryData(country);
+          setData(staticData || null);
+        }
+      })
+      .catch(() => {
+        // Fallback to static data on error
+        const staticData = getCountryData(country);
+        setData(staticData || null);
+      })
+      .finally(() => setIsLoading(false));
+  }, [country]);
+
+  if (isLoading) {
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="w-8 h-8 animate-spin text-brand-blue" />
+          <p className="text-foreground/60 font-light">Loading...</p>
+        </div>
+      </main>
+    )
+  }
 
   if (!data) {
     notFound()
@@ -93,7 +182,7 @@ export default function CountryProgramPage() {
                   {/* Main Hero Image - Full Width, Less Height */}
                   <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-2xl">
                     <Image
-                      src={data.programs[0]?.image || "https://images.unsplash.com/photo-1434030216419-0e55c8712c20?w=800&q=80"}
+                      src={data.heroImage || data.programs[0]?.image || "https://images.unsplash.com/photo-1434030216419-0e55c8712c20?w=800&q=80"}
                       alt={`${data.name} main attraction`}
                       fill
                       className="object-cover"
@@ -116,14 +205,14 @@ export default function CountryProgramPage() {
                   <div className="relative w-full overflow-hidden rounded-xl">
                     <div className="flex animate-marquee gap-3">
                       {/* First Set */}
-                      {[
+                      {(data.carouselImages && data.carouselImages.length > 0 ? data.carouselImages.map(ci => ci.image) : [
                         data.programs[1]?.image || "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=400&q=80",
                         data.programs[2]?.image || "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=400&q=80",
                         data.programs[0]?.image || "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&q=80",
                         "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80",
                         "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&q=80",
                         "https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=400&q=80",
-                      ].map((imgSrc, i) => (
+                      ]).map((imgSrc, i) => (
                         <div
                           key={`first-${i}`}
                           className="relative flex-shrink-0 w-24 h-24 rounded-xl overflow-hidden shadow-lg"
@@ -139,14 +228,14 @@ export default function CountryProgramPage() {
                         </div>
                       ))}
                       {/* Second Set for Seamless Loop */}
-                      {[
+                      {(data.carouselImages && data.carouselImages.length > 0 ? data.carouselImages.map(ci => ci.image) : [
                         data.programs[1]?.image || "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=400&q=80",
                         data.programs[2]?.image || "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=400&q=80",
                         data.programs[0]?.image || "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&q=80",
                         "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80",
                         "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&q=80",
                         "https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=400&q=80",
-                      ].map((imgSrc, i) => (
+                      ]).map((imgSrc, i) => (
                         <div
                           key={`second-${i}`}
                           className="relative flex-shrink-0 w-24 h-24 rounded-xl overflow-hidden shadow-lg"
@@ -184,18 +273,21 @@ export default function CountryProgramPage() {
 
                     {/* Main Heading */}
                     <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-blue tracking-tight leading-[0.95]">
-                      {data.name}
-                      <br />
-                      <span className="text-foreground/50 font-light">Programs</span>
+                      {data.heroTitle.split(' ').map((word, i) => (
+                        <span key={i}>
+                          {word === 'Programs' ? <span className="text-foreground/50 font-light">{word}</span> : word}
+                          {i < data.heroTitle.split(' ').length - 1 ? ' ' : ''}
+                          {i === 0 && <br />}
+                        </span>
+                      ))}
                     </h1>
 
-                    {/* Description */}
                     <p className="text-base sm:text-lg text-foreground/70 leading-relaxed font-light max-w-lg">
                       {data.heroDescription}
                     </p>
 
                     {/* CTA Buttons */}
-                    <div className="flex flex-row gap-3 pt-3">
+                    <div className="flex flex-col sm:flex-row gap-4 pt-4">
                       <Button
                         asChild
                         className="bg-brand-red hover:bg-brand-red-dark text-white font-medium px-8 h-12 rounded-full group shadow-lg hover:shadow-xl transition-all text-base"
@@ -290,11 +382,11 @@ export default function CountryProgramPage() {
                       </span>
                     </div>
                     <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-blue tracking-tight leading-[0.95] mb-6">
-                      Programs Rooted in<br />
-                      <span className="text-foreground/50">Global Learning</span>
+                      {data.programsTitle.split(' ').slice(0, -2).join(' ')}<br />
+                      <span className="text-foreground/50">{data.programsTitle.split(' ').slice(-2).join(' ')}</span>
                     </h2>
                     <p className="text-lg text-foreground/70 leading-relaxed font-light mb-8">
-                      Tailored academic experiences inspired by cultural discovery and real-world immersion in {data.name}.
+                      {data.programsDescription}
                     </p>
                     <Button
                       asChild
@@ -348,7 +440,7 @@ export default function CountryProgramPage() {
                             {program.description}
                           </p>
                           <div className="flex flex-wrap gap-2">
-                            {["Academic Credits", "Cultural Activities", "24/7 Support"].map((feature) => (
+                            {data.programButtons.map((feature) => (
                               <span key={feature} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-blue/5 border border-brand-blue/20 rounded-full text-xs text-brand-blue font-medium">
                                 <CheckCircle2 className="w-3 h-3" />
                                 {feature}
@@ -388,10 +480,10 @@ export default function CountryProgramPage() {
                     <div className="w-12 h-[2px] bg-brand-red" />
                   </div>
                   <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold text-brand-blue tracking-tight leading-[0.95] mb-6">
-                    Life in {data.name}
+                    {data.lifeTitle || `Life in ${data.name}`}
                   </h2>
                   <p className="text-xl text-foreground/60 leading-relaxed font-light mb-12">
-                    Everything you need to know about living and learning<br className="hidden sm:block" /> Scroll to explore 👇
+                    {data.lifeDescription || "Everything you need to know about living and learning"}<br className="hidden sm:block" /> Scroll to explore 👇
                   </p>
 
                   {/* Feature Preview Icons */}
@@ -436,7 +528,7 @@ export default function CountryProgramPage() {
                   </div>
                   <div className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl">
                     <Image
-                      src={data.programs[0]?.image || "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80"}
+                      src={data.life.housing.image || data.programs[0]?.image || "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80"}
                       alt="Housing"
                       fill
                       className="object-cover"
@@ -451,7 +543,7 @@ export default function CountryProgramPage() {
                 <div className="max-w-4xl w-full grid lg:grid-cols-2 gap-12 items-center">
                   <div className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl lg:order-1">
                     <Image
-                      src={data.programs[1]?.image || "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80"}
+                      src={data.life.culture.image || data.programs[1]?.image || "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80"}
                       alt="Culture"
                       fill
                       className="object-cover"
@@ -488,7 +580,7 @@ export default function CountryProgramPage() {
                   </div>
                   <div className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl">
                     <Image
-                      src={data.programs[2]?.image || "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&q=80"}
+                      src={data.life.language.image || data.programs[2]?.image || "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&q=80"}
                       alt="Language"
                       fill
                       className="object-cover"
@@ -546,7 +638,13 @@ export default function CountryProgramPage() {
                         {/* Stars */}
                         <div className="flex gap-1 mt-4">
                           {[...Array(5)].map((_, i) => (
-                            <Star key={i} className="w-5 h-5 fill-brand-red text-brand-red" />
+                            <Star
+                              key={i}
+                              className={cn(
+                                "w-5 h-5",
+                                i < (testimonial.starRating || 5) ? "fill-brand-red text-brand-red" : "text-gray-300"
+                              )}
+                            />
                           ))}
                         </div>
                       </div>
@@ -576,6 +674,12 @@ export default function CountryProgramPage() {
 
             {/* CTA Section - Full Screen Sticky */}
             <section className="sticky top-0 h-screen flex items-center justify-center bg-background text-center px-8 rounded-t-[3rem] overflow-hidden shadow-[0_-20px_60px_rgba(0,0,0,0.1)]">
+              {data.ctaImage && (
+                <div className="absolute inset-0 z-0">
+                  <Image src={data.ctaImage} alt="Background" fill className="object-cover opacity-20" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
+                </div>
+              )}
               {/* Background Pattern */}
               <div className="absolute inset-0 opacity-[0.02]"
                 style={{

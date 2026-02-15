@@ -9,14 +9,17 @@ export interface LifeSection {
   housing: {
     title: string
     description: string
+    image?: string
   }
   culture: {
     title: string
     description: string
+    image?: string
   }
   language: {
     title: string
     description: string
+    image?: string
   }
 }
 
@@ -25,22 +28,36 @@ export interface Testimonial {
   title: string
   quote: string
   image?: string
+  starRating?: number
 }
 
 export interface CountryData {
   name: string
+  heroImage: string
+  carouselImages: { image: string; title: string; description: string }[]
   heroTitle: string
   heroDescription: string
+  programsTitle: string
+  programsDescription: string
+  programButtons: string[]
   programs: ProgramCard[]
+  lifeTitle?: string
+  lifeDescription?: string
   life: LifeSection
   testimonials: Testimonial[]
+  ctaImage?: string
 }
 
 export const countryData: Record<string, CountryData> = {
   india: {
     name: "India",
+    heroImage: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800&q=80",
+    carouselImages: [],
     heroTitle: "Explore Our Programs in India",
     heroDescription: "Discover one of the world's oldest civilizations with a rapidly growing economy. Study in New Delhi or Mumbai while exploring India's diverse cultures, languages, and traditions across its vibrant cities.",
+    programsTitle: "Programs Rooted in Global Learning",
+    programsDescription: "Tailored academic experiences inspired by cultural discovery and real-world immersion in India.",
+    programButtons: ["Academic Credits", "Cultural Activities", "24/7 Support"],
     programs: [
       {
         title: "Cultural Immersion Program",
@@ -90,8 +107,13 @@ export const countryData: Record<string, CountryData> = {
   },
   uk: {
     name: "United Kingdom",
+    heroImage: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80",
+    carouselImages: [],
     heroTitle: "Explore Our Programs in the United Kingdom",
     heroDescription: "Study in London and experience the UK's prestigious academic tradition, rich history, and cultural heritage. Home to some of the world's most renowned universities and institutions.",
+    programsTitle: "Programs Rooted in Global Learning",
+    programsDescription: "Tailored academic experiences inspired by cultural discovery and real-world immersion in the United Kingdom.",
+    programButtons: ["Academic Credits", "Cultural Activities", "24/7 Support"],
     programs: [
       {
         title: "Global Leadership Academy",
@@ -141,8 +163,13 @@ export const countryData: Record<string, CountryData> = {
   },
   thailand: {
     name: "Thailand",
+    heroImage: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800&q=80",
+    carouselImages: [],
     heroTitle: "Explore Our Programs in Thailand",
     heroDescription: "Experience Thailand's perfect blend of ancient temples and modern innovation. Study in Bangkok while exploring Southeast Asia's rich cultural heritage and rapidly developing economy.",
+    programsTitle: "Programs Rooted in Global Learning",
+    programsDescription: "Tailored academic experiences inspired by cultural discovery and real-world immersion in Thailand.",
+    programButtons: ["Academic Credits", "Cultural Activities", "24/7 Support"],
     programs: [
       {
         title: "Southeast Asia Explorer",
@@ -192,8 +219,13 @@ export const countryData: Record<string, CountryData> = {
   },
   vietnam: {
     name: "Vietnam",
+    heroImage: "https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80",
+    carouselImages: [],
     heroTitle: "Explore Our Programs in Vietnam",
     heroDescription: "Discover Vietnam's remarkable transformation from ancient civilization to modern economic powerhouse. Study in Hanoi while experiencing the country's rich history and dynamic future.",
+    programsTitle: "Programs Rooted in Global Learning",
+    programsDescription: "Tailored academic experiences inspired by cultural discovery and real-world immersion in Vietnam.",
+    programButtons: ["Academic Credits", "Cultural Activities", "24/7 Support"],
     programs: [
       {
         title: "Vietnam Heritage Program",
@@ -243,8 +275,13 @@ export const countryData: Record<string, CountryData> = {
   },
   japan: {
     name: "Japan",
+    heroImage: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&q=80",
+    carouselImages: [],
     heroTitle: "Explore Our Programs in Japan",
     heroDescription: "Immerse yourself in a unique blend of ancient traditions and cutting-edge innovation. Study in Tokyo while experiencing Japan's rich cultural heritage, world-class education, and technological excellence.",
+    programsTitle: "Programs Rooted in Global Learning",
+    programsDescription: "Tailored academic experiences inspired by cultural discovery and real-world immersion in Japan.",
+    programButtons: ["Academic Credits", "Cultural Activities", "24/7 Support"],
     programs: [
       {
         title: "Innovation & Technology Exchange",
@@ -294,8 +331,13 @@ export const countryData: Record<string, CountryData> = {
   },
   usa: {
     name: "United States",
+    heroImage: "https://images.unsplash.com/photo-1501466044931-62695aada8e9?w=800&q=80",
+    carouselImages: [],
     heroTitle: "Explore Our Programs in the United States",
     heroDescription: "Experience world-class education in America's top universities. From New York to California, explore diverse landscapes and cultures while building your global network and developing leadership skills.",
+    programsTitle: "Programs Rooted in Global Learning",
+    programsDescription: "Tailored academic experiences inspired by cultural discovery and real-world immersion in the United States.",
+    programButtons: ["Academic Credits", "Cultural Activities", "24/7 Support"],
     programs: [
       {
         title: "American Dream Program",
