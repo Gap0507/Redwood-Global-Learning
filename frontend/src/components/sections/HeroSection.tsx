@@ -2,13 +2,15 @@
 
 import { motion, Variants, AnimatePresence } from "framer-motion"
 import Link from "next/link"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Globe, ArrowRight, X, Clock, MapPin } from "lucide-react"
 import Image from "next/image"
 import dynamic from "next/dynamic"
-import { sampleArcs, globeConfig, ProgramLocation } from "@/data/sampleArcs"
+import { globeConfig, ProgramLocation } from "@/data/sampleArcs"
+import { sampleArcs as defaultArcs, programLocations as defaultLocations } from "@/data/sampleArcs"
 import { getHeroContent, defaultHeroContent, HeroContent } from "@/lib/heroContent"
+import { getMasterCountries, MasterCountry } from "@/lib/masterCountries"
 
 const World = dynamic(() => import("@/components/ui/globe").then((m) => m.World), {
     ssr: false,
@@ -45,11 +47,54 @@ export function HeroSection() {
     const [hoveredWord, setHoveredWord] = useState<number | null>(null)
     const [selectedLocation, setSelectedLocation] = useState<ProgramLocation | null>(null)
     const [content, setContent] = useState<HeroContent>(defaultHeroContent)
+    const [masterCountries, setMasterCountries] = useState<MasterCountry[]>([])
 
-    // Fetch CMS content on mount
+    // Fetch CMS content + master countries on mount
     useEffect(() => {
         getHeroContent().then(setContent)
+        getMasterCountries().then(setMasterCountries)
     }, [])
+
+    // Derive globe arcs from master countries (or fallback to defaults)
+    const { arcsData, locations, flags } = useMemo(() => {
+        if (masterCountries.length === 0) {
+            return {
+                arcsData: defaultArcs,
+                locations: defaultLocations,
+                flags: [
+                    { code: "in", label: "India" }, { code: "gb", label: "UK" },
+                    { code: "id", label: "Indonesia" }, { code: "th", label: "Thailand" },
+                    { code: "vn", label: "Vietnam" }, { code: "jp", label: "Japan" },
+                ],
+            }
+        }
+        // Build programLocations from master countries
+        const locs: ProgramLocation[] = masterCountries.map(c => ({
+            id: c.slug,
+            city: c.city,
+            country: c.name,
+            lat: c.lat,
+            lng: c.lng,
+            flagCode: c.flagCode,
+            programs: c.heroGlobePrograms.map(p => ({
+                name: p.name, description: p.description, duration: p.duration, slug: p.slug,
+            })),
+        }))
+        // Build arcs connecting consecutive pairs (simple ring)
+        const arcs = locs.flatMap((loc, i) => {
+            const next = locs[(i + 1) % locs.length]
+            return [{
+                order: i + 1,
+                startLat: loc.lat, startLng: loc.lng,
+                endLat: next.lat, endLng: next.lng,
+                arcAlt: 0.2 + Math.random() * 0.25,
+                color: i % 2 === 0 ? "#E63946" : "#17437B",
+            }]
+        })
+        // Build flags list
+        const fl = masterCountries.map(c => ({ code: c.flagCode, label: c.name }))
+        return { arcsData: arcs, locations: locs, flags: fl }
+    }, [masterCountries])
 
     useEffect(() => {
         if (pause) return
@@ -257,14 +302,7 @@ export function HeroSection() {
                                 <span className="text-base tracking-wide">{content.flagsTagline}</span>
                             </div>
                             <div className="flex items-center gap-3">
-                                {[
-                                    { code: "in", label: "India" },
-                                    { code: "gb", label: "UK" },
-                                    { code: "id", label: "Indonesia" },
-                                    { code: "th", label: "Thailand" },
-                                    { code: "vn", label: "Vietnam" },
-                                    { code: "jp", label: "Japan" },
-                                ].map((flag) => (
+                                {flags.map((flag) => (
                                     <motion.div
                                         key={flag.code}
                                         className="relative w-12 h-8 bg-white rounded-lg shadow-md border border-brand-blue/5 overflow-hidden group cursor-pointer"
@@ -296,7 +334,8 @@ export function HeroSection() {
                         <div className="relative w-full max-w-[400px] lg:max-w-[600px] aspect-square" style={{ overflow: 'visible' }}>
                             <World
                                 globeConfig={globeConfig}
-                                data={sampleArcs}
+                                data={arcsData}
+                                locations={locations}
                                 onLocationClick={(location) => setSelectedLocation(location)}
                             />
                         </div>

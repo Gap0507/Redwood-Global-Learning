@@ -14,6 +14,9 @@ export interface ProgramLocation {
         duration: string;
         slug: string;
     }[];
+    // Optional: populated from masterCountries for the "Where Can You Go" card
+    lowerGlobeDescription?: string;
+    lowerGlobeDuration?: string;
 }
 
 export const programLocations: ProgramLocation[] = [

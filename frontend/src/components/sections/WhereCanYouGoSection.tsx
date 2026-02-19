@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, ChevronDown } from 'lucide-react';
-import { programLocations, ProgramLocation } from '@/data/sampleArcs';
+import { programLocations as defaultLocations, ProgramLocation } from '@/data/sampleArcs';
 import { getWhereCanYouGoContent, defaultWhereCanYouGoContent, WhereCanYouGoContent } from '@/lib/whereCanYouGoContent';
+import { getMasterCountries, MasterCountry } from '@/lib/masterCountries';
 
 // Dynamically load Globe to avoid SSR issues
 const World = dynamic(() => import('@/components/ui/globe').then((m) => m.World), {
@@ -14,25 +15,51 @@ const World = dynamic(() => import('@/components/ui/globe').then((m) => m.World)
 });
 
 export function WhereCanYouGoSection() {
-    const [selectedLocation, setSelectedLocation] = useState<ProgramLocation>(programLocations[0]);
     const [content, setContent] = useState<WhereCanYouGoContent>(defaultWhereCanYouGoContent);
+    const [masterCountries, setMasterCountries] = useState<MasterCountry[]>([]);
 
-    useMemo(() => {
+    useEffect(() => {
         getWhereCanYouGoContent().then(setContent);
+        getMasterCountries().then(setMasterCountries);
     }, []);
+
+    // Derive programLocations from master countries (or fallback)
+    const locs: ProgramLocation[] = useMemo(() => {
+        if (masterCountries.length === 0) return defaultLocations;
+        return masterCountries.map(c => ({
+            id: c.slug,
+            city: c.city,
+            country: c.name,
+            lat: c.lat,
+            lng: c.lng,
+            flagCode: c.flagCode,
+            programs: c.heroGlobePrograms.map(p => ({
+                name: p.name, description: p.description, duration: p.duration, slug: p.slug,
+            })),
+            lowerGlobeDescription: c.lowerGlobeDescription,
+            lowerGlobeDuration: c.lowerGlobeDuration,
+        }));
+    }, [masterCountries]);
+
+    const [selectedLocation, setSelectedLocation] = useState<ProgramLocation>(defaultLocations[0]);
+
+    // Default to first location once master data loads
+    useEffect(() => {
+        if (locs.length > 0) setSelectedLocation(locs[0]);
+    }, [locs]);
 
     // Format data for the globe (points only, no arcs)
     const globeData = useMemo(() => {
-        return programLocations.map((loc, index) => ({
+        return locs.map((loc, index) => ({
             order: index + 1,
             startLat: loc.lat,
             startLng: loc.lng,
             endLat: loc.lat,
             endLng: loc.lng,
             arcAlt: 0,
-            color: "#E63946", // Brand Red for markers
+            color: "#E63946",
         }));
-    }, []);
+    }, [locs]);
 
     const globeConfig = {
         pointSize: 2,
@@ -69,6 +96,7 @@ export function WhereCanYouGoSection() {
                             <World
                                 globeConfig={globeConfig}
                                 data={globeData}
+                                locations={locs}
                                 onLocationClick={(loc) => setSelectedLocation(loc)}
                             />
                         </div>
@@ -139,13 +167,13 @@ export function WhereCanYouGoSection() {
 
                                 {/* Description */}
                                 <p className="text-white/70 text-xs leading-relaxed font-poppins mb-5 line-clamp-3">
-                                    {selectedLocation.programs[0]?.description || "Dive into foreign studies within bustling cities, university, and explore vibrant local culture."}
+                                    {selectedLocation.lowerGlobeDescription || selectedLocation.programs[0]?.description || "Dive into foreign studies within bustling cities, university, and explore vibrant local culture."}
                                 </p>
 
                                 {/* Duration Dropdown Mockup */}
                                 <div className="mb-5">
                                     <button className="w-full bg-[#1E293B]/60 hover:bg-[#283549]/60 text-white flex items-center justify-between px-4 py-2.5 rounded-xl border border-white/10 transition-colors backdrop-blur-md">
-                                        <span className="font-semibold text-xs">2 - 6 Weeks</span>
+                                        <span className="font-semibold text-xs">{selectedLocation.lowerGlobeDuration || '2 - 6 Weeks'}</span>
                                         <ChevronDown className="w-3.5 h-3.5 text-white/60" />
                                     </button>
                                 </div>
@@ -254,6 +282,7 @@ export function WhereCanYouGoSection() {
                                 <World
                                     globeConfig={globeConfig}
                                     data={globeData}
+                                    locations={locs}
                                     onLocationClick={(loc) => setSelectedLocation(loc)}
                                 />
                             </div>

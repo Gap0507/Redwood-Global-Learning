@@ -105,7 +105,8 @@ function mapCmsToCountryData(cms: CountryPageContent): CountryData {
       quote: story.description,
       starRating: story.starRating,
     })),
-    ctaImage: cms.cta.ctaImage,
+    ctaTitle: cms.cta.title,
+    ctaDescription: cms.cta.description,
   };
 }
 
@@ -674,12 +675,6 @@ export default function CountryProgramPage() {
 
             {/* CTA Section - Full Screen Sticky */}
             <section className="sticky top-0 h-screen flex items-center justify-center bg-background text-center px-8 rounded-t-[3rem] overflow-hidden shadow-[0_-20px_60px_rgba(0,0,0,0.1)]">
-              {data.ctaImage && (
-                <div className="absolute inset-0 z-0">
-                  <Image src={data.ctaImage} alt="Background" fill className="object-cover opacity-20" />
-                  <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
-                </div>
-              )}
               {/* Background Pattern */}
               <div className="absolute inset-0 opacity-[0.02]"
                 style={{
@@ -708,12 +703,11 @@ export default function CountryProgramPage() {
                 </div>
 
                 <h2 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold text-brand-blue tracking-tight leading-[0.95] mb-8">
-                  Ready to Begin Your<br />
-                  <span className="text-brand-red">Journey in {data.name}?</span>
+                  {data.ctaTitle || (<>Ready to Begin Your<br /><span className="text-brand-red">Journey in {data.name}?</span></>)}
                 </h2>
 
                 <p className="text-xl text-foreground/60 leading-relaxed font-light max-w-2xl mx-auto mb-10">
-                  Join thousands of students who have transformed their lives through our programs
+                  {data.ctaDescription || "Join thousands of students who have transformed their lives through our programs"}
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">

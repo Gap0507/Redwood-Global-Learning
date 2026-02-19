@@ -33,6 +33,7 @@ import { getGlobalProgramsContent, updateGlobalProgramsContent, defaultGlobalPro
 import { getStudentExperiencesContent, updateStudentExperiencesContent, defaultStudentExperiencesContent, StudentExperiencesContent, Testimonial } from "@/lib/studentExperiencesContent";
 import { getAboutRedwoodContent, updateAboutRedwoodContent, defaultAboutRedwoodContent, AboutRedwoodContent } from "@/lib/aboutRedwoodContent";
 import { getContactContent, updateContactContent, defaultContactContent, ContactContent } from "@/lib/contactContent";
+import { getMasterCountries, MasterCountry } from "@/lib/masterCountries";
 import { getWhereCanYouGoContent, updateWhereCanYouGoContent, defaultWhereCanYouGoContent, WhereCanYouGoContent } from "@/lib/whereCanYouGoContent";
 
 interface ContentSection {
@@ -102,6 +103,10 @@ export default function ContentManagementPage() {
             .then(setGlobalProgramsContent)
             .finally(() => setIsLoadingGlobalPrograms(false));
     }, []);
+
+    // Master Countries for dropdowns
+    const [masterCountriesList, setMasterCountriesList] = useState<MasterCountry[]>([]);
+    useEffect(() => { getMasterCountries().then(setMasterCountriesList); }, []);
 
     // Student Experiences CMS State
     const [studentExperiencesContent, setStudentExperiencesContent] = useState<StudentExperiencesContent>(defaultStudentExperiencesContent);
@@ -655,12 +660,30 @@ export default function ContentManagementPage() {
                                             <label className="block text-xs font-medium font-poppins text-brand-gray mb-1">
                                                 Country Name
                                             </label>
-                                            <input
-                                                type="text"
+                                            <select
                                                 value={program.country}
-                                                onChange={(e) => updateGlobalProgram(index, "country", e.target.value)}
-                                                className="w-full px-3 py-2 border border-gray-200 rounded-lg font-poppins text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue"
-                                            />
+                                                onChange={(e) => {
+                                                    const selected = masterCountriesList.find(c => c.name === e.target.value);
+                                                    const newPrograms = [...globalProgramsContent.programs];
+                                                    newPrograms[index] = {
+                                                        ...newPrograms[index],
+                                                        country: e.target.value,
+                                                        title: e.target.value,
+                                                        flag: selected?.flagCode || newPrograms[index].flag,
+                                                    };
+                                                    setGlobalProgramsContent({ ...globalProgramsContent, programs: newPrograms });
+                                                }}
+                                                className="w-full px-3 py-2 border border-gray-200 rounded-lg font-poppins text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue bg-white"
+                                            >
+                                                <option value="">Select a country...</option>
+                                                {masterCountriesList.map(c => (
+                                                    <option key={c.slug} value={c.name}>{c.name}</option>
+                                                ))}
+                                                {/* Allow keeping custom values not in master list */}
+                                                {program.country && !masterCountriesList.find(c => c.name === program.country) && (
+                                                    <option value={program.country}>{program.country} (custom)</option>
+                                                )}
+                                            </select>
                                         </div>
                                         <div>
                                             <label className="block text-xs font-medium font-poppins text-brand-gray mb-1">

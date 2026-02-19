@@ -5,7 +5,7 @@ import ThreeGlobe from "three-globe";
 import { useThree, Canvas, extend } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
 import countries from "@/data/globe.json";
-import { programLocations, ProgramLocation } from "@/data/sampleArcs";
+import { ProgramLocation } from "@/data/sampleArcs";
 
 // Polyfill for mobile browsers that don't support WebGPU
 if (typeof window !== 'undefined' && typeof (window as any).GPUShaderStage === 'undefined') {
@@ -68,12 +68,13 @@ export type GlobeConfig = {
 interface WorldProps {
     globeConfig: GlobeConfig;
     data: Position[];
+    locations?: ProgramLocation[]; // Added prop
     onLocationClick?: (location: ProgramLocation) => void;
 }
 
 let numbersOfRings = [0];
 
-export function Globe({ globeConfig, data, onLocationClick }: WorldProps) {
+export function Globe({ globeConfig, data, locations = [], onLocationClick }: WorldProps) {
     const globeRef = useRef<ThreeGlobe | null>(null);
     const groupRef = useRef<any>(null);
     const [isInitialized, setIsInitialized] = useState(false);
@@ -255,7 +256,10 @@ export function Globe({ globeConfig, data, onLocationClick }: WorldProps) {
         let minDistance = Infinity;
         const threshold = 10;
 
-        for (const loc of programLocations) {
+        // Use locations prop instead of imported programLocations
+        const locsToCheck = locations && locations.length > 0 ? locations : [];
+
+        for (const loc of locsToCheck) {
             const coords = (globeRef.current as any).getCoords(loc.lat, loc.lng, 0);
             const dist = Math.sqrt(
                 Math.pow(point.x - coords.x, 2) +
@@ -288,7 +292,10 @@ export function Globe({ globeConfig, data, onLocationClick }: WorldProps) {
         let minDistance = Infinity;
         const threshold = 10;
 
-        for (const loc of programLocations) {
+        // Use locations prop instead of imported programLocations
+        const locsToCheck = locations && locations.length > 0 ? locations : [];
+
+        for (const loc of locsToCheck) {
             const coords = (globeRef.current as any).getCoords(loc.lat, loc.lng, 0);
             const dist = Math.sqrt(
                 Math.pow(point.x - coords.x, 2) +

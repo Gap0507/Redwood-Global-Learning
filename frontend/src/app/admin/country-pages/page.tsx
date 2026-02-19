@@ -34,10 +34,13 @@ import {
     ProgramButton,
     StudentStory,
 } from "@/lib/countryPageContent";
+import { getMasterCountries, MasterCountry } from "@/lib/masterCountries";
 
 export default function CountryPagesAdmin() {
     // Country list state
     const [countrySlugs, setCountrySlugs] = useState<string[]>([]);
+    // Live card data: maps slug -> { name, heroImage } from Firestore (not defaults)
+    const [countryCardData, setCountryCardData] = useState<Record<string, { name: string; heroImage: string }>>({});
     const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
     const [isLoadingList, setIsLoadingList] = useState(true);
 
@@ -58,13 +61,45 @@ export default function CountryPagesAdmin() {
     const [newCountryName, setNewCountryName] = useState("");
     const [newCountrySlug, setNewCountrySlug] = useState("");
 
-    // Load country list
-    useEffect(() => {
+    // Delete confirmation modal
+    const [deleteModal, setDeleteModal] = useState<{ slug: string; name: string; isDefault: boolean } | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    // Reset confirmation modal
+    const [resetModal, setResetModal] = useState<{ slug: string; name: string } | null>(null);
+    const [isResetting, setIsResetting] = useState(false);
+
+    // Helper: load all slugs + their live card data (name + heroImage) from Firestore
+    const loadCountryList = async () => {
         setIsLoadingList(true);
-        getAllCountryPageSlugs()
-            .then(setCountrySlugs)
-            .finally(() => setIsLoadingList(false));
+        const slugs = await getAllCountryPageSlugs();
+        setCountrySlugs(slugs);
+        // Fetch live content for each slug to get the real name + image
+        const cardDataMap: Record<string, { name: string; heroImage: string }> = {};
+        await Promise.all(
+            slugs.map(async (s) => {
+                const data = await getCountryPageContent(s);
+                if (data) {
+                    cardDataMap[s] = { name: data.name, heroImage: data.hero.heroImage };
+                } else {
+                    // Fallback to hardcoded defaults if Firestore has nothing
+                    const def = defaultCountryPages[s];
+                    cardDataMap[s] = { name: def?.name || s, heroImage: def?.hero.heroImage || "" };
+                }
+            })
+        );
+        setCountryCardData(cardDataMap);
+        setIsLoadingList(false);
+    };
+
+    // Load country list on mount
+    useEffect(() => {
+        loadCountryList();
     }, []);
+
+    // Master Countries for dropdown
+    const [masterCountriesList, setMasterCountriesList] = useState<MasterCountry[]>([]);
+    useEffect(() => { getMasterCountries().then(setMasterCountriesList); }, []);
 
     // Load content when country is selected
     useEffect(() => {
@@ -81,21 +116,38 @@ export default function CountryPagesAdmin() {
             .finally(() => setIsLoadingContent(false));
     }, [selectedCountry]);
 
-    // Save handler
+    // Save handler — handles slug migration (e.g. changing uk → bali)
     const handleSave = async () => {
         if (!selectedCountry || !content) return;
         setIsSaving(true);
         setSaveStatus("idle");
         const toastId = toast.loading("Saving changes...");
-        const success = await updateCountryPageContent(selectedCountry, content);
-        setIsSaving(false);
+
+        const newSlug = content.slug;
+        const oldSlug = selectedCountry;
+        const slugChanged = newSlug !== oldSlug;
+
+        // Always save to the new slug document
+        const success = await updateCountryPageContent(newSlug, content);
+
         if (success) {
+            // If slug changed: delete old doc (unless it was a hardcoded default)
+            if (slugChanged) {
+                // Only delete the old Firestore doc — don't delete hardcoded defaults
+                // (deleteCountryPage is safe even if doc doesn't exist)
+                await deleteCountryPage(oldSlug);
+            }
             setSaveStatus("success");
             toast.success("Changes saved successfully!", { id: toastId });
+            // Update selected country to new slug and refresh card list
+            setSelectedCountry(newSlug);
+            // Reload the card list to reflect new name/image/slug
+            await loadCountryList();
         } else {
             setSaveStatus("error");
             toast.error("Failed to save changes.", { id: toastId });
         }
+        setIsSaving(false);
         setTimeout(() => setSaveStatus("idle"), 3000);
     };
 
@@ -151,10 +203,15 @@ export default function CountryPagesAdmin() {
                 language: { content: "Language information...", image: "" },
             },
             studentStories: [],
-            cta: { ctaImage: "" },
+            cta: { title: `Ready to Begin Your Journey in ${newCountryName.trim()}?`, description: "Join thousands of students who have transformed their lives through our programs." },
         };
 
         setCountrySlugs((prev) => [...prev, slug]);
+        // Also seed the card data for the new country so the thumbnail shows
+        setCountryCardData((prev) => ({
+            ...prev,
+            [slug]: { name: newContent.name, heroImage: newContent.hero.heroImage },
+        }));
         setSelectedCountry(slug);
         setContent(newContent);
         setShowNewCountryForm(false);
@@ -164,15 +221,58 @@ export default function CountryPagesAdmin() {
         updateCountryPageContent(slug, newContent);
     };
 
-    // Delete country
-    const handleDeleteCountry = async (slug: string) => {
-        if (!confirm(`Are you sure you want to delete the "${slug}" country page?`)) return;
+    // Delete country — opens modal instead of native confirm
+    const handleDeleteCountry = (slug: string) => {
+        const liveCard = countryCardData[slug];
+        const name = liveCard?.name || defaultCountryPages[slug]?.name || slug;
+        const isDefault = !!defaultCountryPages[slug];
+        setDeleteModal({ slug, name, isDefault });
+    };
+
+    // Confirmed delete — called from modal
+    const confirmDelete = async () => {
+        if (!deleteModal) return;
+        const { slug } = deleteModal;
+        setIsDeleting(true);
         await deleteCountryPage(slug);
         setCountrySlugs((prev) => prev.filter((s) => s !== slug));
+        setCountryCardData((prev) => {
+            const next = { ...prev };
+            delete next[slug];
+            return next;
+        });
         if (selectedCountry === slug) {
             setSelectedCountry(null);
             setContent(null);
         }
+        setIsDeleting(false);
+        setDeleteModal(null);
+        toast.success(`"${deleteModal.name}" page deleted.`);
+    };
+
+    // Reset a default country back to its hardcoded defaults
+    const handleResetCountry = (slug: string) => {
+        const name = defaultCountryPages[slug]?.name || slug;
+        setResetModal({ slug, name });
+    };
+
+    // Confirmed reset — overwrites Firestore doc with defaultCountryPages data
+    const confirmReset = async () => {
+        if (!resetModal) return;
+        const { slug } = resetModal;
+        const defaultData = defaultCountryPages[slug];
+        if (!defaultData) return;
+        setIsResetting(true);
+        const toastId = toast.loading(`Resetting ${resetModal.name} to defaults...`);
+        await updateCountryPageContent(slug, defaultData);
+        // Refresh card data
+        await loadCountryList();
+        if (selectedCountry === slug) {
+            setContent(defaultData);
+        }
+        setIsResetting(false);
+        setResetModal(null);
+        toast.success(`"${resetModal.name}" reset to default content.`, { id: toastId });
     };
 
     // Generic image upload
@@ -337,13 +437,28 @@ export default function CountryPagesAdmin() {
                             Manage content for individual country pages
                         </p>
                     </div>
-                    <button
-                        onClick={() => setShowNewCountryForm(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-brand-blue text-white font-poppins font-medium rounded-lg shadow-md hover:bg-brand-blue/90 transition-all"
-                    >
-                        <PlusCircle className="w-4 h-4" />
-                        Add Country
-                    </button>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => {
+                                // Reset all default countries back to their hardcoded defaults
+                                const defaultSlugs = Object.keys(defaultCountryPages);
+                                if (defaultSlugs.length === 0) return;
+                                setResetModal({ slug: "__ALL_DEFAULTS__", name: "all default countries" });
+                            }}
+                            className="flex items-center gap-2 px-4 py-2 border border-brand-blue/30 text-brand-blue font-poppins font-medium rounded-lg hover:bg-brand-blue/5 transition-all text-sm"
+                            title="Reset all default country pages to their original content"
+                        >
+                            <RotateCcw className="w-4 h-4" />
+                            Reset Defaults
+                        </button>
+                        <button
+                            onClick={() => setShowNewCountryForm(true)}
+                            className="flex items-center gap-2 px-4 py-2 bg-brand-blue text-white font-poppins font-medium rounded-lg shadow-md hover:bg-brand-blue/90 transition-all"
+                        >
+                            <PlusCircle className="w-4 h-4" />
+                            Add Country
+                        </button>
+                    </div>
                 </div>
 
                 {/* New Country Form */}
@@ -363,18 +478,22 @@ export default function CountryPagesAdmin() {
                                     <label className="block text-sm font-medium font-poppins text-brand-gray mb-1">
                                         Country Name
                                     </label>
-                                    <input
-                                        type="text"
+                                    <select
                                         value={newCountryName}
                                         onChange={(e) => {
+                                            const selected = masterCountriesList.find(c => c.name === e.target.value);
                                             setNewCountryName(e.target.value);
                                             setNewCountrySlug(
-                                                e.target.value.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-")
+                                                selected?.slug || e.target.value.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-")
                                             );
                                         }}
-                                        placeholder="e.g. South Korea"
-                                        className="w-full px-4 py-3 border border-gray-200 rounded-xl font-poppins focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue"
-                                    />
+                                        className="w-full px-4 py-3 border border-gray-200 rounded-xl font-poppins focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue bg-white"
+                                    >
+                                        <option value="">Select a country...</option>
+                                        {masterCountriesList.map(c => (
+                                            <option key={c.slug} value={c.name}>{c.name}</option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium font-poppins text-brand-gray mb-1">
@@ -420,8 +539,10 @@ export default function CountryPagesAdmin() {
                 ) : (
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {countrySlugs.map((slug) => {
-                            const defaults = defaultCountryPages[slug];
-                            const name = defaults?.name || slug;
+                            // Use live card data from Firestore, fallback to defaults
+                            const liveCard = countryCardData[slug];
+                            const name = liveCard?.name || defaultCountryPages[slug]?.name || slug;
+                            const heroImage = liveCard?.heroImage || defaultCountryPages[slug]?.hero.heroImage || "";
                             return (
                                 <motion.div
                                     key={slug}
@@ -430,23 +551,23 @@ export default function CountryPagesAdmin() {
                                     className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all overflow-hidden group"
                                 >
                                     {/* Country Image */}
-                                    <div className="relative h-36 bg-gray-100">
-                                        {defaults?.hero.heroImage ? (
+                                    <div className="relative aspect-video bg-gray-200">
+                                        {heroImage ? (
                                             <Image
-                                                src={defaults.hero.heroImage}
+                                                src={heroImage}
                                                 alt={name}
                                                 fill
-                                                className="object-cover"
+                                                className="object-cover transition-transform duration-500 group-hover:scale-110"
                                             />
                                         ) : (
                                             <div className="flex items-center justify-center h-full">
-                                                <MapPin className="w-10 h-10 text-gray-300" />
+                                                <MapPin className="w-10 h-10 text-gray-400 opacity-30" />
                                             </div>
                                         )}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                                        <div className="absolute bottom-3 left-3">
-                                            <h3 className="text-white font-montserrat font-bold text-lg">{name}</h3>
-                                            <p className="text-white/70 text-xs font-poppins">/{slug}</p>
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                                        <div className="absolute bottom-4 left-4">
+                                            <h3 className="text-white font-montserrat font-bold text-xl leading-tight drop-shadow-md">{name}</h3>
+                                            <p className="text-white/80 text-xs font-poppins font-medium tracking-wide">/{slug}</p>
                                         </div>
                                     </div>
 
@@ -458,19 +579,145 @@ export default function CountryPagesAdmin() {
                                         >
                                             Edit Content
                                         </button>
-                                        {!defaultCountryPages[slug] && (
+                                        <div className="flex items-center gap-1">
+                                            {/* Reset to default (only for built-in defaults) */}
+                                            {defaultCountryPages[slug] && (
+                                                <button
+                                                    onClick={() => handleResetCountry(slug)}
+                                                    className="p-2 text-brand-blue/50 hover:text-brand-blue hover:bg-brand-blue/10 rounded-lg transition-all"
+                                                    title="Reset to default content"
+                                                >
+                                                    <RotateCcw className="w-4 h-4" />
+                                                </button>
+                                            )}
+                                            {/* Delete — shown on ALL cards */}
                                             <button
                                                 onClick={() => handleDeleteCountry(slug)}
-                                                className="p-2 text-gray-400 hover:text-red-500 transition-colors"
-                                                title="Delete Country"
+                                                className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                                title={defaultCountryPages[slug] ? "Delete page data (keeps default)" : "Delete Country"}
                                             >
                                                 <Trash2 className="w-4 h-4" />
                                             </button>
-                                        )}
+                                        </div>
                                     </div>
                                 </motion.div>
                             );
                         })}
+                    </div>
+                )}
+
+                {/* ── Delete Confirmation Modal ── */}
+                {deleteModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6"
+                        >
+                            {/* Icon */}
+                            <div className="flex items-center justify-center w-14 h-14 mx-auto mb-4 rounded-full bg-red-100">
+                                <Trash2 className="w-7 h-7 text-red-500" />
+                            </div>
+                            <h2 className="font-montserrat font-bold text-xl text-center text-brand-blue mb-2">
+                                Are you sure?
+                            </h2>
+                            <p className="text-center text-brand-gray font-poppins text-sm mb-1">
+                                This will delete the page data for
+                            </p>
+                            <p className="text-center font-poppins font-semibold text-brand-blue mb-3">
+                                &ldquo;{deleteModal.name}&rdquo;
+                            </p>
+                            {deleteModal.isDefault ? (
+                                <p className="text-center text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-5 font-poppins">
+                                    ⚠️ This is a default country. Deleting its data will revert <br />the page to the original built-in content.
+                                </p>
+                            ) : (
+                                <p className="text-center text-xs text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-5 font-poppins">
+                                    This action cannot be undone.
+                                </p>
+                            )}
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setDeleteModal(null)}
+                                    disabled={isDeleting}
+                                    className="flex-1 px-4 py-2.5 border border-gray-200 text-brand-gray font-poppins font-medium rounded-xl hover:bg-gray-50 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={confirmDelete}
+                                    disabled={isDeleting}
+                                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-red-500 text-white font-poppins font-semibold rounded-xl hover:bg-red-600 transition-colors disabled:opacity-70"
+                                >
+                                    {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                                    {isDeleting ? "Deleting..." : "Yes, Delete"}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+
+                {/* ── Reset Confirmation Modal ── */}
+                {resetModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6"
+                        >
+                            {/* Icon */}
+                            <div className="flex items-center justify-center w-14 h-14 mx-auto mb-4 rounded-full bg-brand-blue/10">
+                                <RotateCcw className="w-7 h-7 text-brand-blue" />
+                            </div>
+                            <h2 className="font-montserrat font-bold text-xl text-center text-brand-blue mb-2">
+                                Reset to Default?
+                            </h2>
+                            <p className="text-center text-brand-gray font-poppins text-sm mb-1">
+                                This will overwrite your current edits for
+                            </p>
+                            <p className="text-center font-poppins font-semibold text-brand-blue mb-3">
+                                &ldquo;{resetModal.name}&rdquo;
+                            </p>
+                            <p className="text-center text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-5 font-poppins">
+                                ⚠️ All custom edits will be replaced with the original built-in content. This cannot be undone.
+                            </p>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setResetModal(null)}
+                                    disabled={isResetting}
+                                    className="flex-1 px-4 py-2.5 border border-gray-200 text-brand-gray font-poppins font-medium rounded-xl hover:bg-gray-50 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={async () => {
+                                        if (resetModal.slug === "__ALL_DEFAULTS__") {
+                                            // Reset every default country
+                                            setIsResetting(true);
+                                            const toastId = toast.loading("Resetting all defaults...");
+                                            await Promise.all(
+                                                Object.entries(defaultCountryPages).map(([s, data]) =>
+                                                    updateCountryPageContent(s, data)
+                                                )
+                                            );
+                                            await loadCountryList();
+                                            setIsResetting(false);
+                                            setResetModal(null);
+                                            toast.success("All default country pages have been reset.", { id: toastId });
+                                        } else {
+                                            await confirmReset();
+                                        }
+                                    }}
+                                    disabled={isResetting}
+                                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-brand-blue text-white font-poppins font-semibold rounded-xl hover:bg-brand-blue/90 transition-colors disabled:opacity-70"
+                                >
+                                    {isResetting ? <Loader2 className="w-4 h-4 animate-spin" /> : <RotateCcw className="w-4 h-4" />}
+                                    {isResetting ? "Resetting..." : "Yes, Reset"}
+                                </button>
+                            </div>
+                        </motion.div>
                     </div>
                 )}
             </div>
@@ -545,20 +792,31 @@ export default function CountryPagesAdmin() {
                         <div className="grid md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium font-poppins text-brand-gray mb-2">Country Name</label>
-                                <input
-                                    type="text"
+                                <select
                                     value={content.name}
-                                    onChange={(e) => setContent({ ...content, name: e.target.value })}
-                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl font-poppins focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue"
-                                />
+                                    onChange={(e) => {
+                                        const selected = masterCountriesList.find(c => c.name === e.target.value);
+                                        const newSlug = selected?.slug || e.target.value.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-");
+                                        setContent({ ...content, name: e.target.value, slug: newSlug });
+                                    }}
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl font-poppins focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue bg-white"
+                                >
+                                    <option value="">Select a country...</option>
+                                    {masterCountriesList.map(c => (
+                                        <option key={c.slug} value={c.name}>{c.name}</option>
+                                    ))}
+                                    {!masterCountriesList.find(c => c.name === content.name) && content.name && (
+                                        <option value={content.name}>{content.name}</option>
+                                    )}
+                                </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium font-poppins text-brand-gray mb-2">URL Slug</label>
+                                <label className="block text-sm font-medium font-poppins text-brand-gray mb-2">URL Slug (Edit with caution)</label>
                                 <input
                                     type="text"
                                     value={content.slug}
-                                    disabled
-                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl font-poppins bg-gray-50 text-gray-500"
+                                    onChange={(e) => setContent({ ...content, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl font-poppins focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue"
                                 />
                             </div>
                         </div>
@@ -1071,13 +1329,27 @@ export default function CountryPagesAdmin() {
                                     exit={{ opacity: 0, height: 0 }}
                                     className="px-6 pb-6 border-t border-gray-100"
                                 >
-                                    <div className="pt-6 space-y-6">
-                                        <ImageUploader
-                                            currentImage={content.cta.ctaImage}
-                                            fieldId="cta-image"
-                                            onUpload={(url) => setContent({ ...content, cta: { ...content.cta, ctaImage: url } })}
-                                            label="CTA Background Image"
-                                        />
+                                    <div className="pt-6 space-y-4">
+                                        <div>
+                                            <label className="block text-xs font-medium font-poppins text-brand-gray mb-1">CTA Title</label>
+                                            <input
+                                                type="text"
+                                                value={content.cta.title ?? ""}
+                                                onChange={(e) => setContent({ ...content, cta: { ...content.cta, title: e.target.value } })}
+                                                placeholder={`Ready to Begin Your Journey in ${content.name}?`}
+                                                className="w-full px-3 py-2 border border-gray-200 rounded-lg font-poppins text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-medium font-poppins text-brand-gray mb-1">CTA Description</label>
+                                            <textarea
+                                                rows={3}
+                                                value={content.cta.description ?? ""}
+                                                onChange={(e) => setContent({ ...content, cta: { ...content.cta, description: e.target.value } })}
+                                                placeholder="Join thousands of students who have transformed their lives through our programs."
+                                                className="w-full px-3 py-2 border border-gray-200 rounded-lg font-poppins text-sm resize-none focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue"
+                                            />
+                                        </div>
                                         <ActionButtons />
                                     </div>
                                 </motion.div>

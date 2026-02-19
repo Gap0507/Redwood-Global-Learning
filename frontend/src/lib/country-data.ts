@@ -45,7 +45,8 @@ export interface CountryData {
   lifeDescription?: string
   life: LifeSection
   testimonials: Testimonial[]
-  ctaImage?: string
+  ctaTitle?: string
+  ctaDescription?: string
 }
 
 export const countryData: Record<string, CountryData> = {

@@ -45,6 +45,12 @@ const sidebarLinks = [
         description: "Manage programs page",
     },
     {
+        title: "Master Countries",
+        href: "/admin/master-countries",
+        icon: Globe,
+        description: "Centralized country list & globe data",
+    },
+    {
         title: "Country Pages",
         href: "/admin/country-pages",
         icon: MapPin,

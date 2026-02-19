@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import {
@@ -38,6 +39,7 @@ import {
     ProgramStep,
     ImpactStat
 } from "@/lib/programsPageContent";
+import { getMasterCountries, MasterCountry } from "@/lib/masterCountries";
 
 // Section definitions for the sidebar/tabs
 const sections = [
@@ -68,6 +70,10 @@ export default function CountryProgramsAdminPage() {
             .then(setContent)
             .finally(() => setIsLoading(false));
     }, []);
+
+    // Master Countries for dropdowns
+    const [masterCountriesList, setMasterCountriesList] = useState<MasterCountry[]>([]);
+    useEffect(() => { getMasterCountries().then(setMasterCountriesList); }, []);
 
     const handleSave = async () => {
         setIsSaving(true);
@@ -373,13 +379,30 @@ export default function CountryProgramsAdminPage() {
 
                                         <div className="grid md:grid-cols-2 gap-6">
                                             <div className="space-y-4">
-                                                <Input label="Country Name" value={program.name}
+                                                <label className="block text-xs font-medium text-brand-gray mb-1">Country Name</label>
+                                                <select
+                                                    value={program.name}
                                                     onChange={v => {
+                                                        const selected = masterCountriesList.find(c => c.name === v.target.value);
                                                         const newP = [...content.countryPrograms];
-                                                        newP[i] = { ...newP[i], name: v };
+                                                        newP[i] = {
+                                                            ...newP[i],
+                                                            name: v.target.value,
+                                                            slug: selected?.slug || newP[i].slug,
+                                                            flagUrl: selected ? `https://flagcdn.com/w80/${selected.flagCode}.png` : newP[i].flagUrl,
+                                                        };
                                                         setContent({ ...content, countryPrograms: newP });
                                                     }}
-                                                />
+                                                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue bg-white"
+                                                >
+                                                    <option value="">Select a country...</option>
+                                                    {masterCountriesList.map(c => (
+                                                        <option key={c.slug} value={c.name}>{c.name}</option>
+                                                    ))}
+                                                    {program.name && !masterCountriesList.find(c => c.name === program.name) && (
+                                                        <option value={program.name}>{program.name} (custom)</option>
+                                                    )}
+                                                </select>
                                                 <Input label="Tagline" value={program.tagline}
                                                     onChange={v => {
                                                         const newP = [...content.countryPrograms];
@@ -536,7 +559,7 @@ export default function CountryProgramsAdminPage() {
                                                 <button
                                                     onClick={() => triggerUpload(`studentStories:flagUrl:${i}`)}
                                                     className="bg-brand-blue/10 p-2 rounded hover:bg-brand-blue/20">
-                                                    <Upload className="w-4 h-4 text-brand-blue" />
+                                                    {uploadingKey === `studentStories:flagUrl:${i}` ? <Loader2 className="w-4 h-4 animate-spin text-brand-blue" /> : <Upload className="w-4 h-4 text-brand-blue" />}
                                                 </button>
                                             </div>
                                         </div>

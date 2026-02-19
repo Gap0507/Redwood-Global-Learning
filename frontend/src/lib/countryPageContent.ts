@@ -65,7 +65,8 @@ export interface CountryPageContent {
     studentStories: StudentStory[];
     // 6. CTA
     cta: {
-        ctaImage: string;
+        title: string;
+        description: string;
     };
 }
 
@@ -116,7 +117,7 @@ export const defaultCountryPages: Record<string, CountryPageContent> = {
             { description: "My time in India was transformative. The cultural immersion program opened my eyes to perspectives I never imagined. From the Taj Mahal to rural villages, every moment was filled with discovery and growth.", name: "Sarah Chen", program: "Cultural Immersion Alumna", starRating: 5 },
             { description: "Working on sustainable development projects in India showed me the real impact of global education. The mentorship and hands-on experience prepared me for a career in international development.", name: "Marcus Johnson", program: "Social Innovation Participant", starRating: 5 },
         ],
-        cta: { ctaImage: "" },
+        cta: { title: "Ready to Begin Your Journey in India?", description: "Join thousands of students who have transformed their lives through our programs." },
     },
     uk: {
         slug: "uk",
@@ -162,7 +163,7 @@ export const defaultCountryPages: Record<string, CountryPageContent> = {
             { description: "The Global Leadership Academy in London exceeded my expectations. The networking opportunities and mentorship from Oxford professors opened doors I never knew existed. This program changed my career trajectory.", name: "Elena Rodriguez", program: "Leadership Academy Graduate", starRating: 5 },
             { description: "Studying innovation in the UK showed me how research and entrepreneurship intersect. The access to Cambridge labs and London tech startups was incredible. I made connections that continue to benefit my work today.", name: "David Park", program: "STEM Innovation Participant", starRating: 5 },
         ],
-        cta: { ctaImage: "" },
+        cta: { title: "Ready to Begin Your Journey in the UK?", description: "Join thousands of students who have transformed their lives through our programs." },
     },
     thailand: {
         slug: "thailand",
@@ -208,7 +209,7 @@ export const defaultCountryPages: Record<string, CountryPageContent> = {
             { description: "Thailand was the perfect introduction to Southeast Asia. From Bangkok's energy to Chiang Mai's tranquility, every aspect of the program was thoughtfully designed. The cultural insights I gained continue to enrich my life.", name: "Anna Kowalski", program: "Southeast Asia Explorer", starRating: 5 },
             { description: "Thailand's startup ecosystem surprised me with its innovation and energy. The program connected me with entrepreneurs who are shaping the future of digital business in Asia. An incredible learning experience.", name: "James Wilson", program: "Digital Nomad Experience", starRating: 5 },
         ],
-        cta: { ctaImage: "" },
+        cta: { title: "Ready to Begin Your Journey in Thailand?", description: "Join thousands of students who have transformed their lives through our programs." },
     },
     vietnam: {
         slug: "vietnam",
@@ -254,7 +255,7 @@ export const defaultCountryPages: Record<string, CountryPageContent> = {
             { description: "Vietnam's history came alive through this program. From Halong Bay to the Cu Chi tunnels, every experience was educational and transformative. The program's balance of history and contemporary culture was perfect.", name: "Maria Garcia", program: "Heritage Program Graduate", starRating: 5 },
             { description: "Vietnam's tech scene is booming, and this program gave me incredible insights. Meeting startup founders and visiting innovation centers showed me the future of technology in Southeast Asia.", name: "Robert Kim", program: "Innovation Hub Participant", starRating: 5 },
         ],
-        cta: { ctaImage: "" },
+        cta: { title: "Ready to Begin Your Journey in Vietnam?", description: "Join thousands of students who have transformed their lives through our programs." },
     },
     japan: {
         slug: "japan",
@@ -300,7 +301,7 @@ export const defaultCountryPages: Record<string, CountryPageContent> = {
             { description: "Japan's blend of tradition and technology is mesmerizing. The program perfectly balanced cutting-edge robotics labs with ancient temples. Every day brought new discoveries and challenged my perspectives on innovation.", name: "Lisa Thompson", program: "Innovation Exchange Graduate", starRating: 5 },
             { description: "Learning tea ceremony and calligraphy in Kyoto was transformative. The program's respect for tradition while embracing modernity showed me a different way of thinking. Japan changed how I see the world.", name: "Carlos Mendoza", program: "Cultural Arts Participant", starRating: 5 },
         ],
-        cta: { ctaImage: "" },
+        cta: { title: "Ready to Begin Your Journey in Japan?", description: "Join thousands of students who have transformed their lives through our programs." },
     },
     usa: {
         slug: "usa",
@@ -346,7 +347,7 @@ export const defaultCountryPages: Record<string, CountryPageContent> = {
             { description: "The American Dream program opened my eyes to so many possibilities. Studying at different universities across states showed me the incredible diversity of American education and culture. It was life-changing.", name: "Priya Patel", program: "American Dream Graduate", starRating: 5 },
             { description: "Silicon Valley exceeded my expectations. Meeting startup founders and visiting innovation labs showed me how American entrepreneurship really works. The networking opportunities were incredible.", name: "Ahmed Hassan", program: "Innovation Participant", starRating: 5 },
         ],
-        cta: { ctaImage: "" },
+        cta: { title: "Ready to Begin Your Journey in the United States?", description: "Join thousands of students who have transformed their lives through our programs." },
     },
 };
 
@@ -375,9 +376,12 @@ export async function getCountryPageContent(slug: string): Promise<CountryPageCo
             const docRef = doc(db, COLLECTION_NAME, getDocId(normalizedSlug));
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
-                return docSnap.data() as CountryPageContent;
+                const data = docSnap.data();
+                // If this doc was explicitly deleted (sentinel), return null
+                if (data._deleted === true) return null;
+                return data as CountryPageContent;
             }
-            // Fallback to default data
+            // Firestore doc doesn't exist — fall back to hardcoded default
             return defaultCountryPages[normalizedSlug] || null;
         })();
 
@@ -406,9 +410,18 @@ export async function updateCountryPageContent(slug: string, content: CountryPag
  * Delete a country page from Firestore
  */
 export async function deleteCountryPage(slug: string): Promise<boolean> {
+    const normalizedSlug = slug.toLowerCase();
+    const isDefault = !!defaultCountryPages[normalizedSlug];
     try {
-        const docRef = doc(db, COLLECTION_NAME, getDocId(slug.toLowerCase()));
-        await deleteDoc(docRef);
+        const docRef = doc(db, COLLECTION_NAME, getDocId(normalizedSlug));
+        if (isDefault) {
+            // For built-in defaults: write a sentinel so the slug is excluded on reload
+            // (simply deleting the doc would let getAllCountryPageSlugs re-add it from defaultCountryPages)
+            await setDoc(docRef, { _deleted: true });
+        } else {
+            // For custom countries: fully remove the document
+            await deleteDoc(docRef);
+        }
         return true;
     } catch (error) {
         console.error(`Error deleting country page for ${slug}:`, error);
@@ -424,15 +437,29 @@ export async function getAllCountryPageSlugs(): Promise<string[]> {
     try {
         const colRef = collection(db, COLLECTION_NAME);
         const snapshot = await getDocs(colRef);
+
+        // Track which default slugs have been explicitly deleted (sentinel docs)
+        const deletedDefaultSlugs = new Set<string>();
         const firestoreSlugs: string[] = [];
+
         snapshot.forEach((docSnap) => {
-            if (docSnap.id.startsWith(DOC_PREFIX)) {
-                firestoreSlugs.push(docSnap.id.replace(DOC_PREFIX, ""));
+            if (!docSnap.id.startsWith(DOC_PREFIX)) return;
+            const slug = docSnap.id.replace(DOC_PREFIX, "");
+            const data = docSnap.data();
+            if (data._deleted === true) {
+                // This default country was explicitly deleted — exclude it
+                deletedDefaultSlugs.add(slug);
+            } else {
+                firestoreSlugs.push(slug);
             }
         });
-        // Merge: defaults + any extra from Firestore
-        const allSlugs = new Set([...defaultSlugs, ...firestoreSlugs]);
-        return Array.from(allSlugs);
+
+        // Merge: defaults (minus deleted ones) + custom Firestore slugs
+        const activeSlugs = new Set([
+            ...defaultSlugs.filter((s) => !deletedDefaultSlugs.has(s)),
+            ...firestoreSlugs,
+        ]);
+        return Array.from(activeSlugs);
     } catch (error) {
         console.error("Error fetching all country page slugs:", error);
         return defaultSlugs;
