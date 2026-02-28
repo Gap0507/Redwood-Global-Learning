@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { Menu, Globe, GraduationCap, Users, Mail, BookOpen, MapPin } from "lucide-react"
+import { Menu, Globe, GraduationCap, Users, Mail, BookOpen, MapPin, Trophy, Mic2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   NavigationMenu,
@@ -21,6 +21,8 @@ import {
 import { ApplyNowForm } from "@/components/forms/ApplyNowForm"
 import { cn } from "@/lib/utils"
 
+// Left side links (first 4)
+// Right side links (remaining) + Apply Now button
 const navigationItems = [
   {
     title: "Program",
@@ -41,10 +43,22 @@ const navigationItems = [
     icon: Mail,
   },
   {
+    title: "Sports",
+    href: "/sports",
+    description: "Discover global athletic opportunities",
+    icon: Trophy,
+  },
+  {
     title: "Advisory Board",
     href: "/advisory-board",
     description: "Meet our distinguished advisory board",
     icon: Users,
+  },
+  {
+    title: "Conferences",
+    href: "/conferences",
+    description: "Join global academic events and conferences",
+    icon: Mic2,
   },
 ]
 
@@ -73,15 +87,15 @@ export function Navbar({ onApplyClick }: { onApplyClick?: () => void }) {
             isScrolled && "shadow-2xl shadow-brand-blue/10 bg-white/98"
           )}
         >
-          {/* Left Navigation Links - 3 items (Program, About, Contact) */}
-          <div className="hidden lg:flex items-center gap-6 flex-1">
+          {/* Left Navigation Links - 4 items */}
+          <div className="hidden lg:flex items-center flex-1">
             <NavigationMenu>
-              <NavigationMenuList className="gap-2">
-                {navigationItems.slice(0, 3).map((item) => (
+              <NavigationMenuList className="gap-0">
+                {navigationItems.slice(0, 4).map((item) => (
                   <NavigationMenuItem key={item.title}>
                     <Link
                       href={item.href}
-                      className="group inline-flex h-auto w-max items-center justify-center rounded-md px-4 py-2 text-sm lg:text-base font-medium text-brand-gray transition-all hover:text-brand-blue focus:text-brand-blue focus:outline-none hover:border-b-[1.5px] hover:border-brand-blue"
+                      className="group inline-flex h-auto w-max items-center justify-center rounded-md px-3 py-2 text-sm font-medium text-brand-gray transition-all hover:text-brand-blue focus:text-brand-blue focus:outline-none hover:border-b-[1.5px] hover:border-brand-blue"
                       style={{ fontFamily: 'var(--font-montserrat)' }}
                     >
                       {item.title}
@@ -97,7 +111,7 @@ export function Navbar({ onApplyClick }: { onApplyClick?: () => void }) {
             href="/"
             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center transition-all duration-200 hover:opacity-90 hover:scale-105 z-10"
           >
-            <div className="relative h-[150px] w-[260px] sm:h-[170px] sm:w-[300px] md:h-[190px] md:w-[340px] lg:h-[210px] lg:w-[380px]">
+            <div className="relative h-[150px] w-[220px] sm:h-[170px] sm:w-[260px] md:h-[180px] md:w-[280px] lg:h-[190px] lg:w-[300px]">
               <Image
                 src="/logo.svg"
                 alt="Redwood Global Learning"
@@ -110,15 +124,15 @@ export function Navbar({ onApplyClick }: { onApplyClick?: () => void }) {
             </div>
           </Link>
 
-          {/* Right Navigation Links - 1 item (Advisory Board) + CTA Button */}
-          <div className="hidden lg:flex items-center gap-6 flex-1 justify-end">
+          {/* Right Navigation Links - 2 items + CTA Button */}
+          <div className="hidden lg:flex items-center flex-1 justify-end">
             <NavigationMenu>
-              <NavigationMenuList className="gap-2">
-                {navigationItems.slice(3).map((item) => (
+              <NavigationMenuList className="gap-0">
+                {navigationItems.slice(4).map((item) => (
                   <NavigationMenuItem key={item.title}>
                     <Link
                       href={item.href}
-                      className="group inline-flex h-auto w-max items-center justify-center rounded-md px-4 py-2 text-sm lg:text-base font-medium text-brand-gray transition-all hover:text-brand-blue focus:text-brand-blue focus:outline-none hover:border-b-[1.5px] hover:border-brand-blue"
+                      className="group inline-flex h-auto w-max items-center justify-center rounded-md px-3 py-2 text-sm font-medium text-brand-gray transition-all hover:text-brand-blue focus:text-brand-blue focus:outline-none hover:border-b-[1.5px] hover:border-brand-blue"
                       style={{ fontFamily: 'var(--font-montserrat)' }}
                     >
                       {item.title}
@@ -129,7 +143,7 @@ export function Navbar({ onApplyClick }: { onApplyClick?: () => void }) {
             </NavigationMenu>
             <Button
               onClick={onApplyClick}
-              className="bg-brand-red hover:bg-brand-red/90 text-white font-medium text-sm lg:text-base px-6 py-2 h-auto shadow-sm hover:shadow-md transition-all duration-200 rounded-full ml-2"
+              className="bg-brand-red hover:bg-brand-red/90 text-white font-medium text-sm px-5 py-2 h-auto shadow-sm hover:shadow-md transition-all duration-200 rounded-full ml-2"
               style={{ fontFamily: 'var(--font-montserrat)' }}
             >
               Apply Now

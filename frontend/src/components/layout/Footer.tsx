@@ -28,6 +28,8 @@ const programLinks = [
     { title: "Summer Programs", href: "/programs/summer" },
     { title: "Language Immersion", href: "/programs/language" },
     { title: "Cultural Tours", href: "/programs/cultural-tours" },
+    { title: "Global Sports", href: "/sports" },
+    { title: "Conferences", href: "/conferences" },
 ];
 
 export function Footer({ onApplyClick }: { onApplyClick?: () => void }) {
