@@ -1,44 +1,22 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import Image from "next/image"
-import Link from "next/link"
 import { ArrowRight, Trophy, Users, Globe, Building2, Medal, Target } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/layout/Navbar"
 import { Footer } from "@/components/layout/Footer"
 import { ApplyNowForm } from "@/components/forms/ApplyNowForm"
+import { getSportsPageContent, defaultSportsPageContent, SportsPageContent } from "@/lib/sportsPageContent"
 
-const athleticBenefits = [
-    {
-        title: "World-Class Facilities",
-        description: "Access to state-of-the-art sports facilities at our partner schools and universities.",
-        icon: Building2,
-        image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80"
-    },
-    {
-        title: "Team Participation",
-        description: "Opportunities to join and compete in official school and university sports teams.",
-        icon: Users,
-        image: "https://images.unsplash.com/photo-1526232761682-d26e03ac148e?w=800&q=80"
-    },
-    {
-        title: "Elite Coaching",
-        description: "Exposure to international coaching and high-performance training environments.",
-        icon: Target,
-        image: "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=800&q=80"
-    },
-    {
-        title: "Global Tournaments",
-        description: "Participation in major inter-school and inter-university sporting events worldwide.",
-        icon: Globe,
-        image: "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=800&q=80"
-    }
-]
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = { Building2, Users, Target, Globe, Trophy, Medal }
 
 export default function SportsPage() {
     const [isApplyModalOpen, setIsApplyModalOpen] = useState(false)
+    const [content, setContent] = useState<SportsPageContent>(defaultSportsPageContent)
+
+    useEffect(() => { getSportsPageContent().then(setContent) }, [])
 
     const handleApplyClick = () => setIsApplyModalOpen(true)
 
@@ -48,11 +26,10 @@ export default function SportsPage() {
 
             {/* Hero Section */}
             <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 px-4 sm:px-6 lg:px-8 overflow-hidden min-h-[80vh] flex items-center">
-                {/* Background Overlay */}
                 <div className="absolute inset-0 z-0">
                     <Image
-                        src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=2000&q=80"
-                        alt="Epic sports stadium under lights"
+                        src={content.hero.heroImage}
+                        alt="Sports stadium"
                         fill
                         className="object-cover"
                         priority
@@ -71,17 +48,17 @@ export default function SportsPage() {
                         <div className="inline-flex items-center gap-3 mb-6">
                             <div className="w-12 h-[2px] bg-brand-red" />
                             <span className="text-sm tracking-[0.3em] uppercase text-white font-medium">
-                                Global Athletics
+                                {content.hero.tagline}
                             </span>
                         </div>
 
                         <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.1] mb-8">
-                            Elevate Your <br />
-                            <span className="text-brand-red">Athletic Journey</span>
+                            {content.hero.title} <br />
+                            <span className="text-brand-red">{content.hero.highlightedText}</span>
                         </h1>
 
                         <p className="text-xl sm:text-2xl text-white/90 leading-relaxed font-light mb-10 max-w-2xl">
-                            At Redwood Global Learning Group, we believe sports are an essential part of a student&apos;s overall development. Explore athletic opportunities alongside your academic journey.
+                            {content.hero.description}
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4">
@@ -89,7 +66,7 @@ export default function SportsPage() {
                                 onClick={handleApplyClick}
                                 className="bg-brand-red hover:bg-brand-red-dark text-white font-medium px-8 h-14 rounded-full text-lg shadow-xl hover:shadow-2xl transition-all"
                             >
-                                Start Your Journey
+                                {content.hero.ctaText}
                             </Button>
                         </div>
                     </motion.div>
@@ -98,7 +75,6 @@ export default function SportsPage() {
 
             {/* Mission & Impact Section */}
             <section className="py-20 lg:py-32 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden">
-                {/* Background Pattern */}
                 <div className="absolute inset-0 opacity-[0.02]"
                     style={{
                         backgroundImage: `radial-gradient(circle at 2px 2px, hsl(var(--brand-blue)) 1px, transparent 0)`,
@@ -115,22 +91,19 @@ export default function SportsPage() {
                             transition={{ duration: 0.8 }}
                         >
                             <h2 className="font-heading text-4xl sm:text-5xl font-bold text-brand-blue mb-8 leading-tight">
-                                Building Discipline, Teamwork, and Confidence.
+                                {content.mission.title}
                             </h2>
                             <div className="space-y-6 text-lg text-brand-gray/80 font-light leading-relaxed">
-                                <p>
-                                    We work closely with elite international schools and universities to ensure our students have unparalleled access to world-class athletic programs.
-                                </p>
-                                <p>
-                                    Through our established network, students gain exposure to diverse sporting environments, modern training facilities, and global athletic cultures. These experiences go beyond the field, shaping future leaders by developing crucial soft skills like teamwork, resilience, and cross-cultural communication.
-                                </p>
+                                {content.mission.paragraphs.map((p, i) => (
+                                    <p key={i}>{p}</p>
+                                ))}
                                 <div className="flex items-center gap-4 pt-4">
                                     <div className="w-16 h-16 rounded-full bg-brand-red/10 flex items-center justify-center">
                                         <Trophy className="w-8 h-8 text-brand-red" />
                                     </div>
                                     <div>
-                                        <h4 className="font-bold text-brand-blue text-xl">Elite Development</h4>
-                                        <p className="text-sm">Balancing academics with high-performance sports.</p>
+                                        <h4 className="font-bold text-brand-blue text-xl">{content.mission.calloutTitle}</h4>
+                                        <p className="text-sm">{content.mission.calloutSubtitle}</p>
                                     </div>
                                 </div>
                             </div>
@@ -144,8 +117,8 @@ export default function SportsPage() {
                             className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl"
                         >
                             <Image
-                                src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=1000&q=80"
-                                alt="Student athletes cheering"
+                                src={content.mission.image}
+                                alt="Student athletes"
                                 fill
                                 className="object-cover"
                             />
@@ -162,21 +135,21 @@ export default function SportsPage() {
                         <div className="inline-flex items-center gap-3 mb-6">
                             <div className="w-12 h-[2px] bg-brand-red" />
                             <span className="text-sm tracking-[0.3em] uppercase text-brand-red font-medium">
-                                Student Benefits
+                                {content.benefits.tagline}
                             </span>
                             <div className="w-12 h-[2px] bg-brand-red" />
                         </div>
                         <h2 className="font-heading text-4xl sm:text-5xl font-bold text-brand-blue mb-6">
-                            Empowering Student Athletes
+                            {content.benefits.title}
                         </h2>
                         <p className="text-xl text-brand-gray/80 font-light">
-                            Our partners provide comprehensive programs designed to nurture talent and develop well-rounded individuals.
+                            {content.benefits.subtitle}
                         </p>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-                        {athleticBenefits.map((benefit, i) => {
-                            const Icon = benefit.icon;
+                        {content.benefits.items.map((benefit, i) => {
+                            const Icon = iconMap[benefit.icon] || Trophy;
                             return (
                                 <motion.div
                                     key={benefit.title}
@@ -214,7 +187,6 @@ export default function SportsPage() {
 
             {/* Expansion/CTA Banner */}
             <section className="py-24 px-4 sm:px-6 lg:px-8 bg-brand-blue text-white relative overflow-hidden">
-                {/* Background Overlay */}
                 <div className="absolute inset-0 z-0">
                     <Image
                         src="/herobackground.png"
@@ -224,37 +196,27 @@ export default function SportsPage() {
                     />
                 </div>
 
-                {/* Organic Background Shape - Both Sides */}
                 <div className="absolute top-0 left-0 right-0 w-full h-full overflow-hidden pointer-events-none opacity-20">
                     <svg viewBox="0 0 1200 1000" className="w-full h-full" preserveAspectRatio="xMidYMid slice">
-                        {/* Left side curve */}
-                        <path
-                            d="M0,0 L0,1000 L120,1000 Q60,950 120,900 Q180,850 100,800 Q20,750 120,700 Q220,650 140,600 Q60,550 120,500 Q180,450 100,400 Q20,350 120,300 Q220,250 140,200 Q60,150 120,100 Q180,50 100,0 Q20,0 0,0 Z"
-                            fill="var(--brand-red)"
-                        />
-                        {/* Right side curve */}
-                        <path
-                            d="M1200,0 L1200,1000 L1080,1000 Q1140,950 1080,900 Q1020,850 1100,800 Q1180,750 1080,700 Q980,650 1060,600 Q1140,550 1080,500 Q1020,450 1100,400 Q1180,350 1080,300 Q980,250 1060,200 Q1140,150 1080,100 Q1020,50 1100,0 Q1180,0 1200,0 Z"
-                            fill="var(--brand-red)"
-                        />
+                        <path d="M0,0 L0,1000 L120,1000 Q60,950 120,900 Q180,850 100,800 Q20,750 120,700 Q220,650 140,600 Q60,550 120,500 Q180,450 100,400 Q20,350 120,300 Q220,250 140,200 Q60,150 120,100 Q180,50 100,0 Q20,0 0,0 Z" fill="var(--brand-red)" />
+                        <path d="M1200,0 L1200,1000 L1080,1000 Q1140,950 1080,900 Q1020,850 1100,800 Q1180,750 1080,700 Q980,650 1060,600 Q1140,550 1080,500 Q1020,450 1100,400 Q1180,350 1080,300 Q980,250 1060,200 Q1140,150 1080,100 Q1020,50 1100,0 Q1180,0 1200,0 Z" fill="var(--brand-red)" />
                     </svg>
                 </div>
 
                 <div className="max-w-4xl mx-auto text-center relative z-10">
                     <Medal className="w-16 h-16 text-brand-red mx-auto mb-8" />
                     <h2 className="font-heading text-4xl sm:text-5xl font-bold mb-6 leading-tight text-brand-blue">
-                        Continuously Expanding <br />
-                        Our Global Partnerships
+                        {content.cta.title.includes("\n") ? content.cta.title.split("\n").map((line, i) => <span key={i}>{line}<br /></span>) : content.cta.title}
                     </h2>
                     <p className="text-xl text-[#0f3a5c] font-medium opacity-90 mb-10 max-w-2xl mx-auto">
-                        Redwood Global Learning Group is dedicated to providing structured sports opportunities for students worldwide. Whether you are aiming for college recruitment or just want to stay active, we have a place for you.
+                        {content.cta.description}
                     </p>
 
                     <Button
                         onClick={handleApplyClick}
                         className="bg-brand-red hover:bg-[#c94a4a] text-white font-medium px-10 h-14 rounded-full text-lg shadow-xl hover:shadow-2xl transition-all"
                     >
-                        Apply to a Program Today
+                        {content.cta.ctaText}
                     </Button>
                 </div>
             </section>

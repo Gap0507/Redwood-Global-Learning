@@ -17,6 +17,8 @@ import {
     ChevronRight,
     Globe,
     MapPin,
+    Trophy,
+    Mic2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
@@ -55,6 +57,18 @@ const sidebarLinks = [
         href: "/admin/country-pages",
         icon: MapPin,
         description: "Manage country page content",
+    },
+    {
+        title: "Sports Page",
+        href: "/admin/sports",
+        icon: Trophy,
+        description: "Manage sports page content",
+    },
+    {
+        title: "Conferences Page",
+        href: "/admin/conferences",
+        icon: Mic2,
+        description: "Manage conferences page content",
     },
 ];
 
