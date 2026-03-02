@@ -115,7 +115,7 @@ export function Footer({ onApplyClick }: { onApplyClick?: () => void }) {
                         <h5 className="text-white font-montserrat font-bold text-base mb-4 tracking-wide">
                             Our Programs
                         </h5>
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 mb-3">
+                        <div className="grid grid-cols-2 gap-x-6 gap-y-2.5 mb-3 max-w-[280px] mx-auto sm:max-w-none sm:mx-0">
                             {countries.map((country, index) => (
                                 <Link
                                     key={`${country.slug}-${index}`}
