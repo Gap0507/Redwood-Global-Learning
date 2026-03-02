@@ -261,12 +261,12 @@ export function TimelineSection() {
           {/* Timeline */}
           <div className="relative">
             {/* Main Vertical Line - Left on mobile, center on desktop */}
-            <div className="absolute left-4 lg:left-1/2 lg:-translate-x-1/2 w-[3px] h-full bg-brand-red/20 rounded-full" />
+            <div className="absolute left-[22px] lg:left-1/2 lg:-translate-x-1/2 w-[3px] h-full bg-brand-red/20 rounded-full" />
 
             {/* Animated Progress Line on scroll */}
             <motion.div
               style={{ scaleY: scrollProgress, transformOrigin: 'top' }}
-              className="absolute left-4 lg:left-1/2 lg:-translate-x-1/2 w-[3px] h-full bg-brand-red rounded-full"
+              className="absolute left-[22px] lg:left-1/2 lg:-translate-x-1/2 w-[3px] h-full bg-brand-red rounded-full"
             />
 
             {/* Timeline Items */}
@@ -274,8 +274,8 @@ export function TimelineSection() {
               <div
                 key={item.title}
                 className={`relative flex items-center py-6 md:py-8 ${index % 2 === 0
-                    ? 'justify-end lg:justify-start'
-                    : 'justify-end'
+                  ? 'justify-end lg:justify-start'
+                  : 'justify-end'
                   }`}
               >
                 {/* Content Card - right side on mobile, alternating on desktop */}
@@ -284,9 +284,9 @@ export function TimelineSection() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, amount: 0.3 }}
                   transition={{ duration: 0.5 }}
-                  className={`w-full max-w-md pl-16 md:pl-20 ${index % 2 === 0
-                      ? 'lg:pl-0 lg:pr-24 lg:mr-auto'
-                      : 'lg:pl-24 lg:ml-auto'
+                  className={`w-full max-w-md pl-20 md:pl-24 ${index % 2 === 0
+                    ? 'lg:pl-0 lg:pr-24 lg:mr-auto'
+                    : 'lg:pl-24 lg:ml-auto'
                     }`}
                 >
                   {item.content}
@@ -298,9 +298,9 @@ export function TimelineSection() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true, amount: 0.5 }}
                   transition={{ duration: 0.4, type: "spring", stiffness: 200 }}
-                  className="absolute left-4 lg:left-1/2 -translate-x-1/2 w-10 h-10 md:w-12 md:h-12 lg:w-20 lg:h-20 rounded-full bg-white border-[3px] border-brand-red shadow-lg flex items-center justify-center z-20"
+                  className="absolute left-0 lg:left-1/2 translate-x-[2px] lg:-translate-x-1/2 w-[44px] h-[44px] md:w-12 md:h-12 lg:w-20 lg:h-20 rounded-full bg-white border-[3px] border-brand-red shadow-lg flex items-center justify-center z-20"
                 >
-                  <span className="text-brand-blue font-heading font-bold text-[8px] md:text-[10px] lg:text-sm">
+                  <span className="text-brand-blue font-heading font-bold text-[9px] md:text-[10px] lg:text-sm leading-tight text-center">
                     {item.title}
                   </span>
                 </motion.div>
@@ -312,8 +312,8 @@ export function TimelineSection() {
                   viewport={{ once: true, amount: 0.5 }}
                   transition={{ duration: 0.3, delay: 0.2 }}
                   className={`absolute h-[3px] bg-brand-red origin-left ${index % 2 === 0
-                      ? 'left-9 lg:left-auto lg:right-1/2 w-6 md:w-8 lg:w-48 lg:mr-10 lg:origin-right'
-                      : 'left-9 lg:left-1/2 w-6 md:w-8 lg:w-48 lg:ml-10 lg:origin-left'
+                    ? 'left-[46px] lg:left-auto lg:right-1/2 w-6 md:w-8 lg:w-48 lg:mr-10 lg:origin-right'
+                    : 'left-[46px] lg:left-1/2 w-6 md:w-8 lg:w-48 lg:ml-10 lg:origin-left'
                     }`}
                 />
               </div>

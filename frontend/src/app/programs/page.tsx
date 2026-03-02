@@ -278,7 +278,7 @@ export default function AllProgramsPage() {
 
                 return (
                   <figure key={i} className="sticky top-20 h-screen grid place-content-center">
-                    <article className={`${styling.bgColor} h-80 w-full max-w-lg rounded-2xl p-8 grid place-content-start gap-4 shadow-2xl transform transition-transform duration-300`} style={{ rotate: i % 2 === 0 ? '2deg' : '-2deg' }}>
+                    <article className={`${styling.bgColor} min-h-[320px] h-auto w-full max-w-lg rounded-2xl p-8 grid place-content-start gap-4 shadow-2xl transform transition-transform duration-300 overflow-hidden`} style={{ rotate: i % 2 === 0 ? '2deg' : '-2deg' }}>
                       <div className={`w-14 h-14 rounded-xl ${styling.iconBg} flex items-center justify-center mb-2`}>
                         <Icon className={`w-7 h-7 ${styling.iconColor}`} />
                       </div>

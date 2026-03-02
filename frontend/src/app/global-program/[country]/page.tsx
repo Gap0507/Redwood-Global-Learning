@@ -163,7 +163,7 @@ export default function CountryProgramPage() {
         <div className="relative" style={{ zIndex: 1 }}>
           <Navbar onApplyClick={handleApplyClick} />
           {/* Hero Section - Viewport Contained Layout */}
-          <section className="relative h-screen min-h-[700px] pt-32 pb-8 px-4 sm:px-6 lg:px-8 overflow-hidden flex items-center">
+          <section className="relative lg:h-screen lg:min-h-[700px] pt-28 sm:pt-32 pb-8 px-4 sm:px-6 lg:px-8 overflow-hidden lg:flex lg:items-center">
             {/* Background Elements */}
             <div className="absolute inset-0 bg-gradient-to-b from-background via-background-light/50 to-background" />
 
@@ -255,8 +255,8 @@ export default function CountryProgramPage() {
                   </div>
                 </motion.div>
 
-                {/* Right Side - Content Only */}
-                <div className="lg:order-2 space-y-5">
+                {/* Right Side - Content Only (desktop) */}
+                <div className="hidden lg:block lg:order-2 space-y-5">
                   {/* Content Section */}
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -374,7 +374,7 @@ export default function CountryProgramPage() {
             <section id="programs" className="relative w-full bg-background">
               <div className="grid lg:grid-cols-2">
                 {/* Left - Sticky Title */}
-                <div className="sticky top-0 h-screen flex items-center justify-center px-8 lg:px-16">
+                <div className="lg:sticky lg:top-0 lg:h-screen flex items-center justify-center px-4 sm:px-8 lg:px-16 py-12 lg:py-0">
                   <div className="max-w-md">
                     <div className="inline-flex items-center gap-3 mb-6">
                       <div className="w-12 h-[2px] bg-brand-red" />
@@ -467,7 +467,7 @@ export default function CountryProgramPage() {
               />
 
               {/* Section Header - Sticky */}
-              <div className="sticky top-0 h-screen flex items-center justify-center text-center px-8 z-10 bg-background">
+              <div className="lg:sticky lg:top-0 lg:h-screen flex items-center justify-center text-center px-4 sm:px-8 py-12 lg:py-0 z-10 bg-background">
                 {/* Decorative floating orbs */}
                 <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-brand-blue/5 rounded-full blur-3xl" />
                 <div className="absolute bottom-1/3 right-1/4 w-48 h-48 bg-brand-red/5 rounded-full blur-3xl" />
@@ -514,7 +514,7 @@ export default function CountryProgramPage() {
               </div>
 
               {/* Housing Card - Sticky */}
-              <div className="sticky top-0 h-screen flex items-center justify-center px-8 bg-white rounded-t-[3rem] z-20 shadow-[0_-20px_60px_rgba(0,0,0,0.1)]">
+              <div className="lg:sticky lg:top-0 lg:h-screen flex items-center justify-center px-4 sm:px-8 py-12 lg:py-0 bg-white rounded-t-[3rem] z-20 shadow-[0_-20px_60px_rgba(0,0,0,0.1)]">
                 <div className="max-w-4xl w-full grid lg:grid-cols-2 gap-12 items-center">
                   <div className="space-y-6">
                     <div className="w-20 h-20 rounded-2xl bg-brand-blue/10 border-2 border-brand-blue/30 flex items-center justify-center">
@@ -540,7 +540,7 @@ export default function CountryProgramPage() {
               </div>
 
               {/* Culture Card - Sticky */}
-              <div className="sticky top-0 h-screen flex items-center justify-center px-8 bg-gradient-to-br from-gray-50 to-white rounded-t-[3rem] z-30 shadow-[0_-20px_60px_rgba(0,0,0,0.1)]">
+              <div className="lg:sticky lg:top-0 lg:h-screen flex items-center justify-center px-4 sm:px-8 py-12 lg:py-0 bg-gradient-to-br from-gray-50 to-white rounded-t-[3rem] z-30 shadow-[0_-20px_60px_rgba(0,0,0,0.1)]">
                 <div className="max-w-4xl w-full grid lg:grid-cols-2 gap-12 items-center">
                   <div className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl lg:order-1">
                     <Image
@@ -566,7 +566,7 @@ export default function CountryProgramPage() {
               </div>
 
               {/* Language Card - Sticky */}
-              <div className="sticky top-0 h-screen flex items-center justify-center px-8 bg-gradient-to-br from-white to-gray-100 rounded-t-[3rem] z-40 shadow-[0_-20px_60px_rgba(0,0,0,0.1)]">
+              <div className="lg:sticky lg:top-0 lg:h-screen flex items-center justify-center px-4 sm:px-8 py-12 lg:py-0 bg-gradient-to-br from-white to-gray-100 rounded-t-[3rem] z-40 shadow-[0_-20px_60px_rgba(0,0,0,0.1)]">
                 <div className="max-w-4xl w-full grid lg:grid-cols-2 gap-12 items-center">
                   <div className="space-y-6">
                     <div className="w-20 h-20 rounded-2xl bg-brand-blue/10 border-2 border-brand-blue/30 flex items-center justify-center">
@@ -604,7 +604,7 @@ export default function CountryProgramPage() {
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true, margin: "-100px" }}
                       transition={{ duration: 0.6, delay: index * 0.1 }}
-                      className="sticky top-20 h-[calc(100vh-10rem)] grid place-content-center"
+                      className="lg:sticky lg:top-20 lg:h-[calc(100vh-10rem)] grid place-content-center"
                     >
                       <div className="relative bg-white border border-gray-200 p-8 sm:p-10 rounded-3xl max-w-md shadow-2xl">
                         {/* Quote Icon */}
@@ -654,7 +654,7 @@ export default function CountryProgramPage() {
                 </div>
 
                 {/* Right - Sticky Title */}
-                <div className="sticky top-0 h-screen flex items-center justify-center px-8">
+                <div className="lg:sticky lg:top-0 lg:h-screen flex items-center justify-center px-4 sm:px-8 py-12 lg:py-0">
                   <div className="max-w-md text-right">
                     <div className="inline-flex items-center gap-3 mb-6 justify-end">
                       <span className="text-sm tracking-[0.3em] uppercase text-brand-blue font-medium">
@@ -674,7 +674,7 @@ export default function CountryProgramPage() {
             </section>
 
             {/* CTA Section - Full Screen Sticky */}
-            <section className="sticky top-0 h-screen flex items-center justify-center bg-background text-center px-8 rounded-t-[3rem] overflow-hidden shadow-[0_-20px_60px_rgba(0,0,0,0.1)]">
+            <section className="lg:sticky lg:top-0 lg:h-screen flex items-center justify-center bg-background text-center px-4 sm:px-8 py-16 lg:py-0 rounded-t-[3rem] overflow-hidden shadow-[0_-20px_60px_rgba(0,0,0,0.1)]">
               {/* Background Pattern */}
               <div className="absolute inset-0 opacity-[0.02]"
                 style={{
