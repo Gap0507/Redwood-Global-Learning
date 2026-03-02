@@ -272,13 +272,16 @@ export function HeroSection() {
                             variants={itemVariants}
                         >
                             <Button
+                                asChild
                                 className="bg-brand-red hover:bg-brand-red/90 text-white font-bold text-sm lg:text-base px-6 lg:px-9 py-2 lg:py-3 h-10 lg:h-12 shadow-lg hover:shadow-brand-red/30 transition-all duration-300 rounded-full group relative overflow-hidden"
                             >
-                                <span className="relative z-10 flex items-center gap-2">
-                                    Explore Programs
-                                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                </span>
-                                <div className="absolute inset-0 bg-gradient-to-r from-brand-red to-red-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <Link href="/programs">
+                                    <span className="relative z-10 flex items-center gap-2">
+                                        Explore Programs
+                                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                    </span>
+                                    <div className="absolute inset-0 bg-gradient-to-r from-brand-red to-red-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                </Link>
                             </Button>
                             <Link
                                 href="/about"

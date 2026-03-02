@@ -363,6 +363,52 @@ export default function CountryProgramPage() {
                       </Button>
                     </div>
                   </div>
+
+                  {/* Mobile Gallery Marquee */}
+                  <div className="relative w-full overflow-hidden rounded-xl mt-4">
+                    <div className="flex animate-marquee gap-3">
+                      {(data.carouselImages && data.carouselImages.length > 0 ? data.carouselImages.map(ci => ci.image) : [
+                        data.programs[1]?.image || "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=400&q=80",
+                        data.programs[2]?.image || "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=400&q=80",
+                        data.programs[0]?.image || "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&q=80",
+                        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80",
+                      ]).map((imgSrc, i) => (
+                        <div
+                          key={`mobile-first-${i}`}
+                          className="relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden shadow-lg"
+                        >
+                          <Image
+                            src={imgSrc}
+                            alt={`${data.name} attraction ${i + 1}`}
+                            fill
+                            className="object-cover"
+                            sizes="80px"
+                            quality={80}
+                          />
+                        </div>
+                      ))}
+                      {(data.carouselImages && data.carouselImages.length > 0 ? data.carouselImages.map(ci => ci.image) : [
+                        data.programs[1]?.image || "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=400&q=80",
+                        data.programs[2]?.image || "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=400&q=80",
+                        data.programs[0]?.image || "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&q=80",
+                        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80",
+                      ]).map((imgSrc, i) => (
+                        <div
+                          key={`mobile-second-${i}`}
+                          className="relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden shadow-lg"
+                        >
+                          <Image
+                            src={imgSrc}
+                            alt={`${data.name} attraction ${i + 1}`}
+                            fill
+                            className="object-cover"
+                            sizes="80px"
+                            quality={80}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </motion.div>
               </div>
             </div>
@@ -596,7 +642,7 @@ export default function CountryProgramPage() {
             <section className="relative w-full bg-background">
               <div className="grid lg:grid-cols-2 px-4 sm:px-8">
                 {/* Left - Scrollable Testimonial Images */}
-                <div className="py-20 space-y-8">
+                <div className="py-12 lg:py-20 space-y-8 order-2 lg:order-none">
                   {data.testimonials.map((testimonial, index) => (
                     <motion.figure
                       key={testimonial.name}
@@ -654,7 +700,7 @@ export default function CountryProgramPage() {
                 </div>
 
                 {/* Right - Sticky Title */}
-                <div className="lg:sticky lg:top-0 lg:h-screen flex items-center justify-center px-4 sm:px-8 py-12 lg:py-0">
+                <div className="lg:sticky lg:top-0 lg:h-screen flex items-center justify-center px-4 sm:px-8 py-10 lg:py-0 order-1 lg:order-none">
                   <div className="max-w-md text-right">
                     <div className="inline-flex items-center gap-3 mb-6 justify-end">
                       <span className="text-sm tracking-[0.3em] uppercase text-brand-blue font-medium">

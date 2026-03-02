@@ -15,28 +15,42 @@ import {
     ArrowRight
 } from "lucide-react";
 import { getContactContent, defaultContactContent, ContactContent } from "@/lib/contactContent";
+import { getProgramsPageContent, defaultProgramsPageContent } from "@/lib/programsPageContent";
 
 const quickLinks = [
     { title: "Home", href: "/" },
+    { title: 'Programs', href: '/programs' },
     { title: "About Us", href: "/about" },
     { title: "Contact", href: "/contact" },
     { title: "Advisory Board", href: "/advisory-board" },
 ];
 
-const programLinks = [
-    { title: "Student Exchange", href: "/programs/student-exchange" },
-    { title: "Summer Programs", href: "/programs/summer" },
-    { title: "Language Immersion", href: "/programs/language" },
-    { title: "Cultural Tours", href: "/programs/cultural-tours" },
+const staticProgramLinks = [
     { title: "Global Sports", href: "/sports" },
     { title: "Conferences", href: "/conferences" },
 ];
 
 export function Footer({ onApplyClick }: { onApplyClick?: () => void }) {
     const [contactContent, setContactContent] = useState<ContactContent>(defaultContactContent);
+    const [countries, setCountries] = useState<{ name: string; slug: string; flagUrl: string }[]>([]);
 
     useEffect(() => {
         getContactContent().then(setContactContent);
+        getProgramsPageContent().then((content) => {
+            const seen = new Set<string>();
+            const unique = content.countryPrograms.filter((c) => {
+                if (seen.has(c.slug)) return false;
+                seen.add(c.slug);
+                return true;
+            });
+            setCountries(
+                unique.map((c) => ({
+                    name: c.name,
+                    slug: c.slug,
+                    flagUrl: c.flagUrl,
+                }))
+            );
+        });
     }, []);
 
     const socialLinks = [
@@ -96,13 +110,34 @@ export function Footer({ onApplyClick }: { onApplyClick?: () => void }) {
                         </ul>
                     </div>
 
-                    {/* Programs */}
+                    {/* Programs - Dynamic Countries + Static Links */}
                     <div className="col-span-1 text-center sm:text-left">
                         <h5 className="text-white font-montserrat font-bold text-base mb-4 tracking-wide">
                             Our Programs
                         </h5>
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 mb-3">
+                            {countries.map((country, index) => (
+                                <Link
+                                    key={`${country.slug}-${index}`}
+                                    href={`/global-program/${country.slug}`}
+                                    className="text-white/60 hover:text-white font-poppins text-sm transition-colors inline-flex items-center gap-1.5"
+                                >
+                                    {country.flagUrl && (
+                                        <img
+                                            src={country.flagUrl}
+                                            alt={`${country.name} flag`}
+                                            className="w-5 h-3.5 object-cover rounded-[2px] flex-shrink-0"
+                                        />
+                                    )}
+                                    <span className="truncate">{country.name}</span>
+                                </Link>
+                            ))}
+                        </div>
+                        {countries.length > 0 && (
+                            <div className="w-8 h-px bg-white/20 mb-3 mx-auto sm:mx-0" />
+                        )}
                         <ul className="space-y-2.5">
-                            {programLinks.map((link) => (
+                            {staticProgramLinks.map((link) => (
                                 <li key={link.title}>
                                     <Link
                                         href={link.href}
