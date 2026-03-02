@@ -165,45 +165,48 @@ export function Navbar({ onApplyClick }: { onApplyClick?: () => void }) {
               </SheetTrigger>
               <SheetContent
                 side="top"
-                className="w-full h-screen max-w-none rounded-none px-6 py-6 flex flex-col bg-gradient-space"
+                className="w-full h-[100dvh] max-w-none rounded-none px-5 py-5 flex flex-col bg-gradient-space"
               >
-                <SheetHeader className="flex items-center justify-between mb-4">
+                <SheetHeader className="flex items-center justify-between mb-1 flex-shrink-0">
                   <SheetTitle
-                    className="font-heading text-brand-blue text-left text-2xl"
+                    className="font-heading text-brand-blue text-left text-lg"
                     style={{ fontFamily: 'var(--font-montserrat)' }}
                   >
                     Menu
                   </SheetTitle>
                 </SheetHeader>
-                <nav className="flex-1 flex flex-col items-center justify-center gap-10 text-brand-blue">
-                  {navigationItems.map((item) => {
+                <nav className="flex-1 flex flex-col items-center justify-evenly overflow-y-auto py-2 text-brand-blue min-h-0">
+                  {navigationItems.map((item, index) => {
                     const Icon = item.icon
                     return (
                       <Link
                         key={item.title}
                         href={item.href}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="flex flex-col items-center gap-2 rounded-full px-6 py-2 text-xl font-semibold tracking-widest uppercase transition-colors hover:text-brand-red"
+                        className={cn(
+                          "flex items-center gap-3 w-full max-w-[260px] px-5 py-3 text-sm font-semibold tracking-wider uppercase transition-all hover:text-brand-red hover:bg-brand-blue/5 rounded-xl",
+                          index !== navigationItems.length - 1 && "border-b border-brand-blue/10"
+                        )}
                         style={{ fontFamily: 'var(--font-montserrat)' }}
                       >
-                        <Icon className="h-6 w-6 text-brand-gray" />
+                        <Icon className="h-5 w-5 text-brand-gray flex-shrink-0" />
                         <span>{item.title}</span>
                       </Link>
                     )
                   })}
-                  <div className="pt-8 mt-4 w-full max-w-xs">
-                    <Button
-                      onClick={() => {
-                        setIsMobileMenuOpen(false)
-                        if (onApplyClick) onApplyClick()
-                      }}
-                      className="w-full bg-brand-red hover:bg-brand-red/90 text-white font-semibold py-4 rounded-full text-lg tracking-widest uppercase"
-                      style={{ fontFamily: 'var(--font-montserrat)' }}
-                    >
-                      Apply Now
-                    </Button>
-                  </div>
                 </nav>
+                <div className="flex-shrink-0 pb-4 pt-2 w-full flex justify-center">
+                  <Button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false)
+                      if (onApplyClick) onApplyClick()
+                    }}
+                    className="w-full max-w-[260px] bg-brand-red hover:bg-brand-red/90 text-white font-semibold py-3.5 rounded-full text-sm tracking-wider uppercase shadow-lg shadow-brand-red/20"
+                    style={{ fontFamily: 'var(--font-montserrat)' }}
+                  >
+                    Apply Now
+                  </Button>
+                </div>
               </SheetContent>
             </Sheet>
           </div>
