@@ -19,6 +19,7 @@ import {
     MapPin,
     Trophy,
     Mic2,
+    Megaphone,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
@@ -69,6 +70,12 @@ const sidebarLinks = [
         href: "/admin/conferences",
         icon: Mic2,
         description: "Manage conferences page content",
+    },
+    {
+        title: "Banner Section",
+        href: "/admin/banner",
+        icon: Megaphone,
+        description: "Manage homepage banner modal",
     },
 ];
 
