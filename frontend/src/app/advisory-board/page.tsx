@@ -1,117 +1,39 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
-import { Users, Globe, GraduationCap, ArrowRight, Sparkles, Target, Award } from "lucide-react"
+import { Users, Globe, GraduationCap, ArrowRight, Sparkles, Target, Award, Loader2 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { Navbar } from "@/components/layout/Navbar"
 import { Footer } from "@/components/layout/Footer"
 import { ApplyNowForm } from "@/components/forms/ApplyNowForm"
-
-interface BoardMember {
-  id: string
-  name: string
-  title?: string
-  organization: string
-  image?: string
-}
-
-const boardMembers: BoardMember[] = [
-  {
-    id: "1",
-    name: "Dr. Sarah Chen",
-    title: "Director of International Programs",
-    organization: "Harvard University",
-    image: "/advisory-1.jpg"
-  },
-  {
-    id: "2",
-    name: "Prof. Michael Rodriguez",
-    title: "Dean of Global Studies",
-    organization: "Stanford University",
-    image: "/advisory-2.jpg"
-  },
-  {
-    id: "3",
-    name: "Dr. Aisha Patel",
-    title: "Head of Cultural Exchange",
-    organization: "Oxford University",
-    image: "/advisory-3.jpg"
-  },
-  {
-    id: "4",
-    name: "Prof. James Thompson",
-    title: "Executive Director",
-    organization: "UNESCO Education Division",
-    image: "/advisory-4.jpg"
-  },
-  {
-    id: "5",
-    name: "Dr. Maria Santos",
-    title: "VP of Global Partnerships",
-    organization: "World Education Alliance",
-    image: "/advisory-5.jpg"
-  },
-  {
-    id: "6",
-    name: "Prof. David Kim",
-    title: "Director of International Relations",
-    organization: "Yale University",
-    image: "/advisory-6.jpg"
-  },
-  {
-    id: "7",
-    name: "Dr. Lisa Wong",
-    title: "Chief Academic Officer",
-    organization: "MIT Global Education",
-    image: "/advisory-7.jpg"
-  },
-  {
-    id: "8",
-    name: "Prof. Robert Johnson",
-    title: "President Emeritus",
-    organization: "International Education Council",
-    image: "/advisory-8.jpg"
-  },
-  {
-    id: "9",
-    name: "Dr. Fatima Al-Zahra",
-    title: "Director of Student Mobility",
-    organization: "European University Network",
-    image: "/advisory-9.jpg"
-  },
-  {
-    id: "10",
-    name: "Prof. Hiroshi Tanaka",
-    title: "Vice President",
-    organization: "Asia-Pacific Education Forum",
-    image: "/advisory-10.jpg"
-  },
-  {
-    id: "11",
-    name: "Dr. Emma Wilson",
-    title: "Chief Innovation Officer",
-    organization: "Global Learning Institute",
-    image: "/advisory-11.jpg"
-  },
-  {
-    id: "12",
-    name: "Prof. Carlos Mendoza",
-    title: "Director of Cultural Programs",
-    organization: "Latin American Education Network",
-    image: "/advisory-12.jpg"
-  }
-]
+import { getAdvisoryBoardContent, defaultAdvisoryBoardContent, AdvisoryBoardContent } from "@/lib/advisoryBoardContent"
 
 export default function AdvisoryBoardPage() {
+  const [content, setContent] = useState<AdvisoryBoardContent>(defaultAdvisoryBoardContent);
+  const [loading, setLoading] = useState(true);
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false)
   const { scrollYProgress } = useScroll()
 
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95])
 
+  useEffect(() => {
+    getAdvisoryBoardContent()
+      .then(setContent)
+      .finally(() => setLoading(false));
+  }, []);
+
   const handleApplyClick = () => setIsApplyModalOpen(true)
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader2 className="w-8 h-8 animate-spin text-brand-red" />
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-white relative overflow-hidden">
@@ -178,12 +100,13 @@ export default function AdvisoryBoardPage() {
                       {/* Main Image */}
                       <div className="relative rounded-xl overflow-hidden shadow-xl border border-white/20 bg-white/5 backdrop-blur-sm">
                         <Image
-                          src="/GuidingExcellance.png"
+                          src={content.hero.image}
                           alt="Excellence in Education"
                           width={320}
                           height={240}
                           className="w-full h-auto"
                           priority
+                          unoptimized={content.hero.image.startsWith('/')}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-blue-900/20 to-transparent" />
                       </div>
@@ -259,8 +182,7 @@ export default function AdvisoryBoardPage() {
                       transition={{ duration: 1, delay: 1.4 }}
                       className="text-white/90 text-xs font-light italic leading-relaxed border-l-2 border-white/30 pl-3 mt-3"
                     >
-                      "Together, we're building bridges between cultures and creating opportunities
-                      that transform lives."
+                      "{content.hero.quote}"
                     </motion.blockquote>
                   </div>
                 </div>
@@ -284,7 +206,7 @@ export default function AdvisoryBoardPage() {
                     transition={{ duration: 1, delay: 0.3 }}
                   />
                   <span className="text-xs tracking-[0.25em] uppercase text-brand-red font-semibold">
-                    Advisory Board
+                    {content.hero.tagline}
                   </span>
                   <motion.div
                     className="h-px w-12 bg-gradient-to-l from-transparent to-brand-red"
@@ -297,15 +219,14 @@ export default function AdvisoryBoardPage() {
 
               {/* Hero Title */}
               <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold text-brand-blue leading-[0.9] mb-8 tracking-tight">
-                Distinguished
+                {content.hero.title}
                 <br />
-                <span className="text-brand-red">Leadership</span>
+                <span className="text-brand-red">{content.hero.highlightText}</span>
               </h1>
 
               {/* Description */}
               <p className="text-lg sm:text-xl text-brand-gray/80 leading-relaxed max-w-2xl mb-10 font-light">
-                A curated collective of visionaries, educators, and global leaders
-                shaping the future of international education through transformative experiences.
+                {content.hero.description}
               </p>
 
               {/* CTA */}
@@ -318,7 +239,7 @@ export default function AdvisoryBoardPage() {
                   href="/contact"
                   className="inline-flex items-center gap-3 bg-brand-red hover:bg-brand-red/90 text-white font-bold text-base px-10 py-4 rounded-full shadow-xl hover:shadow-2xl hover:shadow-brand-red/25 transition-all duration-500 group"
                 >
-                  Connect With Us
+                  {content.hero.ctaText}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-300" />
                 </Link>
               </motion.div>
@@ -341,20 +262,20 @@ export default function AdvisoryBoardPage() {
             <div className="flex items-center gap-4 mb-6">
               <div className="h-1 w-16 bg-brand-red rounded-full" />
               <h2 className="text-xs tracking-[0.2em] uppercase text-brand-red font-semibold">
-                Our Team
+                {content.membersSection.tagline}
               </h2>
             </div>
             <h3 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold text-brand-blue mb-6">
-              Meet the Board
+              {content.membersSection.title}
             </h3>
             <p className="text-lg text-brand-gray/80 leading-relaxed max-w-2xl font-light">
-              Expertise spanning academia, international relations, and cultural exchange
+              {content.membersSection.description}
             </p>
           </motion.div>
 
           {/* Board Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
-            {boardMembers.map((member, index) => (
+            {content.membersSection.members.map((member, index) => (
               <motion.div
                 key={member.id}
                 initial={{ opacity: 0, y: 30 }}
@@ -367,7 +288,17 @@ export default function AdvisoryBoardPage() {
                 <div className="relative mb-5">
                   <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-brand-blue/10 to-brand-red/10 border border-brand-blue/10 group-hover:border-brand-red/30 transition-all duration-500">
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <Users className="w-24 h-24 text-brand-blue/30 group-hover:text-brand-blue/50 transition-all duration-500" />
+                      {member.image ? (
+                        <Image
+                          src={member.image}
+                          alt={member.name}
+                          fill
+                          className="object-cover transition-transform duration-700 group-hover:scale-110"
+                          unoptimized={member.image.startsWith('/')}
+                        />
+                      ) : (
+                        <Users className="w-24 h-24 text-brand-blue/30 group-hover:text-brand-blue/50 transition-all duration-500" />
+                      )}
                     </div>
                     {/* Hover Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-brand-red/0 group-hover:from-brand-red/10 to-transparent transition-all duration-500" />
@@ -424,21 +355,16 @@ export default function AdvisoryBoardPage() {
               />
 
               <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-blue mb-6 leading-tight">
-                Guiding Excellence in
-                <br />Global Education
+                {content.excellenceSection.title}
+                <br />{content.excellenceSection.highlightText}
               </h2>
 
               <div className="space-y-5 mb-10">
                 <p className="text-base sm:text-lg text-brand-gray/80 leading-relaxed font-light">
-                  Our Advisory Board plays a crucial role in shaping the strategic direction of
-                  Redwood Global Learning. Comprised of distinguished leaders from academia,
-                  international education, and cultural exchange, they provide invaluable insights
-                  and guidance to ensure our programs meet the highest standards of excellence.
+                  {content.excellenceSection.description1}
                 </p>
                 <p className="text-base text-brand-gray/70 leading-relaxed font-light">
-                  Through their collective expertise, we continue to expand our global reach,
-                  enhance program quality, and create meaningful connections between students
-                  and institutions worldwide.
+                  {content.excellenceSection.description2}
                 </p>
               </div>
 
@@ -449,7 +375,7 @@ export default function AdvisoryBoardPage() {
                     <Users className="w-7 h-7 text-brand-red" />
                   </div>
                   <div className="text-4xl sm:text-5xl font-bold text-brand-red font-heading mb-2">
-                    12+
+                    {content.excellenceSection.stats.members}
                   </div>
                   <div className="text-xs sm:text-sm text-brand-gray/70 font-medium uppercase tracking-wider">
                     Board Members
@@ -457,11 +383,11 @@ export default function AdvisoryBoardPage() {
                 </div>
 
                 <div className="group/stat">
-                  <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-gradient-to-br from-brand-red/10 to-brand-red/5 mb-4 group-hover/stat:scale-110 transition-transform duration-300">
+                  <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-gradient-to-br from-brand-red/10 to-brand-red/5 mb-4 group-hover/stat:stat:scale-110 transition-transform duration-300">
                     <Globe className="w-7 h-7 text-brand-red" />
                   </div>
                   <div className="text-4xl sm:text-5xl font-bold text-brand-red font-heading mb-2">
-                    45+
+                    {content.excellenceSection.stats.countries}
                   </div>
                   <div className="text-xs sm:text-sm text-brand-gray/70 font-medium uppercase tracking-wider">
                     Countries
@@ -469,11 +395,11 @@ export default function AdvisoryBoardPage() {
                 </div>
 
                 <div className="group/stat">
-                  <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-gradient-to-br from-brand-red/10 to-brand-red/5 mb-4 group-hover/stat:scale-110 transition-transform duration-300">
+                  <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-gradient-to-br from-brand-red/10 to-brand-red/5 mb-4 group-hover/stat:stat:scale-110 transition-transform duration-300">
                     <GraduationCap className="w-7 h-7 text-brand-red" />
                   </div>
                   <div className="text-4xl sm:text-5xl font-bold text-brand-red font-heading mb-2">
-                    2K+
+                    {content.excellenceSection.stats.students}
                   </div>
                   <div className="text-xs sm:text-sm text-brand-gray/70 font-medium uppercase tracking-wider">
                     Students

@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 import { getGlobalProgramsContent, defaultGlobalProgramsContent, GlobalProgramsContent } from '@/lib/globalProgramsContent';
 
 export function GlobalProgramSection() {
@@ -112,12 +113,13 @@ export function GlobalProgramSection() {
                                             </p>
                                         </div>
 
-                                        <button
+                                        <Link
+                                            href={`/global-program/${program.id}`}
                                             className="w-full mt-3 bg-[#E63946] hover:bg-[#d62839] text-white font-bold py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 shadow-md hover:shadow-lg group/btn"
                                         >
                                             <span className="font-montserrat text-xs uppercase tracking-wide">See Program</span>
                                             <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
-                                        </button>
+                                        </Link>
                                     </div>
                                 </motion.div>
                             ))}

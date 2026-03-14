@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight, ChevronDown } from 'lucide-react';
+import Link from 'next/link';
 import { programLocations as defaultLocations, ProgramLocation } from '@/data/sampleArcs';
 import { getWhereCanYouGoContent, defaultWhereCanYouGoContent, WhereCanYouGoContent } from '@/lib/whereCanYouGoContent';
 import { getMasterCountries, MasterCountry } from '@/lib/masterCountries';
@@ -179,12 +180,13 @@ export function WhereCanYouGoSection() {
                                 </div>
 
                                 {/* Call to Action */}
-                                <button
+                                <Link
+                                    href={`/global-program/${selectedLocation.id}`}
                                     className="w-full bg-[#E63946] hover:bg-[#d62839] text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 shadow-lg hover:shadow-red-500/20 group hover:scale-[1.02]"
                                 >
                                     <span className="font-montserrat text-xs uppercase tracking-wide">See Program</span>
                                     <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-                                </button>
+                                </Link>
 
                             </motion.div>
                         </AnimatePresence>
@@ -264,12 +266,13 @@ export function WhereCanYouGoSection() {
                                 </div>
 
                                 {/* Call to Action */}
-                                <button
+                                <Link
+                                    href={`/global-program/${selectedLocation.id}`}
                                     className="w-full bg-[#E63946] hover:bg-[#d62839] text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 shadow-lg hover:shadow-red-500/20 group hover:scale-[1.02]"
                                 >
                                     <span className="font-montserrat text-xs uppercase tracking-wide">See Program</span>
                                     <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-                                </button>
+                                </Link>
 
                             </motion.div>
                         </AnimatePresence>

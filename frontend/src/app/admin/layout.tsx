@@ -77,6 +77,12 @@ const sidebarLinks = [
         icon: Megaphone,
         description: "Manage homepage banner modal",
     },
+    {
+        title: "Advisory Board",
+        href: "/admin/advisory",
+        icon: Users,
+        description: "Manage advisory board page",
+    },
 ];
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
