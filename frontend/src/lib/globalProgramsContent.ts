@@ -30,7 +30,7 @@ export const defaultGlobalProgramsContent: GlobalProgramsContent = {
             flag: 'jp'
         },
         {
-            id: 'united-states',
+            id: 'usa',
             country: 'United States',
             title: 'United States',
             image: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=800',
