@@ -219,9 +219,7 @@ export function Footer({ onApplyClick }: { onApplyClick?: () => void }) {
                 >
                     <p>© {new Date().getFullYear()} Redwood Global Learning. All rights reserved.</p>
                     <div className="flex gap-6">
-                        <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-                        <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-                        <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>
+                        <Link href="/terms-and-conditions" className="hover:text-white transition-colors">Terms and Conditions</Link>
                     </div>
                 </motion.div>
             </div>
