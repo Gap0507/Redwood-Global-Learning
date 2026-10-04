@@ -115,7 +115,7 @@ export function WhereCanYouGoSection() {
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5 }}
-                            className="text-3xl xl:text-4xl font-black text-white font-montserrat tracking-tight mb-6 leading-tight"
+                            className="text-3xl xl:text-4xl font-black text-white font-montserrat tracking-tight mb-6 leading-tight will-change-[opacity,transform]"
                         >
                             {content.title}
                         </motion.h2>
@@ -123,7 +123,7 @@ export function WhereCanYouGoSection() {
                             initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.1 }}
-                            className="text-white/80 text-base xl:text-lg max-w-lg font-poppins leading-relaxed"
+                            className="text-white/80 text-base xl:text-lg max-w-lg font-poppins leading-relaxed will-change-[opacity,transform]"
                         >
                             {content.description}
                         </motion.p>
@@ -138,7 +138,7 @@ export function WhereCanYouGoSection() {
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: 20 }}
                                 transition={{ duration: 0.3 }}
-                                className="bg-[#10192C]/70 backdrop-blur-xl border border-white/10 p-5 rounded-3xl w-full max-w-[340px] shadow-2xl relative overflow-hidden group/card"
+                                className="bg-[#10192C]/70 backdrop-blur-xl border border-white/10 p-5 rounded-3xl w-full max-w-[340px] shadow-2xl relative overflow-hidden group/card will-change-[opacity,transform]"
                             >
                                 {/* Background glow effect */}
                                 <div className="absolute -top-20 -right-20 w-40 h-40 bg-brand-blue/20 rounded-full blur-3xl pointer-events-none group-hover/card:bg-brand-blue/30 transition-colors duration-500" />
@@ -201,7 +201,7 @@ export function WhereCanYouGoSection() {
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5 }}
-                            className="text-3xl font-black text-white font-montserrat tracking-tight mb-4"
+                            className="text-3xl font-black text-white font-montserrat tracking-tight mb-4 will-change-[opacity,transform]"
                         >
                             {content.title}
                         </motion.h2>
@@ -209,7 +209,7 @@ export function WhereCanYouGoSection() {
                             initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.1 }}
-                            className="text-white/80 text-sm max-w-2xl mx-auto font-poppins"
+                            className="text-white/80 text-sm max-w-2xl mx-auto font-poppins will-change-[opacity,transform]"
                         >
                             {content.description}
                         </motion.p>
@@ -224,7 +224,7 @@ export function WhereCanYouGoSection() {
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: 20 }}
                                 transition={{ duration: 0.3 }}
-                                className="bg-[#10192C]/70 backdrop-blur-xl border border-white/10 p-5 rounded-3xl w-full max-w-[340px] shadow-2xl relative overflow-hidden group/card"
+                                className="bg-[#10192C]/70 backdrop-blur-xl border border-white/10 p-5 rounded-3xl w-full max-w-[340px] shadow-2xl relative overflow-hidden group/card will-change-[opacity,transform]"
                             >
                                 {/* Background glow effect */}
                                 <div className="absolute -top-20 -right-20 w-40 h-40 bg-brand-blue/20 rounded-full blur-3xl pointer-events-none group-hover/card:bg-brand-blue/30 transition-colors duration-500" />

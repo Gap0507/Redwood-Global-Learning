@@ -285,8 +285,8 @@ export function TimelineSection() {
                   viewport={{ once: true, amount: 0.3 }}
                   transition={{ duration: 0.5 }}
                   className={`w-full max-w-md pl-20 md:pl-24 ${index % 2 === 0
-                    ? 'lg:pl-0 lg:pr-24 lg:mr-auto'
-                    : 'lg:pl-24 lg:ml-auto'
+                    ? 'lg:pl-0 lg:pr-20 xl:pr-24 lg:mr-auto'
+                    : 'lg:pl-20 xl:pl-24 lg:ml-auto'
                     }`}
                 >
                   {item.content}
@@ -312,8 +312,8 @@ export function TimelineSection() {
                   viewport={{ once: true, amount: 0.5 }}
                   transition={{ duration: 0.3, delay: 0.2 }}
                   className={`absolute h-[3px] bg-brand-red origin-left ${index % 2 === 0
-                    ? 'left-[46px] lg:left-auto lg:right-1/2 w-6 md:w-8 lg:w-48 lg:mr-10 lg:origin-right'
-                    : 'left-[46px] lg:left-1/2 w-6 md:w-8 lg:w-48 lg:ml-10 lg:origin-left'
+                    ? 'left-[46px] lg:left-auto lg:right-1/2 w-6 md:w-8 lg:w-24 xl:w-44 lg:mr-10 lg:origin-right'
+                    : 'left-[46px] lg:left-1/2 w-6 md:w-8 lg:w-24 xl:w-44 lg:ml-10 lg:origin-left'
                     }`}
                 />
               </div>

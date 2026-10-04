@@ -143,7 +143,7 @@ export function Navbar({ onApplyClick }: { onApplyClick?: () => void }) {
             </NavigationMenu>
             <Button
               onClick={onApplyClick}
-              className="bg-brand-red hover:bg-brand-red/90 text-white font-medium text-sm px-5 py-2 h-auto shadow-sm hover:shadow-md transition-all duration-200 rounded-full ml-2"
+              className="bg-brand-red hover:bg-brand-red/90 text-white font-medium text-sm px-5 py-2 h-auto shadow-sm hover:shadow-md transition-all duration-200 rounded-full ml-2 cursor-pointer"
               style={{ fontFamily: 'var(--font-montserrat)' }}
             >
               Apply Now
@@ -201,7 +201,7 @@ export function Navbar({ onApplyClick }: { onApplyClick?: () => void }) {
                       setIsMobileMenuOpen(false)
                       if (onApplyClick) onApplyClick()
                     }}
-                    className="w-full max-w-[260px] bg-brand-red hover:bg-brand-red/90 text-white font-semibold py-3.5 rounded-full text-sm tracking-wider uppercase shadow-lg shadow-brand-red/20"
+                    className="w-full max-w-[260px] bg-brand-red hover:bg-brand-red/90 text-white font-semibold py-3.5 rounded-full text-sm tracking-wider uppercase shadow-lg shadow-brand-red/20 cursor-pointer"
                     style={{ fontFamily: 'var(--font-montserrat)' }}
                   >
                     Apply Now

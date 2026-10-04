@@ -148,16 +148,16 @@ const Card: React.FC<CardProps> = ({
                     scale,
                     top: `calc(-5vh + ${i * 25}px)`,
                 }}
-                className={`flex flex-col md:flex-row relative -top-[25%] h-auto md:h-[550px] w-full max-w-6xl rounded-3xl overflow-hidden shadow-2xl origin-top ring-1 ring-white/10`}
+                className={`flex flex-col md:flex-row relative -top-[25%] h-auto md:h-[540px] lg:h-[560px] w-full max-w-6xl rounded-3xl overflow-hidden shadow-2xl origin-top ring-1 ring-white/10`}
             >
                 {/* Background Gradient */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${gradient} z-0`} />
 
                 {/* Left Side - Content */}
-                <div className={`flex flex-col justify-center p-8 md:p-14 w-full md:w-[45%] text-white h-full relative z-10`}>
+                <div className={`flex flex-col justify-center p-6 sm:p-8 lg:p-12 xl:p-14 w-full md:w-[48%] lg:w-[45%] text-white h-full relative z-10`}>
 
                     {/* Large Background Number */}
-                    <div className="absolute -top-6 -left-6 text-[12rem] font-black text-white/5 select-none pointer-events-none font-montserrat leading-none">
+                    <div className="absolute -top-6 -left-6 text-[10rem] lg:text-[12rem] font-black text-white/5 select-none pointer-events-none font-montserrat leading-none">
                         0{i + 1}
                     </div>
 
@@ -167,25 +167,25 @@ const Card: React.FC<CardProps> = ({
                             initial={{ opacity: 0, x: -20 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.5, delay: 0.2 }}
-                            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-xs font-bold tracking-wider uppercase mb-4"
+                            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-xs font-bold tracking-wider uppercase mb-3 lg:mb-4"
                         >
                             <Icon className="w-3 h-3" />
                             <span>{subtitle}</span>
                         </motion.div>
 
-                        <h2 className='text-3xl md:text-4xl font-black mb-4 leading-tight' style={{ fontFamily: 'var(--font-montserrat)' }}>
+                        <h2 className='text-2xl sm:text-3xl lg:text-4xl font-black mb-3 lg:mb-4 leading-tight' style={{ fontFamily: 'var(--font-montserrat)' }}>
                             {title}
                         </h2>
                     </div>
 
-                    <p className='text-sm md:text-base opacity-90 mb-6 leading-relaxed font-light' style={{ fontFamily: 'var(--font-poppins)' }}>
+                    <p className='text-xs sm:text-sm lg:text-base opacity-90 mb-5 lg:mb-6 leading-relaxed font-light' style={{ fontFamily: 'var(--font-poppins)' }}>
                         {description}
                     </p>
 
-                    <span className='flex items-center gap-2 pt-2'>
+                    <span className='flex items-center gap-2 pt-1 lg:pt-2'>
                         <Link
                             href={link}
-                            className="group relative inline-flex items-center gap-3 px-8 py-4 bg-white text-brand-blue rounded-full font-bold text-sm tracking-wide overflow-hidden transition-all hover:bg-brand-blue hover:text-white hover:shadow-lg hover:shadow-white/20"
+                            className="group relative inline-flex items-center gap-3 px-6 py-3 lg:px-8 lg:py-4 bg-white text-brand-blue rounded-full font-bold text-xs lg:text-sm tracking-wide overflow-hidden transition-all hover:bg-brand-blue hover:text-white hover:shadow-lg hover:shadow-white/20"
                             style={{ fontFamily: 'var(--font-montserrat)' }}
                         >
                             <span className="relative z-10">EXPLORE MORE</span>
@@ -196,7 +196,7 @@ const Card: React.FC<CardProps> = ({
                 </div>
 
                 {/* Right Side - Image */}
-                <div className={`relative w-full md:w-[55%] h-64 md:h-full overflow-hidden`}>
+                <div className={`relative w-full md:w-[52%] lg:w-[55%] h-64 md:h-full overflow-hidden`}>
                     <motion.div
                         className={`w-full h-full relative`}
                         style={{ scale: imageScale }}

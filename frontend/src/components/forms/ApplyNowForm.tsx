@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { motion, AnimatePresence } from "motion/react"
+import { motion, AnimatePresence } from "framer-motion"
 import { X, Send, GraduationCap, School, User, Mail, Phone, Building2, MessageSquare, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { addInquiry } from "@/lib/inquiryService"
@@ -74,8 +74,9 @@ export function ApplyNowForm({ isOpen, onClose }: ApplyNowFormProps) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-[#0a2540]/60 backdrop-blur-sm z-[100]"
+                        className="fixed inset-0 bg-[#0a2540]/60 backdrop-blur-sm z-[100] will-change-[opacity]"
                     />
 
                     {/* Modal Container */}
@@ -84,12 +85,13 @@ export function ApplyNowForm({ isOpen, onClose }: ApplyNowFormProps) {
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden pointer-events-auto relative flex flex-col max-h-[90vh]"
+                            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                            className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden pointer-events-auto relative flex flex-col max-h-[90vh] will-change-[opacity,transform]"
                         >
                             {/* Close Button */}
                             <button
                                 onClick={onClose}
-                                className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors z-10"
+                                className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/20 text-white/70 hover:text-white transition-colors z-50"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -97,7 +99,7 @@ export function ApplyNowForm({ isOpen, onClose }: ApplyNowFormProps) {
                             {/* Header Image */}
                             <div className="h-28 sm:h-32 bg-gradient-to-r from-[#0f3a5c] to-[#1a5276] relative overflow-hidden flex-shrink-0">
                                 <div className="absolute inset-0 opacity-20 bg-[url('/herobackground.png')] bg-cover bg-center mix-blend-overlay" />
-                                <div className="relative z-10 h-full flex items-center justify-between text-white px-8">
+                                <div className="relative z-10 h-full flex items-center justify-between text-white pl-8 pr-16">
                                     <div className="flex flex-col gap-1">
                                         <h2 className="text-2xl sm:text-3xl font-montserrat font-bold tracking-tight">
                                             Start Your Journey
@@ -105,9 +107,6 @@ export function ApplyNowForm({ isOpen, onClose }: ApplyNowFormProps) {
                                         <p className="text-white/80 font-poppins text-sm opacity-90 hidden sm:block">
                                             Join our global exchange programs today.
                                         </p>
-                                    </div>
-                                    <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
-                                        <GraduationCap className="w-6 h-6 text-white" />
                                     </div>
                                 </div>
                             </div>

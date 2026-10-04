@@ -30,7 +30,7 @@ export function BannerModal({ imageUrl, isOpen, onClose }: BannerModalProps) {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm"
+                        className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm will-change-[opacity]"
                         onClick={onClose}
                         aria-hidden="true"
                     />
@@ -42,7 +42,7 @@ export function BannerModal({ imageUrl, isOpen, onClose }: BannerModalProps) {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.92, y: 16 }}
                         transition={{ type: "spring", stiffness: 280, damping: 28, mass: 0.8 }}
-                        className="fixed inset-0 z-[9999] flex items-center justify-center p-4 pointer-events-none"
+                        className="fixed inset-0 z-[9999] flex items-center justify-center p-4 pointer-events-none will-change-[opacity,transform]"
                         aria-modal="true"
                         role="dialog"
                         aria-label="Homepage banner"

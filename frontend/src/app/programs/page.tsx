@@ -9,8 +9,10 @@ import { ArrowRight, MapPin, Calendar, Globe, Users, BookOpen, Star, GraduationC
 import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/layout/Navbar"
 import { Footer } from "@/components/layout/Footer"
-import { ApplyNowForm } from "@/components/forms/ApplyNowForm"
 import { getProgramsPageContent, defaultProgramsPageContent, ProgramsPageContent, CountryProgram, ImpactStat } from "@/lib/programsPageContent"
+import dynamic from "next/dynamic"
+
+const ApplyNowForm = dynamic(() => import("@/components/forms/ApplyNowForm").then(mod => mod.ApplyNowForm), { ssr: false });
 
 // Icon Mapping
 const iconMap: Record<string, LucideIcon> = {

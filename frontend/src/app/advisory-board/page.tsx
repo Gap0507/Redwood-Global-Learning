@@ -282,7 +282,7 @@ export default function AdvisoryBoardPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.6, delay: index * 0.05 }}
-                className="group cursor-pointer"
+                className="group"
               >
                 {/* Avatar */}
                 <div className="relative mb-5">
@@ -303,10 +303,7 @@ export default function AdvisoryBoardPage() {
                     {/* Hover Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-brand-red/0 group-hover:from-brand-red/10 to-transparent transition-all duration-500" />
                   </div>
-                  {/* Decorative Accent */}
-                  <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-brand-red rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
-                    <Sparkles className="w-4 h-4 text-white" />
-                  </div>
+
                 </div>
 
                 {/* Info */}
@@ -329,85 +326,148 @@ export default function AdvisoryBoardPage() {
         </div>
       </section>
 
-      {/* Mission Section */}
-      <section className="relative py-20 px-6 sm:px-8 lg:px-12 xl:px-16 overflow-hidden">
+      {/* Mission & Excellence Section - Modern 2-Column Layout */}
+      <section className="relative py-24 px-4 sm:px-6 lg:px-8 xl:px-12 overflow-hidden bg-gradient-to-b from-white via-slate-50/60 to-white">
+        {/* Ambient Glowing Orbs */}
+        <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/3 right-0 w-[400px] h-[400px] bg-red-500/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative bg-[hsl(var(--bg-soft))] backdrop-blur-md rounded-3xl p-10 sm:p-12 lg:p-16 shadow-2xl shadow-brand-blue/10 border border-white/20 overflow-hidden group"
-          >
-            {/* Decorative Elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-brand-red/5 to-transparent rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform duration-700" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-brand-blue/5 to-transparent rounded-full translate-y-1/2 -translate-x-1/2 group-hover:scale-110 transition-transform duration-700" />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            
+            {/* Left Column: Heading, Copy & Pillars */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="lg:col-span-7 space-y-6"
+            >
+              {/* Badge Pill */}
+              <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-brand-red/10 border border-brand-red/20 shadow-sm">
+                <span className="text-xs font-bold uppercase tracking-wider text-brand-red font-montserrat">
+                  Strategic Leadership & Excellence
+                </span>
+              </div>
 
-            <div className="relative z-10">
-              {/* Accent Line */}
-              <motion.div
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                className="h-1 w-20 bg-gradient-to-r from-brand-red to-brand-red/50 mb-8 origin-left"
-              />
-
-              <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-blue mb-6 leading-tight">
-                {content.excellenceSection.title}
-                <br />{content.excellenceSection.highlightText}
+              {/* Title */}
+              <h2 className="font-montserrat text-3xl sm:text-4xl lg:text-5xl font-black text-brand-blue tracking-tight leading-[1.15]">
+                {content.excellenceSection.title}{" "}
+                <span className="text-brand-red block sm:inline mt-1 sm:mt-0">
+                  {content.excellenceSection.highlightText}
+                </span>
               </h2>
 
-              <div className="space-y-5 mb-10">
-                <p className="text-base sm:text-lg text-brand-gray/80 leading-relaxed font-light">
+              {/* Accent Bar */}
+              <div className="h-1.5 w-20 bg-gradient-to-r from-brand-red to-brand-blue rounded-full" />
+
+              {/* Description Paragraphs */}
+              <div className="space-y-4 pt-2">
+                <p className="text-base sm:text-lg text-brand-gray/90 leading-relaxed font-poppins font-normal">
                   {content.excellenceSection.description1}
                 </p>
-                <p className="text-base text-brand-gray/70 leading-relaxed font-light">
+                <p className="text-base sm:text-lg text-brand-gray/90 leading-relaxed font-poppins font-normal">
                   {content.excellenceSection.description2}
                 </p>
               </div>
 
-              {/* Stats */}
-              <div className="grid grid-cols-3 gap-8 pt-8 border-t border-brand-blue/10">
-                <div className="group/stat">
-                  <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-gradient-to-br from-brand-red/10 to-brand-red/5 mb-4 group-hover/stat:scale-110 transition-transform duration-300">
-                    <Users className="w-7 h-7 text-brand-red" />
+              {/* Key Pillars Highlights */}
+              <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[
+                  "Academic Innovation & Rigor",
+                  "Global Strategic Vision",
+                  "Cross-Cultural Learning",
+                  "Highest Quality Standards"
+                ].map((pillar, idx) => (
+                  <div key={idx} className="flex items-center gap-2.5 bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                    <div className="w-5 h-5 rounded-full bg-brand-red/10 flex items-center justify-center flex-shrink-0">
+                      <Target className="w-3 h-3 text-brand-red" />
+                    </div>
+                    <span className="text-xs sm:text-sm font-semibold text-brand-blue font-poppins">
+                      {pillar}
+                    </span>
                   </div>
-                  <div className="text-4xl sm:text-5xl font-bold text-brand-red font-heading mb-2">
-                    {content.excellenceSection.stats.members}
-                  </div>
-                  <div className="text-xs sm:text-sm text-brand-gray/70 font-medium uppercase tracking-wider">
-                    Board Members
-                  </div>
-                </div>
-
-                <div className="group/stat">
-                  <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-gradient-to-br from-brand-red/10 to-brand-red/5 mb-4 group-hover/stat:stat:scale-110 transition-transform duration-300">
-                    <Globe className="w-7 h-7 text-brand-red" />
-                  </div>
-                  <div className="text-4xl sm:text-5xl font-bold text-brand-red font-heading mb-2">
-                    {content.excellenceSection.stats.countries}
-                  </div>
-                  <div className="text-xs sm:text-sm text-brand-gray/70 font-medium uppercase tracking-wider">
-                    Countries
-                  </div>
-                </div>
-
-                <div className="group/stat">
-                  <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-gradient-to-br from-brand-red/10 to-brand-red/5 mb-4 group-hover/stat:stat:scale-110 transition-transform duration-300">
-                    <GraduationCap className="w-7 h-7 text-brand-red" />
-                  </div>
-                  <div className="text-4xl sm:text-5xl font-bold text-brand-red font-heading mb-2">
-                    {content.excellenceSection.stats.students}
-                  </div>
-                  <div className="text-xs sm:text-sm text-brand-gray/70 font-medium uppercase tracking-wider">
-                    Students
-                  </div>
-                </div>
+                ))}
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+
+            {/* Right Column: Dynamic Stats Cards */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="lg:col-span-5 space-y-4"
+            >
+              {/* Card 1: Members */}
+              <motion.div
+                whileHover={{ y: -2 }}
+                transition={{ duration: 0.3 }}
+                className="bg-white p-6 sm:p-7 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-slate-200 transition-all duration-300 flex items-center"
+              >
+                <div className="flex items-center gap-5">
+                  <div className="w-14 h-14 rounded-2xl bg-brand-blue text-white flex items-center justify-center flex-shrink-0">
+                    <Users className="w-7 h-7 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-3xl sm:text-4xl font-black text-brand-blue font-montserrat tracking-tight leading-none mb-1">
+                      {content.excellenceSection.stats.members}
+                    </div>
+                    <div className="text-xs font-bold uppercase tracking-wider text-brand-red font-montserrat">
+                      Board Members
+                    </div>
+                    <p className="text-[11px] text-brand-gray/60 font-poppins mt-0.5">Global Academic Visionaries</p>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Card 2: Countries */}
+              <motion.div
+                whileHover={{ y: -2 }}
+                transition={{ duration: 0.3 }}
+                className="bg-white p-6 sm:p-7 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-slate-200 transition-all duration-300 flex items-center"
+              >
+                <div className="flex items-center gap-5">
+                  <div className="w-14 h-14 rounded-2xl bg-brand-red text-white flex items-center justify-center flex-shrink-0">
+                    <Globe className="w-7 h-7 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-3xl sm:text-4xl font-black text-brand-blue font-montserrat tracking-tight leading-none mb-1">
+                      {content.excellenceSection.stats.countries}
+                    </div>
+                    <div className="text-xs font-bold uppercase tracking-wider text-brand-red font-montserrat">
+                      Countries
+                    </div>
+                    <p className="text-[11px] text-brand-gray/60 font-poppins mt-0.5">International Reach & Impact</p>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Card 3: Students */}
+              <motion.div
+                whileHover={{ y: -2 }}
+                transition={{ duration: 0.3 }}
+                className="bg-white p-6 sm:p-7 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-slate-200 transition-all duration-300 flex items-center"
+              >
+                <div className="flex items-center gap-5">
+                  <div className="w-14 h-14 rounded-2xl bg-brand-blue text-white flex items-center justify-center flex-shrink-0">
+                    <GraduationCap className="w-7 h-7 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-3xl sm:text-4xl font-black text-brand-blue font-montserrat tracking-tight leading-none mb-1">
+                      {content.excellenceSection.stats.students}
+                    </div>
+                    <div className="text-xs font-bold uppercase tracking-wider text-brand-red font-montserrat">
+                      Students Impacted
+                    </div>
+                    <p className="text-[11px] text-brand-gray/60 font-poppins mt-0.5">Transformed Scholars Worldwide</p>
+                  </div>
+                </div>
+              </motion.div>
+
+            </motion.div>
+
+          </div>
         </div>
       </section>
 

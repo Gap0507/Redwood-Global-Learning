@@ -27,7 +27,7 @@ export function ReadyToGetStartedSection({ onApplyClick }: { onApplyClick?: () =
             </div>
 
             {/* Content Container */}
-            <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-24 max-w-7xl relative z-10 flex flex-col items-center justify-center pt-16 sm:pt-20 md:pt-28">
+            <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-5xl relative z-10 flex flex-col items-center justify-center pt-12 sm:pt-16 md:pt-20">
 
                 {/* Main Heading */}
                 <motion.h2
@@ -35,7 +35,7 @@ export function ReadyToGetStartedSection({ onApplyClick }: { onApplyClick?: () =
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, ease: "easeOut" }}
                     viewport={{ once: true, amount: 0.3 }}
-                    className="text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-brand-blue font-montserrat tracking-tight text-center mb-2 sm:mb-3 px-2"
+                    className="text-base sm:text-xl md:text-2xl lg:text-3xl font-black text-brand-blue font-montserrat tracking-tight text-center mb-2 sm:mb-3 px-4 max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl"
                 >
                     READY TO START YOUR ADVENTURE?
                 </motion.h2>
@@ -46,7 +46,7 @@ export function ReadyToGetStartedSection({ onApplyClick }: { onApplyClick?: () =
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
                     viewport={{ once: true, amount: 0.3 }}
-                    className="text-brand-gray/80 text-xs sm:text-xs md:text-sm lg:text-base font-poppins text-center mb-5 sm:mb-6 md:mb-8 max-w-sm sm:max-w-md md:max-w-lg px-4"
+                    className="text-brand-gray/80 text-xs sm:text-xs md:text-sm font-poppins text-center mb-5 sm:mb-6 md:mb-7 max-w-xs sm:max-w-sm md:max-w-md px-4"
                 >
                     Apply now to our global exchange program and expand your horizons.
                 </motion.p>
@@ -57,22 +57,22 @@ export function ReadyToGetStartedSection({ onApplyClick }: { onApplyClick?: () =
                     whileInView={{ opacity: 1, y: 0, scale: 1 }}
                     transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
                     viewport={{ once: true, amount: 0.3 }}
-                    className="hidden sm:flex flex-row items-center bg-gradient-to-r from-[#0f3a5c] via-[#1a5276] to-[#0f3a5c] rounded-full px-3 md:px-5 py-2.5 md:py-3 shadow-2xl border border-[#2980b9]/30"
+                    className="hidden sm:flex flex-row items-center bg-gradient-to-r from-[#0f3a5c] via-[#1a5276] to-[#0f3a5c] rounded-full px-3 md:px-4 py-2 md:py-2.5 shadow-xl border border-[#2980b9]/30"
                 >
                     {/* Phone */}
-                    <div className="flex items-center gap-2 text-white px-2 md:px-4">
-                        <Phone className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" />
+                    <div className="flex items-center gap-1.5 md:gap-2 text-white px-2 md:px-3">
+                        <Phone className="w-3.5 h-3.5 text-white" />
                         <span className="font-poppins text-xs md:text-sm font-medium tracking-wide whitespace-nowrap">
                             {contactContent.contactInfo.phone}
                         </span>
                     </div>
 
                     {/* Divider */}
-                    <div className="w-px h-6 bg-white/30" />
+                    <div className="w-px h-5 bg-white/30" />
 
                     {/* Email */}
-                    <div className="flex items-center gap-2 text-white px-2 md:px-4">
-                        <Mail className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" />
+                    <div className="flex items-center gap-1.5 md:gap-2 text-white px-2 md:px-3">
+                        <Mail className="w-3.5 h-3.5 text-white" />
                         <span className="font-poppins text-xs md:text-sm font-medium tracking-wide whitespace-nowrap">
                             {contactContent.contactInfo.email}
                         </span>
@@ -83,10 +83,10 @@ export function ReadyToGetStartedSection({ onApplyClick }: { onApplyClick?: () =
                         onClick={onApplyClick}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="flex items-center gap-1.5 bg-gradient-to-r from-[#e74c3c] to-[#c0392b] hover:from-[#c0392b] hover:to-[#a93226] text-white font-poppins font-semibold text-xs md:text-sm px-4 md:px-5 py-1.5 md:py-2 rounded-full shadow-lg transition-all duration-300 ml-2 md:ml-3"
+                        className="flex items-center gap-1.5 bg-gradient-to-r from-[#e74c3c] to-[#c0392b] hover:from-[#c0392b] hover:to-[#a93226] text-white font-poppins font-semibold text-xs md:text-sm px-3.5 md:px-4 py-1.5 rounded-full shadow-lg transition-all duration-300 ml-1.5 md:ml-2"
                     >
                         Apply Now
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight className="w-3.5 h-3.5" />
                     </motion.button>
                 </motion.div>
 

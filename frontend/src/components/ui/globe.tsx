@@ -246,7 +246,13 @@ export function Globe({ globeConfig, data, locations = [], onLocationClick }: Wo
         };
     }, [isInitialized, data]);
 
+    const lastHoverTime = useRef<number>(0);
+
     const handleGlobeHover = (e: any) => {
+        const now = Date.now();
+        if (now - lastHoverTime.current < 50) return; // Throttle to ~20fps for hover calc
+        lastHoverTime.current = now;
+
         if (!globeRef.current) return;
 
         const point = e.point;

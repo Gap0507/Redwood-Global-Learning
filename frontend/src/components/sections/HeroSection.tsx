@@ -141,14 +141,14 @@ export function HeroSection() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                     {/* Left Content - Unique Layout */}
                     <motion.div
-                        className="flex flex-col gap-6"
+                        className="flex flex-col gap-6 will-change-[opacity,transform]"
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
                     >
                         {/* Tagline with Modern Design */}
                         <motion.div
-                            className="relative inline-flex items-center gap-3 self-start"
+                            className="relative inline-flex items-center gap-3 self-start will-change-[opacity,transform]"
                             variants={itemVariants}
                         >
                             <div className="flex items-center gap-2">
@@ -166,7 +166,7 @@ export function HeroSection() {
 
                         {/* Creative Header with Stacked Layout */}
                         <motion.div
-                            className="relative"
+                            className="relative will-change-[opacity,transform]"
                             variants={itemVariants}
                         >
                             <div className="flex flex-col gap-1">
@@ -256,7 +256,7 @@ export function HeroSection() {
 
                         {/* Subheading */}
                         <motion.p
-                            className="text-lg text-brand-gray/90 max-w-xl leading-relaxed font-body"
+                            className="text-lg text-brand-gray/90 max-w-xl leading-relaxed font-body will-change-[opacity,transform]"
                             variants={itemVariants}
                         >
                             {content.paragraphText}{" "}
@@ -268,7 +268,7 @@ export function HeroSection() {
 
                         {/* CTA Buttons */}
                         <motion.div
-                            className="flex items-center gap-6 pt-2"
+                            className="flex items-center gap-6 pt-2 will-change-[opacity,transform]"
                             variants={itemVariants}
                         >
                             <Button
@@ -295,7 +295,7 @@ export function HeroSection() {
 
                         {/* Trusted By Section */}
                         <motion.div
-                            className="flex flex-col gap-4 pt-2"
+                            className="flex flex-col gap-4 pt-2 will-change-[opacity,transform]"
                             variants={itemVariants}
                         >
                             <div className="flex items-center gap-3 text-brand-blue/80 font-medium font-body">
@@ -328,7 +328,7 @@ export function HeroSection() {
                     {/* Right Side - Globe */}
                     {/* Right Side - Globe */}
                     <motion.div
-                        className="flex items-center justify-center relative w-full mt-8 lg:mt-0"
+                        className="flex items-center justify-center relative w-full mt-8 lg:mt-0 will-change-[opacity,transform]"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.8, delay: 0.4 }}
@@ -350,7 +350,7 @@ export function HeroSection() {
             <AnimatePresence>
                 {selectedLocation && (
                     <motion.div
-                        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4 will-change-[opacity]"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -363,7 +363,7 @@ export function HeroSection() {
 
                         {/* Modal */}
                         <motion.div
-                            className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[80vh] overflow-y-auto"
+                            className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[80vh] overflow-y-auto will-change-[opacity,transform]"
                             initial={{ scale: 0.9, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
                             exit={{ scale: 0.9, y: 20 }}

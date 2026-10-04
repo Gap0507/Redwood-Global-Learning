@@ -75,8 +75,8 @@ export function Footer({ onApplyClick }: { onApplyClick?: () => void }) {
                 >
                     {/* Logo & Tagline */}
                     <div className="col-span-1 flex flex-col items-center sm:items-start">
-                        <Link href="/" className="mb-3 block">
-                            <div className="relative h-[90px] w-[220px] sm:h-[100px] sm:w-[260px] lg:h-[110px] lg:w-[300px]">
+                        <Link href="/" className="mb-2 block">
+                            <div className="relative h-[130px] w-[260px] sm:h-[150px] sm:w-[300px] lg:h-[170px] lg:w-[340px] -ml-2 sm:-ml-3">
                                 <Image
                                     src="/logo.svg"
                                     alt="Redwood Global Learning"
@@ -86,7 +86,7 @@ export function Footer({ onApplyClick }: { onApplyClick?: () => void }) {
                                 />
                             </div>
                         </Link>
-                        <p className="text-white/60 text-sm font-poppins text-center sm:text-left max-w-[220px] leading-relaxed">
+                        <p className="text-white/70 text-sm font-poppins text-center sm:text-left max-w-[260px] leading-relaxed -mt-2">
                             Empowering students through transformative global exchange experiences.
                         </p>
                     </div>
