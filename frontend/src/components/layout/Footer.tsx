@@ -74,19 +74,19 @@ export function Footer({ onApplyClick }: { onApplyClick?: () => void }) {
                     className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10"
                 >
                     {/* Logo & Tagline */}
-                    <div className="col-span-1 flex flex-col items-center sm:items-start">
-                        <Link href="/" className="mb-2 block">
-                            <div className="relative h-[130px] w-[260px] sm:h-[150px] sm:w-[300px] lg:h-[170px] lg:w-[340px] -ml-2 sm:-ml-3">
+                    <div className="col-span-1 flex flex-col items-center sm:items-start -mt-4 sm:-mt-4 lg:-mt-6">
+                        <Link href="/" className="mb-2 sm:mb-3 lg:mb-4 block">
+                            <div className="relative h-[48px] w-[200px] sm:h-[70px] sm:w-[300px] lg:h-[80px] lg:w-[340px] ml-0 sm:-ml-[64px] lg:-ml-[75px] overflow-hidden">
                                 <Image
                                     src="/logo.svg"
                                     alt="Redwood Global Learning"
                                     fill
-                                    className="object-contain object-center sm:object-left brightness-0 invert"
+                                    className="object-cover object-center brightness-0 invert"
                                     quality={100}
                                 />
                             </div>
                         </Link>
-                        <p className="text-white/70 text-sm font-poppins text-center sm:text-left max-w-[260px] leading-relaxed -mt-2">
+                        <p className="text-white/70 text-sm font-poppins text-center sm:text-left max-w-[260px] leading-relaxed">
                             Empowering students through transformative global exchange experiences.
                         </p>
                     </div>
